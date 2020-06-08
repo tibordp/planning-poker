@@ -28,12 +28,12 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Card from "@material-ui/core/Card";
 import Box from "@material-ui/core/Box";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { useReconnector, useInternetConnectivity } from "../src/remoteState";
 import { MainBoard } from "../src/MainBoard";
 import { makeStyles } from "@material-ui/core/styles";
 import { SessionPanel } from "../src/SessionPanel";
 import { SessionUrlDisplay } from "../src/SessionUrlDisplay";
+import Logo from "../src/Logo";
 
 export const useStyles = makeStyles((theme) => ({
   card: {
@@ -56,11 +56,7 @@ export default function Session() {
   return (
     <Container maxWidth="sm">
       <Box my={4}>
-        <Link href="/">
-          <Typography variant="h4" component="h1" gutterBottom>
-            <a>Planning Poker</a>
-          </Typography>
-        </Link>
+        <Logo />
         {!remoteState && (
           <Card variant="outlined" className={classes.card}>
             <Box className={classes.connecting}>

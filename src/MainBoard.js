@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import React from "react";
-import { ScorePanel } from "./ScorePanel";
+import { VotePanel } from "./VotePanel";
 import { makeStyles } from "@material-ui/core/styles";
 import { ScoreTable } from "./ScoreTable";
 import { DescriptionEdit } from "./DescriptionEdit";
@@ -32,9 +32,9 @@ export const useStyles = makeStyles((theme) => ({}));
 export function MainBoard({ remoteState, dispatch }) {
   const classes = useStyles();
 
-  const { scoresVisible, clients, me } = remoteState;
+  const { votesVisible, clients, me } = remoteState;
   const votesCast = new Set(clients.filter(({ name }) => name).map(({ score }) => score));
-  const haveConsensus = votesCast.size === 1 && !votesCast.has(null) && scoresVisible;
+  const haveConsensus = votesCast.size === 1 && !votesCast.has(null) && votesVisible;
 
   return (
     <>
@@ -42,20 +42,21 @@ export function MainBoard({ remoteState, dispatch }) {
         onChange={(value) => dispatch({ action: "setDescription", value: value })}
         description={remoteState.description}
       />
-      <ScorePanel
+      <VotePanel
         controlEnabled
-        scoresVisible={scoresVisible}
-        scoringEnabled={me.name !== null}
+        availableScores={remoteState.availableScores}
+        votesVisible={votesVisible}
+        votingEnabled={me.name !== null}
         selectedScore={me.score}
         onSetVisibility={(visibility) =>
           dispatch({
             action: "setVisibility",
-            scoresVisible: visibility,
+            votesVisible: visibility,
           })
         }
-        onScore={(score) =>
+        onVote={(score) =>
           dispatch({
-            action: "score",
+            action: "vote",
             score: score,
           })
         }
@@ -65,7 +66,7 @@ export function MainBoard({ remoteState, dispatch }) {
         clients={remoteState.clients}
         selfIdentifier={me.identifier}
         haveConsensus={haveConsensus}
-        scoresVisible={scoresVisible}
+        votesVisible={votesVisible}
       />
     </>
   );

@@ -43,9 +43,9 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ScoreTableRow({ haveConsensus, isSelf, scoresVisible, name, score, ...transitionProps }) {
+function ScoreTableRow({ haveConsensus, isSelf, votesVisible, name, score, ...transitionProps }) {
   const classes = useStyles();
-  const isVisible = isSelf || scoresVisible;
+  const isVisible = isSelf || votesVisible;
 
   return (
     <Slide direction="right" timeout={500} in mountOnEnter unmountOnExit {...transitionProps}>
@@ -59,9 +59,9 @@ function ScoreTableRow({ haveConsensus, isSelf, scoresVisible, name, score, ...t
             // We want the score chip to be re-mounted on every change so that
             // th animation gives a visual indication that something happened,
             // even if the score is still hidden.
-            <Zoom key={`${score}_${scoresVisible}`} in mountOnEnter unmountOnExit>
+            <Zoom key={`${score}_${votesVisible}`} in mountOnEnter unmountOnExit>
               <Chip
-                variant={scoresVisible ? "default" : "outlined"}
+                variant={votesVisible ? "default" : "outlined"}
                 size="medium"
                 style={isVisible && { fontWeight: "bold" }}
                 label={isVisible ? score : "Hidden"}
@@ -75,7 +75,7 @@ function ScoreTableRow({ haveConsensus, isSelf, scoresVisible, name, score, ...t
   );
 }
 
-export function ScoreTable({ clients, selfIdentifier, haveConsensus, scoresVisible }) {
+export function ScoreTable({ clients, selfIdentifier, haveConsensus, votesVisible }) {
   const classes = useStyles();
   return (
     <TableContainer>
@@ -86,7 +86,7 @@ export function ScoreTable({ clients, selfIdentifier, haveConsensus, scoresVisib
             .map(({ identifier, name, score }) => (
               <ScoreTableRow
                 key={identifier}
-                scoresVisible={scoresVisible}
+                votesVisible={votesVisible}
                 haveConsensus={haveConsensus}
                 isSelf={identifier === selfIdentifier}
                 name={name}

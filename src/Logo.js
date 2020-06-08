@@ -21,38 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import Container from "@material-ui/core/Container";
+import LogoIcon from "svg-react-loader?name=LogoIcon!../src/assets/logo.svg";
+
+import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Link from "next/link";
-import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/core/styles";
-import randomWords from "random-words";
-import Logo from "../src/Logo";
 
-const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles((theme) => ({
+  logo: {
+    height: theme.spacing(8),
+    width: theme.spacing(8),
+  },
+}));
 
-const getSessionId = () =>
-  randomWords({
-    exactly: 1,
-    wordsPerString: 3,
-    separator: "-",
-  })[0];
-
-export default function Home() {
+export default function Logo({}) {
   const classes = useStyles();
-
   return (
-    <Container maxWidth="sm">
-      <Box my={4}>
-        <Logo />
-        <p>Click here to go to your own planning poker session.</p>
-        <Link href="/[session]" as={`/${getSessionId()}`}>
-          <Button fullWidth size="large" variant="outlined">
-            New session
-          </Button>
-        </Link>
-      </Box>
-    </Container>
+    <Box my={2} display="flex" flexDirection="column" alignItems="center" justifyItems="center">
+      <Link href="/">
+        <a className="button">
+          <LogoIcon alt="Planning Poker" className={classes.logo} />
+        </a>
+      </Link>
+    </Box>
   );
 }

@@ -34,15 +34,16 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 function broadcastState(sessionState) {
-  const { epoch, description, clients, scoresVisible, startedOn } = sessionState;
+  const { epoch, description, clients, votesVisible, startedOn, availableScores } = sessionState;
 
   Object.entries(clients).forEach(([identifier, { socket, score, name }]) => {
     const serializedState = {
       epoch,
+      availableScores,
       startedOn,
       description,
       me: { identifier, score, name },
-      scoresVisible: scoresVisible,
+      votesVisible: votesVisible,
       clients: Object.entries(clients).map(([identifier, { score, name }]) => ({
         identifier,
         score,
@@ -58,6 +59,11 @@ function broadcastState(sessionState) {
   });
 }
 
+const scorePresets = {
+  FIBONACCI: [0.5, 1, 2, 3, 5, 8, 13, 21, 100, "Pass"],
+  TSHIRT: ["XS", "S", "M", "L", "XL", "XXL", "Pass"],
+};
+
 app.prepare().then(() => {
   const server = createServer((req, res) => {
     const parsedUrl = parse(req.url, true);
@@ -72,7 +78,8 @@ app.prepare().then(() => {
     if (sessionState === undefined) {
       sessionState = state[sessionName] = {
         description: "",
-        scoresVisible: false,
+        availableScores: scorePresets.FIBONACCI,
+        votesVisible: false,
         startedOn: new Date(),
         epoch: 0,
         clients: {},
@@ -103,20 +110,21 @@ app.prepare().then(() => {
           myState.name = null;
           myState.score = null;
           break;
-        case "score":
+        case "vote":
           myState.score = action.score;
-          // Show scores after all participants has voted
-          if (Object.values(sessionState.clients).every(({ score, name }) => !name || score)) {
-            sessionState.scoresVisible = true;
+          // Show votes after all participants have voted
+          const participants = Object.values(sessionState.clients).filter(({ name }) => name);
+          if (participants.length > 1 && participants.every(({ score }) => score)) {
+            sessionState.votesVisible = true;
           }
           break;
         case "setVisibility":
-          sessionState.scoresVisible = action.scoresVisible;
+          sessionState.votesVisible = action.votesVisible;
           break;
         case "reconnect":
           myState.name = action.name;
-          // Only try to restore the score on reconnection, if we are still on the same
-          // description (the board has not been reset)
+          // Only try to restore the score on reconnection if we are still on the same
+          // thing we are scoring (implied by the fact that the board has not been reset)
           if (action.epoch === sessionState.epoch) {
             myState.score = action.score;
           }
@@ -127,7 +135,7 @@ app.prepare().then(() => {
           }
           break;
         case "resetBoard":
-          sessionState.scoresVisible = false;
+          sessionState.votesVisible = false;
           sessionState.epoch += 1;
           sessionState.startedOn = new Date();
           Object.values(sessionState.clients).forEach((c) => {

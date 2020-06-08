@@ -31,31 +31,34 @@ export const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
     marginTop: theme.spacing(1),
   },
-  scoreButton: {
+  voteButton: {
     margin: theme.spacing(1),
+  },
+  scoresContainer: {
+    textAlign: "center",
   },
 }));
 
-export function ScorePanel({
-  scoresVisible,
-  scoringEnabled,
+export function VotePanel({
+  availableScores,
+  votesVisible,
+  votingEnabled,
   controlEnabled,
   selectedScore,
-  onScore,
+  onVote,
   onReset,
   onSetVisibility,
 }) {
   const classes = useStyles();
-  const scores = [0.5, 1, 2, 3, 5, 8, 13, 21, 100, "Pass"];
   return (
     <Grid container direction="row" justify="space-between" alignItems="center">
-      <Grid item sm={9} xs={12}>
-        {scores.map((score) => (
+      <Grid item sm={9} xs={12} className={classes.scoresContainer}>
+        {availableScores.map((score) => (
           <Button
-            disabled={!scoringEnabled}
+            disabled={!votingEnabled}
             key={score}
-            onClick={() => onScore(selectedScore === score ? null : score)}
-            className={classes.scoreButton}
+            onClick={() => onVote(selectedScore === score ? null : score)}
+            className={classes.voteButton}
             variant={selectedScore === score ? "outlined" : "text"}
             color="secondary"
           >
@@ -67,13 +70,13 @@ export function ScorePanel({
         <Button
           disabled={!controlEnabled}
           className={classes.actionButton}
-          onClick={() => onSetVisibility(!scoresVisible)}
+          onClick={() => onSetVisibility(!votesVisible)}
           fullWidth
-          variant={scoresVisible ? "contained" : "outlined"}
+          variant={votesVisible ? "contained" : "outlined"}
           color="secondary"
         >
-          {scoresVisible && "Hide votes"}
-          {!scoresVisible && "Show votes"}
+          {votesVisible && "Hide votes"}
+          {!votesVisible && "Show votes"}
         </Button>
 
         <Button
