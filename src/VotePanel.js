@@ -37,6 +37,9 @@ export const useStyles = makeStyles((theme) => ({
   scoresContainer: {
     textAlign: "center",
   },
+  container: {
+    marginTop: theme.spacing(1),
+  },
 }));
 
 export function VotePanel({
@@ -51,7 +54,13 @@ export function VotePanel({
 }) {
   const classes = useStyles();
   return (
-    <Grid container direction="row" justify="space-between" alignItems="center">
+    <Grid
+      className={classes.container}
+      container
+      direction="row"
+      justify="space-between"
+      alignItems="center"
+    >
       <Grid item sm={9} xs={12} className={classes.scoresContainer}>
         {availableScores.map((score) => (
           <Button

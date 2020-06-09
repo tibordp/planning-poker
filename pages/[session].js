@@ -37,12 +37,15 @@ import Logo from "../src/Logo";
 
 export const useStyles = makeStyles((theme) => ({
   card: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(4),
   },
   connecting: {
     alignItems: "center",
     display: "flex",
     flexDirection: "column",
+  },
+  spinner: {
+    margin: theme.spacing(2),
   },
 }));
 
@@ -60,12 +63,12 @@ export default function Session() {
         {!remoteState && (
           <Card variant="outlined" className={classes.card}>
             <Box className={classes.connecting}>
-              <Typography variant="h6" component="h2" gutterBottom>
+              <CircularProgress color="secondary" className={classes.spinner} size="3rem" />
+              <Typography variant="subtitle1" component="span" gutterBottom>
                 {haveConnectivity && !isReconnecting && "Connecting..."}
                 {haveConnectivity && isReconnecting && "Reconnecting..."}
                 {!haveConnectivity && "You are offline. Waiting for you to come back online..."}
               </Typography>
-              <CircularProgress />
             </Box>
           </Card>
         )}

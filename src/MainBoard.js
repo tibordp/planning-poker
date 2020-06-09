@@ -23,28 +23,36 @@
  */
 import React from "react";
 import { VotePanel } from "./VotePanel";
-import { makeStyles } from "@material-ui/core/styles";
 import { ScoreTable } from "./ScoreTable";
 import { DescriptionEdit } from "./DescriptionEdit";
-
-export const useStyles = makeStyles((theme) => ({}));
+import { SettingsDialog } from "./SettingsDialog";
 
 export function MainBoard({ remoteState, dispatch }) {
-  const classes = useStyles();
+  const [settingsOpen, setSettingsOpen] = React.useState(false);
 
-  const { votesVisible, clients, me } = remoteState;
+  const { votesVisible, clients, me, settings } = remoteState;
   const votesCast = new Set(clients.filter(({ name }) => name).map(({ score }) => score));
   const haveConsensus = votesCast.size === 1 && !votesCast.has(null) && votesVisible;
 
   return (
     <>
+      <SettingsDialog
+        open={settingsOpen}
+        settings={settings}
+        onCancel={() => setSettingsOpen(false)}
+        onSave={(newSettings) => {
+          dispatch({ action: "setSettings", settings: newSettings });
+          setSettingsOpen(false);
+        }}
+      />
       <DescriptionEdit
         onChange={(value) => dispatch({ action: "setDescription", value: value })}
         description={remoteState.description}
+        onSettingsClick={() => setSettingsOpen(true)}
       />
       <VotePanel
         controlEnabled
-        availableScores={remoteState.availableScores}
+        availableScores={settings.scoreSet.scores}
         votesVisible={votesVisible}
         votingEnabled={me.name !== null}
         selectedScore={me.score}

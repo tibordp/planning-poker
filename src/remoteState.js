@@ -114,6 +114,7 @@ export function useReconnector(session) {
           session,
           JSON.stringify({
             epoch: remoteState.epoch,
+            settings: remoteState.settings,
             ...remoteState.me,
           })
         );

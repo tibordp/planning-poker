@@ -23,7 +23,14 @@
  */
 import React from "react";
 import TextField from "@material-ui/core/TextField";
-export function DescriptionEdit({ disabled, description, onChange }) {
+import Settings from "@material-ui/icons/Settings";
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import { useTheme } from "@material-ui/core/styles";
+
+export function DescriptionEdit({ disabled, description, onChange, onSettingsClick }) {
+  const theme = useTheme();
+
   const [localDescription, setLocalDescription] = React.useState(description);
   React.useEffect(() => {
     setLocalDescription(description);
@@ -32,12 +39,27 @@ export function DescriptionEdit({ disabled, description, onChange }) {
     <TextField
       fullWidth
       disabled={disabled}
-      size="small"
+      multiline
+      style={{
+        backgroundColor: disabled
+          ? theme.palette.background.default
+          : theme.palette.background.paper,
+      }}
       label="Description"
+      variant="outlined"
       value={localDescription}
       onChange={(evt) => setLocalDescription(evt.target.value)}
       onBlur={() => {
         onChange(localDescription);
+      }}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton onClick={onSettingsClick}>
+              <Settings />
+            </IconButton>
+          </InputAdornment>
+        ),
       }}
     />
   );

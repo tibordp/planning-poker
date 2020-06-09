@@ -21,17 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { createMuiTheme } from "@material-ui/core/styles";
+const scorePresets = [
+  { type: "fibonacci", name: "Fibonacci", scores: [0.5, 1, 2, 3, 5, 8, 13, 21, 100, "Pass"] },
+  { type: "tshirt", name: "T-shirt sizes", scores: ["XS", "S", "M", "L", "XL", "XXL", "Pass"] },
+];
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#556cd6",
-    },
-    secondary: {
-      main: "#19857b",
-    },
-  },
-});
-
-export default theme;
+exports.scorePresets = scorePresets;

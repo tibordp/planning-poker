@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-// server.js
 const { createServer } = require("http");
 const { parse } = require("url");
 const { v4: uuidv4 } = require("uuid");
 const next = require("next");
 const state = require("./state").state;
+const scorePresets = require("./scoreSets").scorePresets;
 const WebSocket = require("ws");
 
 const dev = process.env.NODE_ENV !== "production";
@@ -34,21 +34,23 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 function broadcastState(sessionState) {
-  const { epoch, description, clients, votesVisible, startedOn, availableScores } = sessionState;
+  const { epoch, description, clients, votesVisible, startedOn, settings } = sessionState;
+
+  const clientsData = Object.entries(clients).map(([identifier, { score, name }]) => ({
+    identifier,
+    score,
+    name,
+  }));
 
   Object.entries(clients).forEach(([identifier, { socket, score, name }]) => {
     const serializedState = {
       epoch,
-      availableScores,
+      settings,
       startedOn,
       description,
       me: { identifier, score, name },
       votesVisible: votesVisible,
-      clients: Object.entries(clients).map(([identifier, { score, name }]) => ({
-        identifier,
-        score,
-        name,
-      })),
+      clients: clientsData,
     };
     socket.send(
       JSON.stringify({
@@ -59,10 +61,14 @@ function broadcastState(sessionState) {
   });
 }
 
-const scorePresets = {
-  FIBONACCI: [0.5, 1, 2, 3, 5, 8, 13, 21, 100, "Pass"],
-  TSHIRT: ["XS", "S", "M", "L", "XL", "XXL", "Pass"],
-};
+function resetBoard(sessionState) {
+  sessionState.votesVisible = false;
+  sessionState.epoch += 1;
+  sessionState.startedOn = new Date();
+  Object.values(sessionState.clients).forEach((c) => {
+    c.score = null;
+  });
+}
 
 app.prepare().then(() => {
   const server = createServer((req, res) => {
@@ -78,7 +84,9 @@ app.prepare().then(() => {
     if (sessionState === undefined) {
       sessionState = state[sessionName] = {
         description: "",
-        availableScores: scorePresets.FIBONACCI,
+        settings: {
+          scoreSet: scorePresets[0],
+        },
         votesVisible: false,
         startedOn: new Date(),
         epoch: 0,
@@ -121,12 +129,19 @@ app.prepare().then(() => {
         case "setVisibility":
           sessionState.votesVisible = action.votesVisible;
           break;
+        case "setSettings":
+          sessionState.settings = action.settings;
+          resetBoard(sessionState);
+          break;
         case "reconnect":
           myState.name = action.name;
           // Only try to restore the score on reconnection if we are still on the same
-          // thing we are scoring (implied by the fact that the board has not been reset)
-          if (action.epoch === sessionState.epoch) {
+          // thing we are scoring (implied by the fact that the board has not been reset).
+          // Received epoch can be larger than the local one in case the last connected
+          // client disconnected and we deleted the session.
+          if (action.epoch >= sessionState.epoch) {
             myState.score = action.score;
+            sessionState.settings = action.settings;
           }
           if (sessionState.clients[action.identifier] && action.identifier !== identifier) {
             // If the client has reconnected using a different socket, we boot off the previous
@@ -135,12 +150,7 @@ app.prepare().then(() => {
           }
           break;
         case "resetBoard":
-          sessionState.votesVisible = false;
-          sessionState.epoch += 1;
-          sessionState.startedOn = new Date();
-          Object.values(sessionState.clients).forEach((c) => {
-            c.score = null;
-          });
+          resetBoard(sessionState);
           break;
       }
       broadcastState(sessionState);
@@ -150,6 +160,7 @@ app.prepare().then(() => {
       delete sessionState.clients[identifier];
       broadcastState(sessionState);
 
+      // Delete the session after last client disconnects
       if (!Object.keys(sessionState.clients).length) {
         delete state[sessionName];
       }
