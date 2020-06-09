@@ -52,7 +52,7 @@ export function MainBoard({ remoteState, dispatch }) {
       />
       <VotePanel
         controlEnabled
-        availableScores={settings.scoreSet.scores}
+        scoreSet={settings.scoreSet}
         votesVisible={votesVisible}
         votingEnabled={me.name !== null}
         selectedScore={me.score}

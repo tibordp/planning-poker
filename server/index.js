@@ -36,11 +36,21 @@ const handle = app.getRequestHandler();
 function broadcastState(sessionState) {
   const { epoch, description, clients, votesVisible, startedOn, settings } = sessionState;
 
-  const clientsData = Object.entries(clients).map(([identifier, { score, name }]) => ({
-    identifier,
-    score,
-    name,
-  }));
+  const clientsData = Object.entries(clients)
+    .map(([identifier, { score, name }]) => ({
+      identifier,
+      score,
+      name,
+    }))
+    .sort((a, b) => {
+      // Sort by name, then by identifier. If the client is not participant, it doesn't matter,
+      // as they are invisible, so we put them all at the end.
+      if (!a.name || !b.name) {
+        return a.name ? -1 : b.name ? 1 : 0;
+      } else {
+        return a.name.localeCompare(b.name) || a.identifier.localeCompare(b.identifier);
+      }
+    });
 
   Object.entries(clients).forEach(([identifier, { socket, score, name }]) => {
     const serializedState = {
@@ -85,7 +95,7 @@ app.prepare().then(() => {
       sessionState = state[sessionName] = {
         description: "",
         settings: {
-          scoreSet: scorePresets[0],
+          scoreSet: scorePresets[0].scores,
         },
         votesVisible: false,
         startedOn: new Date(),

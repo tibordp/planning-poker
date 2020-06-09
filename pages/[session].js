@@ -28,12 +28,13 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Card from "@material-ui/core/Card";
 import Box from "@material-ui/core/Box";
 import { useRouter } from "next/router";
-import { useReconnector, useInternetConnectivity } from "../src/remoteState";
+import { useReconnector, connectionState } from "../src/remoteState";
 import { MainBoard } from "../src/MainBoard";
 import { makeStyles } from "@material-ui/core/styles";
 import { SessionPanel } from "../src/SessionPanel";
 import { SessionUrlDisplay } from "../src/SessionUrlDisplay";
 import Logo from "../src/Logo";
+import Head from "next/head";
 
 export const useStyles = makeStyles((theme) => ({
   card: {
@@ -53,35 +54,40 @@ export default function Session() {
   const classes = useStyles();
   const router = useRouter();
   const { session } = router.query;
-  const [remoteState, dispatch, isReconnecting] = useReconnector(session);
-  const haveConnectivity = useInternetConnectivity();
+  const [remoteState, dispatch, state] = useReconnector(session);
 
   return (
-    <Container maxWidth="sm">
-      <Box my={4}>
-        <Logo />
-        {!remoteState && (
-          <Card variant="outlined" className={classes.card}>
-            <Box className={classes.connecting}>
-              <CircularProgress color="secondary" className={classes.spinner} size="3rem" />
-              <Typography variant="subtitle1" component="span" gutterBottom>
-                {haveConnectivity && !isReconnecting && "Connecting..."}
-                {haveConnectivity && isReconnecting && "Reconnecting..."}
-                {!haveConnectivity && "You are offline. Waiting for you to come back online..."}
-              </Typography>
-            </Box>
-          </Card>
-        )}
-        {remoteState && (
-          <>
-            <MainBoard remoteState={remoteState} dispatch={dispatch} />
-            <SessionPanel remoteState={remoteState} dispatch={dispatch} />
-          </>
-        )}
+    <>
+      <Head>
+        {remoteState?.description && <title>Planning Poker - {remoteState.description}</title>}
+      </Head>
+      <Container maxWidth="sm">
         <Box my={4}>
-          <SessionUrlDisplay />
+          <Logo />
+          {state !== connectionState.CONNECTED && (
+            <Card variant="outlined" className={classes.card}>
+              <Box className={classes.connecting}>
+                <CircularProgress color="secondary" className={classes.spinner} size="3rem" />
+                <Typography variant="subtitle1" component="span" gutterBottom>
+                  {state === connectionState.CONNECTING && "Connecting..."}
+                  {state === connectionState.RECONNECTING && "Reconnecting..."}
+                  {state === connectionState.OFFLINE &&
+                    "You are offline. Waiting for you to come back online..."}
+                </Typography>
+              </Box>
+            </Card>
+          )}
+          {remoteState && (
+            <>
+              <MainBoard remoteState={remoteState} dispatch={dispatch} />
+              <SessionPanel remoteState={remoteState} dispatch={dispatch} />
+            </>
+          )}
+          <Box my={4}>
+            <SessionUrlDisplay />
+          </Box>
         </Box>
-      </Box>
-    </Container>
+      </Container>
+    </>
   );
 }

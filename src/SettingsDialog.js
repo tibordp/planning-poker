@@ -35,69 +35,149 @@ import Chip from "@material-ui/core/Chip";
 import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
 import { scorePresets } from "../server/scoreSets";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Zoom from "@material-ui/core/Zoom";
+import ChipInput from "material-ui-chip-input";
 
 export const useStyles = makeStyles(() => ({}));
 
+function findScoreSet(scoreSet) {
+  for (const { scores, type } of scorePresets) {
+    // Checks if the score sets are equal, with the possible exception of last element (which can be 'Pass')
+    if (scoreSet.length >= scores.length - 1 && scoreSet.every((val, i) => scores[i] === val)) {
+      return [type, scoreSet.includes("Pass"), []];
+    }
+  }
+
+  return ["custom", null];
+}
+
+function getScoreSet(scoreSetType, allowPass, customScores) {
+  const preset = scorePresets.find(({ type }) => type === scoreSetType);
+
+  if (scoreSetType === "custom") {
+    return customScores;
+  } else {
+    return allowPass ? preset.scores : preset.scores.filter((score) => score !== "Pass");
+  }
+}
+
 export function SettingsDialog({ open, onSave, onCancel, settings }) {
   const classes = useStyles();
-  const [selectedScoreSet, setSelectedScoreSet] = React.useState(settings.scoreSet.type);
+
+  const [selectedScoreSet, setSelectedScoreSet] = React.useState(scorePresets[0].type);
+  const [customScores, setCustomScores] = React.useState(scorePresets[0].scores);
+  const [passAllowed, setPassAllowed] = React.useState(true);
+
   React.useEffect(() => {
     if (open) {
-      setSelectedScoreSet(settings.scoreSet.type);
+      const [type, allowPass] = findScoreSet(settings.scoreSet);
+      setSelectedScoreSet(type);
+      setPassAllowed(allowPass);
+      setCustomScores(settings.scoreSet);
     }
   }, [open, settings.scoreSet.type]);
 
   function onSaveClicked() {
     const newSettings = {
       ...settings,
-      scoreSet: scorePresets.find(({ type }) => type === selectedScoreSet),
+      scoreSet: customScores,
     };
 
     onSave(newSettings);
   }
 
+  const chipRenderer = ({ text, isFocused, handleClick, handleDelete, className }, key) => (
+    <Chip
+      key={key}
+      className={className}
+      variant="outlined"
+      color="primary"
+      style={{
+        backgroundColor: isFocused ? "secondary" : undefined,
+      }}
+      size="medium"
+      onClick={handleClick}
+      onDelete={handleDelete}
+      label={text}
+    />
+  );
+
   return (
-    <Dialog maxWidth="xs" fullWidth open={open} onClose={onCancel}>
+    <Dialog maxWidth="xs" open={open} onClose={onCancel}>
       <DialogTitle>Session settings</DialogTitle>
       <DialogContent>
         <FormControl fullWidth className={classes.formControl}>
           <InputLabel id="score-set-select">Score set</InputLabel>
           <Select
             labelId="score-set-select"
-            value={selectedScoreSet}
-            onChange={(evt) => setSelectedScoreSet(evt.target.value)}
+            value={selectedScoreSet || "unknown"}
+            onChange={(evt) => {
+              setSelectedScoreSet(evt.target.value);
+              setCustomScores(getScoreSet(evt.target.value, passAllowed, customScores));
+            }}
           >
             {scorePresets.map(({ type, name }) => (
               <MenuItem key={type} value={type}>
                 {name}
               </MenuItem>
             ))}
+            <MenuItem value="custom">Custom</MenuItem>
           </Select>
         </FormControl>
-        <Box padding={1}>
-          {scorePresets
-            .find(({ type }) => type === selectedScoreSet)
-            .scores.map((score) => (
-              <Chip
-                style={{ margin: 5 }}
-                variant="outlined"
-                size="medium"
-                label={score}
-                color="primary"
-              />
-            ))}
-        </Box>
+
+        {selectedScoreSet === "custom" && (
+          <ChipInput
+            style={{ marginTop: 10, marginBottom: 20 }}
+            chipRenderer={chipRenderer}
+            fullWidth
+            blurBehavior="add"
+            alwaysShowPlaceholder
+            helperText="Type new scores and press enter"
+            defaultValue={customScores}
+            onChange={(chips) => setCustomScores(chips)}
+          >
+            {" "}
+          </ChipInput>
+        )}
+        {selectedScoreSet !== "custom" && (
+          <>
+            <FormControlLabel
+              style={{ marginTop: 10 }}
+              disabled={!selectedScoreSet}
+              control={
+                <Switch
+                  checked={passAllowed}
+                  onChange={() => {
+                    setPassAllowed(!passAllowed);
+                    setCustomScores(getScoreSet(selectedScoreSet, !passAllowed, customScores));
+                  }}
+                />
+              }
+              label="Allow participants to pass"
+            />
+            <Box>
+              {customScores.map((score) => (
+                <Zoom key={score} in timeout={300} mountOnEnter unmountOnExit>
+                  <Chip
+                    style={{ margin: 5 }}
+                    variant="outlined"
+                    size="medium"
+                    label={score}
+                    color="primary"
+                  />
+                </Zoom>
+              ))}
+            </Box>
+          </>
+        )}
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={onCancel} color="primary">
           Cancel
         </Button>
-        <Button
-          disabled={selectedScoreSet === settings.scoreSet.type}
-          onClick={onSaveClicked}
-          color="primary"
-          autoFocus
-        >
+        <Button disabled={!customScores.length} onClick={onSaveClicked} color="primary" autoFocus>
           Save
         </Button>
       </DialogActions>

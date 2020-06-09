@@ -22,7 +22,11 @@
  * SOFTWARE.
  */
 const scorePresets = [
-  { type: "fibonacci", name: "Fibonacci", scores: [0.5, 1, 2, 3, 5, 8, 13, 21, 100, "Pass"] },
+  {
+    type: "fibonacci",
+    name: "Fibonacci",
+    scores: ["0.5", "1", "2", "3", "5", "8", "13", "21", "100", "Pass"],
+  },
   { type: "tshirt", name: "T-shirt sizes", scores: ["XS", "S", "M", "L", "XL", "XXL", "Pass"] },
 ];
 

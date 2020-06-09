@@ -27,22 +27,21 @@ import ReconnectingWebSocket from "reconnecting-websocket";
 export const IS_SSR = typeof navigator === "undefined" || typeof window === "undefined";
 
 export function useInternetConnectivity() {
-  const [haveConnectivity, setHaveConnectivity] = React.useState(!IS_SSR && navigator.onLine);
+  const [haveConnectivity, setHaveConnectivity] = React.useState(IS_SSR || navigator.onLine);
+  const setConnectivity = () => setHaveConnectivity(navigator.onLine);
 
   React.useEffect(() => {
     if (IS_SSR) {
       return () => {};
     }
 
-    const setOnline = () => setHaveConnectivity(true);
-    const setOffline = () => setHaveConnectivity(false);
-
-    window.addEventListener("online", setOnline);
-    window.addEventListener("offline", setOffline);
+    window.addEventListener("online", setConnectivity);
+    window.addEventListener("offline", setConnectivity);
+    setConnectivity();
 
     return () => {
-      window.removeEventListener("online", setOnline);
-      window.removeEventListener("offline", setOffline);
+      window.removeEventListener("online", setConnectivity);
+      window.removeEventListener("offline", setConnectivity);
     };
   });
 
@@ -57,6 +56,7 @@ export function useRemoteState(session) {
 
   React.useEffect(() => {
     if (IS_SSR || !haveConnectivity) {
+      // If we are in SSR context or offline, do not try to continuously reconnect
       return () => {};
     }
 
@@ -89,8 +89,8 @@ export function useRemoteState(session) {
           break;
       }
     };
-    socket.onerror = closeConnection;
     socket.onclose = closeConnection;
+
     return () => {
       socket.close();
     };
@@ -99,13 +99,21 @@ export function useRemoteState(session) {
   return [remoteState, dispatch];
 }
 
+export const connectionState = {
+  OFFLINE: "offline",
+  CONNECTING: "connecting",
+  RECONNECTING: "reconnecting",
+  CONNECTED: "connected",
+};
+
 /**
- * Stores part of the state in localStorage (vote for the current epoch and
+ * Stores part of the state in sessionStorage (vote for the current epoch and
  * whether we are participant or not (along with name), so we can refresh the
  * page and stay connected seamlessly.
  */
 export function useReconnector(session) {
   const [remoteState, dispatch] = useRemoteState(session);
+  const haveConnectivity = useInternetConnectivity();
 
   React.useEffect(() => {
     if (!IS_SSR) {
@@ -131,5 +139,16 @@ export function useReconnector(session) {
     }
   }, [dispatch]);
 
-  return [remoteState, dispatch, !remoteState && !IS_SSR && window.sessionStorage.getItem(session)];
+  let state;
+  if (remoteState) {
+    state = connectionState.CONNECTED;
+  } else if (!haveConnectivity) {
+    state = connectionState.OFFLINE;
+  } else if (!IS_SSR && window.sessionStorage.getItem(session)) {
+    state = connectionState.RECONNECTING;
+  } else {
+    state = connectionState.CONNECTING;
+  }
+
+  return [remoteState, dispatch, state];
 }

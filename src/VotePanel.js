@@ -43,7 +43,7 @@ export const useStyles = makeStyles((theme) => ({
 }));
 
 export function VotePanel({
-  availableScores,
+  scoreSet,
   votesVisible,
   votingEnabled,
   controlEnabled,
@@ -62,7 +62,7 @@ export function VotePanel({
       alignItems="center"
     >
       <Grid item sm={9} xs={12} className={classes.scoresContainer}>
-        {availableScores.map((score) => (
+        {scoreSet.map((score) => (
           <Button
             disabled={!votingEnabled}
             key={score}
