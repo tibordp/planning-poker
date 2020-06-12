@@ -75,8 +75,12 @@ function ScoreTableRow({ haveConsensus, isSelf, votesVisible, name, score, ...tr
   );
 }
 
-export function ScoreTable({ clients, selfIdentifier, haveConsensus, votesVisible }) {
+export function ScoreTable({ clients, selfIdentifier, votesVisible }) {
   const classes = useStyles();
+
+  const votesCast = new Set(clients.filter(({ name }) => name).map(({ score }) => score));
+  const haveConsensus = votesCast.size === 1 && !votesCast.has(null) && votesVisible;
+
   return (
     <TableContainer>
       <Table className={classes.table} size="medium">

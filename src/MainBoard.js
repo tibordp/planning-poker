@@ -25,14 +25,12 @@ import React from "react";
 import { VotePanel } from "./VotePanel";
 import { ScoreTable } from "./ScoreTable";
 import { DescriptionEdit } from "./DescriptionEdit";
-import { SettingsDialog } from "./SettingsDialog";
+import { SettingsDialog } from "./settings/SettingsDialog";
 
 export function MainBoard({ remoteState, dispatch }) {
   const [settingsOpen, setSettingsOpen] = React.useState(false);
 
-  const { votesVisible, clients, me, settings } = remoteState;
-  const votesCast = new Set(clients.filter(({ name }) => name).map(({ score }) => score));
-  const haveConsensus = votesCast.size === 1 && !votesCast.has(null) && votesVisible;
+  const { votesVisible, me, settings } = remoteState;
 
   return (
     <>
@@ -73,7 +71,6 @@ export function MainBoard({ remoteState, dispatch }) {
       <ScoreTable
         clients={remoteState.clients}
         selfIdentifier={me.identifier}
-        haveConsensus={haveConsensus}
         votesVisible={votesVisible}
       />
     </>

@@ -80,6 +80,93 @@ function resetBoard(sessionState) {
   });
 }
 
+function initializeSession(sessionName) {
+  let sessionState = state[sessionName];
+  if (sessionState === undefined) {
+    sessionState = state[sessionName] = {
+      description: "",
+      settings: {
+        scoreSet: scorePresets[0].scores,
+      },
+      votesVisible: false,
+      startedOn: new Date(),
+      epoch: 0,
+      clients: {},
+    };
+  }
+  return sessionState;
+}
+
+function clearHeartbeat(clientState) {
+  clearTimeout(clientState.lastHeartbeat);
+  clientState.lastHeartbeat = null;
+}
+
+function setHeartbeat(clientState) {
+  clearHeartbeat(clientState);
+  clientState.lastHeartbeat = setTimeout(() => {
+    clientState.socket.close();
+  }, 10000);
+}
+
+function processMessage(sessionState, identifier, action) {
+  const clientState = sessionState.clients[identifier];
+
+  setHeartbeat(clientState);
+  switch (action.action) {
+    case "ping":
+      clientState.socket.send(JSON.stringify({ action: "pong" }));
+      return;
+    case "setDescription":
+      sessionState.description = action.value;
+      break;
+    case "join":
+      clientState.name = action.name;
+      break;
+    case "leave":
+      clientState.name = null;
+      clientState.score = null;
+      break;
+    case "vote":
+      const hasNotVotedYet = !clientState.score;
+      clientState.score = action.score;
+      // Show votes after all participants have voted, but only if the board is not already
+      // full so we can hide the scores and let people re-vote without clearing everything.
+      const participants = Object.values(sessionState.clients).filter(({ name }) => name);
+      if (hasNotVotedYet && participants.length > 1 && participants.every(({ score }) => score)) {
+        sessionState.votesVisible = true;
+      }
+      break;
+    case "setVisibility":
+      sessionState.votesVisible = action.votesVisible;
+      break;
+    case "setSettings":
+      sessionState.settings = action.settings;
+      resetBoard(sessionState);
+      break;
+    case "reconnect":
+      clientState.name = action.name;
+      // Only try to restore the score on reconnection if we are still on the same
+      // thing we are scoring (implied by the fact that the board has not been reset).
+      // Received epoch can be larger than the local one in case the last connected
+      // client disconnected and we deleted the session.
+      if (action.epoch >= sessionState.epoch) {
+        clientState.score = action.score;
+        sessionState.settings = action.settings;
+      }
+      if (sessionState.clients[action.identifier] && action.identifier !== clientState.identifier) {
+        // If the client has reconnected using a different socket, we boot off the previous
+        // session to avoid name duplication
+        sessionState.clients[action.identifier].socket.close();
+      }
+      break;
+    case "resetBoard":
+      resetBoard(sessionState);
+      break;
+  }
+  broadcastState(sessionState);
+}
+
 app.prepare().then(() => {
   const server = createServer((req, res) => {
     const parsedUrl = parse(req.url, true);
@@ -89,92 +176,37 @@ app.prepare().then(() => {
   wss.on("connection", (ws, req) => {
     const sessionName = req.url;
     const identifier = uuidv4();
+    const sessionState = initializeSession(sessionName);
 
-    let sessionState = state[sessionName];
-    if (sessionState === undefined) {
-      sessionState = state[sessionName] = {
-        description: "",
-        settings: {
-          scoreSet: scorePresets[0].scores,
-        },
-        votesVisible: false,
-        startedOn: new Date(),
-        epoch: 0,
-        clients: {},
-      };
-    }
     sessionState.clients[identifier] = {
       socket: ws,
       score: null,
       name: null,
+      lastHeartbeat: null,
     };
-    let myState = sessionState.clients[identifier];
-
-    broadcastState(sessionState);
 
     ws.on("message", (data) => {
-      const action = JSON.parse(data);
-      switch (action.action) {
-        case "ping":
-          ws.send(JSON.stringify({ action: "pong" }));
-          return;
-        case "setDescription":
-          sessionState.description = action.value;
-          break;
-        case "join":
-          myState.name = action.name;
-          break;
-        case "leave":
-          myState.name = null;
-          myState.score = null;
-          break;
-        case "vote":
-          myState.score = action.score;
-          // Show votes after all participants have voted
-          const participants = Object.values(sessionState.clients).filter(({ name }) => name);
-          if (participants.length > 1 && participants.every(({ score }) => score)) {
-            sessionState.votesVisible = true;
-          }
-          break;
-        case "setVisibility":
-          sessionState.votesVisible = action.votesVisible;
-          break;
-        case "setSettings":
-          sessionState.settings = action.settings;
-          resetBoard(sessionState);
-          break;
-        case "reconnect":
-          myState.name = action.name;
-          // Only try to restore the score on reconnection if we are still on the same
-          // thing we are scoring (implied by the fact that the board has not been reset).
-          // Received epoch can be larger than the local one in case the last connected
-          // client disconnected and we deleted the session.
-          if (action.epoch >= sessionState.epoch) {
-            myState.score = action.score;
-            sessionState.settings = action.settings;
-          }
-          if (sessionState.clients[action.identifier] && action.identifier !== identifier) {
-            // If the client has reconnected using a different socket, we boot off the previous
-            // session to avoid name duplication
-            sessionState.clients[action.identifier].socket.close();
-          }
-          break;
-        case "resetBoard":
-          resetBoard(sessionState);
-          break;
+      try {
+        const action = JSON.parse(data);
+        processMessage(sessionState, identifier, action);
+      } catch (error) {
+        // Guard against clients sending some junk, so it doesn't kill the server
+        console.error(error);
+        ws.close();
       }
-      broadcastState(sessionState);
     });
 
     ws.on("close", () => {
+      clearHeartbeat(sessionState.clients[identifier]);
       delete sessionState.clients[identifier];
       broadcastState(sessionState);
-
       // Delete the session after last client disconnects
       if (!Object.keys(sessionState.clients).length) {
         delete state[sessionName];
       }
     });
+
+    broadcastState(sessionState);
   });
 
   server.listen(3000, (err) => {

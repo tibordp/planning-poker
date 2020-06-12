@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import React from "react";
-import ReconnectingWebSocket from "reconnecting-websocket";
+import { HeartbeatingWebsocket } from "./websocket";
 
 export const IS_SSR = typeof navigator === "undefined" || typeof window === "undefined";
 
@@ -62,34 +62,23 @@ export function useRemoteState(session) {
 
     const protocol = location.protocol.replace("http", "ws");
     const host = `${location.hostname}:${location.port}`;
-    const socket = new ReconnectingWebSocket(`${protocol}//${host}/${session}`);
-
-    function closeConnection() {
-      clearInterval(socket.pinger);
-      setRemoteState(null);
-      setDispatch(null);
-    }
+    const socket = new HeartbeatingWebsocket(`${protocol}//${host}/${session}`);
 
     socket.onopen = () => {
-      setDispatch(() => (action) => {
-        console.log(action);
-        socket.send(JSON.stringify(action));
-      });
-      socket.pinger = setInterval(() => {
-        socket.send(JSON.stringify({ action: "ping" }));
-      }, 5000);
+      setDispatch(() => (message) => socket.send(message));
     };
-    socket.onmessage = (evt) => {
-      const message = JSON.parse(evt.data);
+
+    socket.onmessage = (message) => {
       switch (message.action) {
-        case "pong":
-          break;
         case "updateState":
           setRemoteState(message.value);
           break;
       }
     };
-    socket.onclose = closeConnection;
+    socket.onclose = () => {
+      setRemoteState(null);
+      setDispatch(null);
+    };
 
     return () => {
       socket.close();
