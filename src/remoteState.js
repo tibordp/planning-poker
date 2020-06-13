@@ -23,6 +23,7 @@
  */
 import React from "react";
 import { HeartbeatingWebsocket } from "./websocket";
+import { v4 as uuidv4 } from "uuid";
 
 export const IS_SSR = typeof navigator === "undefined" || typeof window === "undefined";
 
@@ -48,7 +49,7 @@ export function useInternetConnectivity() {
   return haveConnectivity;
 }
 
-export function useRemoteState(session) {
+export function useRemoteState(webSocketUri) {
   const [dispatch, setDispatch] = React.useState(null);
   const [remoteState, setRemoteState] = React.useState(null);
 
@@ -60,9 +61,7 @@ export function useRemoteState(session) {
       return () => {};
     }
 
-    const protocol = location.protocol.replace("http", "ws");
-    const host = `${location.hostname}:${location.port}`;
-    const socket = new HeartbeatingWebsocket(`${protocol}//${host}/${session}`);
+    const socket = new HeartbeatingWebsocket(webSocketUri);
 
     socket.onopen = () => {
       setDispatch(() => (message) => socket.send(message));
@@ -83,7 +82,7 @@ export function useRemoteState(session) {
     return () => {
       socket.close();
     };
-  }, [session, haveConnectivity]);
+  }, [webSocketUri, haveConnectivity]);
 
   return [remoteState, dispatch];
 }
@@ -95,20 +94,41 @@ export const connectionState = {
   CONNECTED: "connected",
 };
 
+function getSocketUri(sessionName) {
+  if (IS_SSR) {
+    return null;
+  }
+
+  let clientId = window.sessionStorage.getItem("client_id");
+  if (!clientId) {
+    clientId = uuidv4();
+    window.sessionStorage.setItem("client_id", clientId);
+  }
+
+  const url = new URL(location.href);
+  url.protocol = url.protocol.replace("http", "ws");
+  url.pathname = `/${sessionName}`;
+  url.search = new URLSearchParams({
+    client_id: clientId,
+  }).toString();
+  return url.toString();
+}
+
 /**
  * Stores part of the state in sessionStorage (vote for the current epoch and
  * whether we are participant or not (along with name), so we can refresh the
  * page and stay connected seamlessly.
  */
-export function useReconnector(session) {
-  const [remoteState, dispatch] = useRemoteState(session);
+export function useReconnector(sessionName) {
+  const socketUri = getSocketUri(sessionName);
+  const [remoteState, dispatch] = useRemoteState(socketUri);
   const haveConnectivity = useInternetConnectivity();
 
   React.useEffect(() => {
     if (!IS_SSR) {
       if (remoteState?.me) {
         window.sessionStorage.setItem(
-          session,
+          `session_data:${sessionName}`,
           JSON.stringify({
             epoch: remoteState.epoch,
             settings: remoteState.settings,
@@ -121,7 +141,7 @@ export function useReconnector(session) {
 
   React.useEffect(() => {
     if (!IS_SSR) {
-      const storedSession = window.sessionStorage.getItem(session);
+      const storedSession = window.sessionStorage.getItem(`session_data:${sessionName}`);
       if (dispatch && storedSession) {
         dispatch({ action: "reconnect", ...JSON.parse(storedSession) });
       }
@@ -133,7 +153,7 @@ export function useReconnector(session) {
     state = connectionState.CONNECTED;
   } else if (!haveConnectivity) {
     state = connectionState.OFFLINE;
-  } else if (!IS_SSR && window.sessionStorage.getItem(session)) {
+  } else if (!IS_SSR && window.sessionStorage.getItem(`session_data:${sessionName}`)) {
     state = connectionState.RECONNECTING;
   } else {
     state = connectionState.CONNECTING;

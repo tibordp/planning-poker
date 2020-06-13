@@ -22,8 +22,7 @@
  * SOFTWARE.
  */
 const { createServer } = require("http");
-const { parse } = require("url");
-const { v4: uuidv4 } = require("uuid");
+const { parse, URLSearchParams } = require("url");
 const next = require("next");
 const state = require("./state").state;
 const scorePresets = require("./scoreSets").scorePresets;
@@ -82,7 +81,8 @@ function resetBoard(sessionState) {
 
 function initializeSession(sessionName) {
   let sessionState = state[sessionName];
-  if (sessionState === undefined) {
+  if (!sessionState) {
+    console.log(`Creating new session ${sessionName}.`);
     sessionState = state[sessionName] = {
       description: "",
       settings: {
@@ -154,17 +154,33 @@ function processMessage(sessionState, identifier, action) {
         clientState.score = action.score;
         sessionState.settings = action.settings;
       }
-      if (sessionState.clients[action.identifier] && action.identifier !== clientState.identifier) {
-        // If the client has reconnected using a different socket, we boot off the previous
-        // session to avoid name duplication
-        sessionState.clients[action.identifier].socket.close();
-      }
       break;
     case "resetBoard":
       resetBoard(sessionState);
       break;
   }
   broadcastState(sessionState);
+}
+
+function initializeClient(sessionState, ws, identifier) {
+  let clientState = sessionState.clients[identifier];
+  if (clientState) {
+    console.log(`Client ${identifier} reconnected using a different socket.`);
+    const previousSocket = clientState.socket;
+    clientState.socket = ws;
+    previousSocket.terminate();
+  } else {
+    console.log(`New client ${identifier} connected.`);
+    clientState = {
+      socket: ws,
+      score: null,
+      name: null,
+      lastHeartbeat: null,
+    };
+    sessionState.clients[identifier] = clientState;
+  }
+  setHeartbeat(clientState);
+  return clientState;
 }
 
 app.prepare().then(() => {
@@ -174,35 +190,39 @@ app.prepare().then(() => {
   });
   const wss = new WebSocket.Server({ server: server });
   wss.on("connection", (ws, req) => {
-    const sessionName = req.url;
-    const identifier = uuidv4();
+    const parsedUrl = parse(req.url);
+    const sessionName = parsedUrl.pathname;
+    const identifier = new URLSearchParams(parsedUrl.search).get("client_id");
     const sessionState = initializeSession(sessionName);
-
-    sessionState.clients[identifier] = {
-      socket: ws,
-      score: null,
-      name: null,
-      lastHeartbeat: null,
-    };
+    const clientState = initializeClient(sessionState, ws, identifier);
 
     ws.on("message", (data) => {
       try {
         const action = JSON.parse(data);
         processMessage(sessionState, identifier, action);
       } catch (error) {
-        // Guard against clients sending some junk, so it doesn't kill the server
+        // Guard against clients sending junk, so it doesn't kill the server
         console.error(error);
         ws.close();
       }
     });
 
     ws.on("close", () => {
-      clearHeartbeat(sessionState.clients[identifier]);
-      delete sessionState.clients[identifier];
-      broadcastState(sessionState);
-      // Delete the session after last client disconnects
-      if (!Object.keys(sessionState.clients).length) {
-        delete state[sessionName];
+      // If another connection took over with the same client ID, we don't
+      // cleanup anything here as it will be cleaned up when the new socket
+      // disconnects.
+      if (clientState.socket === ws) {
+        console.log(`Client ${identifier} disconnected.`);
+        clearHeartbeat(clientState);
+        delete sessionState.clients[identifier];
+
+        // Delete the session after last client disconnects
+        if (!Object.keys(sessionState.clients).length) {
+          console.log(`Deleting session ${sessionName}.`);
+          delete state[sessionName];
+        } else {
+          broadcastState(sessionState);
+        }
       }
     });
 
