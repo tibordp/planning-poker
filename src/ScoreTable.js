@@ -32,6 +32,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import Slide from "@material-ui/core/Slide";
 import Notifications from "@material-ui/icons/Notifications";
 import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 import { TransitionGroup } from "react-transition-group";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -87,9 +88,11 @@ function ScoreTableRow({
             </Zoom>
           )}
           {!score && isHover && !isSelf && (
-            <IconButton onClick={onNudge}>
-              <Notifications />
-            </IconButton>
+            <Tooltip title={`Nudge ${name}`}>
+              <IconButton onClick={onNudge}>
+                <Notifications />
+              </IconButton>
+            </Tooltip>
           )}
         </TableCell>
       </TableRow>

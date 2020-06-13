@@ -40,6 +40,23 @@ export const useStyles = makeStyles((theme) => ({
   card: {
     padding: theme.spacing(4),
   },
+  "@keyframes shake": {
+    "0%": { transform: "translate(1px, 1px) rotate(0deg);" },
+    "10%": { transform: "translate(-1px, -2px) rotate(-1deg);" },
+    "20%": { transform: "translate(-3px, 0px) rotate(1deg);" },
+    "30%": { transform: "translate(3px, 2px) rotate(0deg);" },
+    "40%": { transform: "translate(1px, -1px) rotate(1deg);" },
+    "50%": { transform: "translate(-1px, 2px) rotate(-1deg);" },
+    "60%": { transform: "translate(-3px, 1px) rotate(0deg);" },
+    "70%": { transform: "translate(3px, 1px) rotate(-1deg);" },
+    "80%": { transform: "translate(-1px, -1px) rotate(1deg);" },
+    "90%": { transform: "translate(1px, 2px) rotate(0deg);" },
+    "100%": { transform: "translate(1px, -2px) rotate(-1deg);" },
+  },
+  shaking: {
+    animationName: "$shake",
+    animationDuration: "0.5s",
+  },
   connecting: {
     alignItems: "center",
     display: "flex",
@@ -54,7 +71,15 @@ export default function Session() {
   const classes = useStyles();
   const router = useRouter();
   const { session } = router.query;
-  const [remoteState, dispatch, state] = useReconnector(session);
+  const nudgeAudioRef = React.useRef();
+  const [remoteState, dispatch, connectionStatus] = useReconnector(session, (message) => {
+    switch (message.action) {
+      case "nudge":
+        nudgeAudioRef.current?.play();
+        document.body.classList.add(classes.shaking);
+        setTimeout(() => document.body.classList.remove(classes.shaking), 500);
+    }
+  });
 
   return (
     <>
@@ -64,14 +89,14 @@ export default function Session() {
       <Container maxWidth="sm">
         <Box my={4}>
           <Logo />
-          {state !== connectionState.CONNECTED && (
+          {connectionStatus !== connectionState.CONNECTED && (
             <Card variant="outlined" className={classes.card}>
               <Box className={classes.connecting}>
                 <CircularProgress color="secondary" className={classes.spinner} size="3rem" />
                 <Typography variant="subtitle1" component="span" gutterBottom>
-                  {state === connectionState.CONNECTING && "Connecting..."}
-                  {state === connectionState.RECONNECTING && "Reconnecting..."}
-                  {state === connectionState.OFFLINE &&
+                  {connectionStatus === connectionState.CONNECTING && "Connecting..."}
+                  {connectionStatus === connectionState.RECONNECTING && "Reconnecting..."}
+                  {connectionStatus === connectionState.OFFLINE &&
                     "You are offline. Waiting for you to come back online..."}
                 </Typography>
               </Box>
@@ -88,6 +113,7 @@ export default function Session() {
           </Box>
         </Box>
       </Container>
+      <audio src="nudge.mp3" ref={nudgeAudioRef} />
     </>
   );
 }

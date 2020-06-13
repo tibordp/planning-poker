@@ -27,6 +27,7 @@ import Settings from "@material-ui/icons/Settings";
 import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { useTheme } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
 
 export function DescriptionEdit({ disabled, description, onChange, onSettingsClick }) {
   const theme = useTheme();
@@ -55,9 +56,11 @@ export function DescriptionEdit({ disabled, description, onChange, onSettingsCli
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <IconButton onClick={onSettingsClick}>
-              <Settings />
-            </IconButton>
+            <Tooltip title="Session settings">
+              <IconButton onClick={onSettingsClick}>
+                <Settings />
+              </IconButton>
+            </Tooltip>
           </InputAdornment>
         ),
       }}

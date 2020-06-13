@@ -26,6 +26,7 @@ import TextField from "@material-ui/core/TextField";
 import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FileCopyOutlined from "@material-ui/icons/FileCopyOutlined";
+import Tooltip from "@material-ui/core/Tooltip";
 
 export function SessionUrlDisplay() {
   const inputRef = React.useRef();
@@ -48,9 +49,11 @@ export function SessionUrlDisplay() {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <IconButton onClick={onClick}>
-              <FileCopyOutlined />
-            </IconButton>
+            <Tooltip title="Copy to clipboard">
+              <IconButton onClick={onClick}>
+                <FileCopyOutlined />
+              </IconButton>
+            </Tooltip>
           </InputAdornment>
         ),
       }}

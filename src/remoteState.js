@@ -49,7 +49,7 @@ export function useInternetConnectivity() {
   return haveConnectivity;
 }
 
-export function useRemoteState(webSocketUri) {
+export function useRemoteState(webSocketUri, onAction) {
   const [dispatch, setDispatch] = React.useState(null);
   const [remoteState, setRemoteState] = React.useState(null);
 
@@ -72,8 +72,9 @@ export function useRemoteState(webSocketUri) {
         case "updateState":
           setRemoteState(message.value);
           break;
-        case "nudge":
-          new Audio("nudge.mp3").play();
+        default:
+          onAction?.(message);
+          break;
       }
     };
     socket.onclose = () => {
@@ -121,9 +122,9 @@ function getSocketUri(sessionName) {
  * whether we are participant or not (along with name), so we can refresh the
  * page and stay connected seamlessly.
  */
-export function useReconnector(sessionName) {
+export function useReconnector(sessionName, onAction) {
   const socketUri = getSocketUri(sessionName);
-  const [remoteState, dispatch] = useRemoteState(socketUri);
+  const [remoteState, dispatch] = useRemoteState(socketUri, onAction);
   const haveConnectivity = useInternetConnectivity();
 
   React.useEffect(() => {
