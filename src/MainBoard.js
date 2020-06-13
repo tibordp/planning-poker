@@ -72,6 +72,12 @@ export function MainBoard({ remoteState, dispatch }) {
         clients={remoteState.clients}
         selfIdentifier={me.identifier}
         votesVisible={votesVisible}
+        onNudge={(identifier) =>
+          dispatch({
+            action: "nudge",
+            identifier: identifier,
+          })
+        }
       />
     </>
   );

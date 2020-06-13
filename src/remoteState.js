@@ -72,6 +72,8 @@ export function useRemoteState(webSocketUri) {
         case "updateState":
           setRemoteState(message.value);
           break;
+        case "nudge":
+          new Audio("nudge.mp3").play();
       }
     };
     socket.onclose = () => {

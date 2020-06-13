@@ -30,6 +30,8 @@ import Zoom from "@material-ui/core/Zoom";
 import Chip from "@material-ui/core/Chip";
 import TableContainer from "@material-ui/core/TableContainer";
 import Slide from "@material-ui/core/Slide";
+import Notifications from "@material-ui/icons/Notifications";
+import IconButton from "@material-ui/core/IconButton";
 import { TransitionGroup } from "react-transition-group";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -43,13 +45,28 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ScoreTableRow({ haveConsensus, isSelf, votesVisible, name, score, ...transitionProps }) {
+function ScoreTableRow({
+  haveConsensus,
+  isSelf,
+  votesVisible,
+  name,
+  score,
+  onNudge,
+  ...transitionProps
+}) {
   const classes = useStyles();
+  const [isHover, setIsHover] = React.useState(false);
+
   const isVisible = isSelf || votesVisible;
 
   return (
     <Slide direction="right" timeout={500} in mountOnEnter unmountOnExit {...transitionProps}>
-      <TableRow hover selected={haveConsensus}>
+      <TableRow
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+        hover
+        selected={haveConsensus}
+      >
         <TableCell className={classes.participantNameCell} component="th" scope="row">
           {name}
           {isSelf && <i> (you)</i>}
@@ -69,13 +86,18 @@ function ScoreTableRow({ haveConsensus, isSelf, votesVisible, name, score, ...tr
               />
             </Zoom>
           )}
+          {!score && isHover && !isSelf && (
+            <IconButton onClick={onNudge}>
+              <Notifications />
+            </IconButton>
+          )}
         </TableCell>
       </TableRow>
     </Slide>
   );
 }
 
-export function ScoreTable({ clients, selfIdentifier, votesVisible }) {
+export function ScoreTable({ clients, selfIdentifier, votesVisible, onNudge }) {
   const classes = useStyles();
 
   const votesCast = new Set(clients.filter(({ name }) => name).map(({ score }) => score));
@@ -95,6 +117,7 @@ export function ScoreTable({ clients, selfIdentifier, votesVisible }) {
                 isSelf={identifier === selfIdentifier}
                 name={name}
                 score={score}
+                onNudge={() => onNudge(identifier)}
               />
             ))}
         </TransitionGroup>

@@ -117,6 +117,12 @@ function processMessage(sessionState, identifier, action) {
     case "ping":
       clientState.socket.send(JSON.stringify({ action: "pong" }));
       return;
+    case "nudge":
+      const recipient = sessionState.clients[action.identifier];
+      if (recipient) {
+        recipient.socket.send(JSON.stringify({ action: "nudge" }));
+      }
+      return;
     case "setDescription":
       sessionState.description = action.value;
       break;
