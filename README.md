@@ -1,6 +1,6 @@
 This is a a Planning Poker app, useful for Scrum grooming sessions to avoid anchoring in point estimates.
 
-## [See it live](https://poker.k8s.ojdip.net)
+## [See it live](https://poker.ojdip.net)
 
 ## Getting Started
 

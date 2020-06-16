@@ -31,6 +31,8 @@ import Chip from "@material-ui/core/Chip";
 import TableContainer from "@material-ui/core/TableContainer";
 import Slide from "@material-ui/core/Slide";
 import Notifications from "@material-ui/icons/Notifications";
+import VerifiedUser from "@material-ui/icons/VerifiedUser";
+import RemoveCircleOutline from "@material-ui/icons/RemoveCircleOutline";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import { TransitionGroup } from "react-transition-group";
@@ -44,15 +46,28 @@ export const useStyles = makeStyles((theme) => ({
   scoreCell: {
     padding: theme.spacing(0.5),
   },
+  scoreChip: {
+    marginLeft: theme.spacing(1),
+  },
+  hostBadge: {
+    color: theme.palette.text.secondary,
+    height: 18,
+    verticalAlign: "sub",
+  },
 }));
 
 function ScoreTableRow({
   haveConsensus,
   isSelf,
+  isHost,
   votesVisible,
   name,
   score,
+  canNudge,
+  canPromoteToHost,
   onNudge,
+  onKick,
+  onPromoteToHost,
   ...transitionProps
 }) {
   const classes = useStyles();
@@ -70,9 +85,27 @@ function ScoreTableRow({
       >
         <TableCell className={classes.participantNameCell} component="th" scope="row">
           {name}
-          {isSelf && <i> (you)</i>}
+          {isHost && isHover && (
+            <Tooltip title="Session host">
+              <VerifiedUser className={classes.hostBadge} />
+            </Tooltip>
+          )}
         </TableCell>
         <TableCell className={classes.scoreCell} align="right">
+          {isHover && !isSelf && !isHost && canPromoteToHost && (
+            <Tooltip title={`Remove as voter`}>
+              <IconButton onClick={onKick}>
+                <RemoveCircleOutline />
+              </IconButton>
+            </Tooltip>
+          )}
+          {isHover && !isHost && canPromoteToHost && (
+            <Tooltip title={`Promote to host`}>
+              <IconButton onClick={onPromoteToHost}>
+                <VerifiedUser />
+              </IconButton>
+            </Tooltip>
+          )}
           {score && (
             // We want the score chip to be re-mounted on every change so that
             // th animation gives a visual indication that something happened,
@@ -81,14 +114,16 @@ function ScoreTableRow({
               <Chip
                 variant={votesVisible ? "default" : "outlined"}
                 size="medium"
+                className={classes.scoreChip}
                 style={isVisible && { fontWeight: "bold" }}
                 label={isVisible ? score : "Hidden"}
                 color="primary"
               />
             </Zoom>
           )}
-          {!score && isHover && !isSelf && (
-            <Tooltip title={`Nudge ${name}`}>
+
+          {!score && isHover && !isSelf && canNudge && (
+            <Tooltip title={`Nudge`}>
               <IconButton onClick={onNudge}>
                 <Notifications />
               </IconButton>
@@ -100,7 +135,17 @@ function ScoreTableRow({
   );
 }
 
-export function ScoreTable({ clients, selfIdentifier, votesVisible, onNudge }) {
+export function ScoreTable({
+  clients,
+  selfIdentifier,
+  hostIdentifier,
+  votesVisible,
+  canNudge,
+  canPromoteToHost,
+  onNudge,
+  onPromoteToHost,
+  onKick,
+}) {
   const classes = useStyles();
 
   const votesCast = new Set(clients.filter(({ name }) => name).map(({ score }) => score));
@@ -118,9 +163,14 @@ export function ScoreTable({ clients, selfIdentifier, votesVisible, onNudge }) {
                 votesVisible={votesVisible}
                 haveConsensus={haveConsensus}
                 isSelf={identifier === selfIdentifier}
+                isHost={identifier === hostIdentifier}
                 name={name}
                 score={score}
+                canNudge={canNudge}
+                canPromoteToHost={canPromoteToHost}
                 onNudge={() => onNudge(identifier)}
+                onPromoteToHost={() => onPromoteToHost(identifier)}
+                onKick={() => onKick(identifier)}
               />
             ))}
         </TransitionGroup>

@@ -33,7 +33,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 function broadcastState(sessionState) {
-  const { epoch, description, clients, votesVisible, startedOn, settings } = sessionState;
+  const { epoch, description, clients, votesVisible, startedOn, settings, host } = sessionState;
 
   const clientsData = Object.entries(clients)
     .map(([identifier, { score, name }]) => ({
@@ -54,6 +54,7 @@ function broadcastState(sessionState) {
   Object.entries(clients).forEach(([identifier, { socket, score, name }]) => {
     const serializedState = {
       epoch,
+      host,
       settings,
       startedOn,
       description,
@@ -79,7 +80,7 @@ function resetBoard(sessionState) {
   });
 }
 
-function initializeSession(sessionName) {
+function initializeSession(sessionName, identifier) {
   let sessionState = state[sessionName];
   if (!sessionState) {
     console.log(`Creating new session ${sessionName}.`);
@@ -87,9 +88,11 @@ function initializeSession(sessionName) {
       description: "",
       settings: {
         scoreSet: scorePresets[0].scores,
+        allowParticipantControl: true,
       },
       votesVisible: false,
       startedOn: new Date(),
+      host: identifier,
       epoch: 0,
       clients: {},
     };
@@ -150,6 +153,16 @@ function processMessage(sessionState, identifier, action) {
       sessionState.settings = action.settings;
       resetBoard(sessionState);
       break;
+    case "setHost":
+      sessionState.host = action.identifier;
+      break;
+    case "kick":
+      const target = sessionState.clients[action.identifier];
+      if (target) {
+        target.name = null;
+        target.score = null;
+      }
+      break;
     case "reconnect":
       clientState.name = action.name;
       // Only try to restore the score on reconnection if we are still on the same
@@ -158,6 +171,7 @@ function processMessage(sessionState, identifier, action) {
       // client disconnected and we deleted the session.
       if (action.epoch >= sessionState.epoch) {
         clientState.score = action.score;
+        sessionState.description = action.description;
         sessionState.settings = action.settings;
       }
       break;
@@ -199,7 +213,7 @@ app.prepare().then(() => {
     const parsedUrl = parse(req.url);
     const sessionName = parsedUrl.pathname;
     const identifier = new URLSearchParams(parsedUrl.search).get("client_id");
-    const sessionState = initializeSession(sessionName);
+    const sessionState = initializeSession(sessionName, identifier);
     const clientState = initializeClient(sessionState, ws, identifier);
 
     ws.on("message", (data) => {

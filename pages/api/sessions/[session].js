@@ -21,23 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-const state = require("../../server/state").state;
+
+const state = require("../../../server/state").state;
+
+const serializeSession = (sessionState) => {
+  const { epoch, description, clients, votesVisible, startedOn, settings, host } = sessionState;
+  const clientsData = Object.fromEntries(
+    Object.entries(clients).map(([identifier, { score, name }]) => [
+      identifier,
+      {
+        score,
+        name,
+        isHost: identifier === host,
+      },
+    ])
+  );
+
+  return {
+    epoch,
+    settings,
+    startedOn,
+    description,
+    votesVisible: votesVisible,
+    clients: clientsData,
+  };
+};
 
 export default (req, res) => {
-  const sessions = Object.values(state);
-  const numVoters = sessions.reduce(
-    (a, b) => a + Object.values(b.clients).filter(({ name }) => name).length,
-    0
-  );
-  const numObservers = sessions.reduce(
-    (a, b) => a + Object.values(b.clients).filter(({ name }) => !name).length,
-    0
-  );
-
-  res.status(200).json({
-    numSessions: sessions.length,
-    numVoters,
-    numObservers,
-    numPlayers: numVoters + numObservers,
-  });
+  const session = state[`/${req.query.session}`];
+  if (session) {
+    res.status(200).json(serializeSession(session));
+  } else {
+    res.status(404).json({ errorCode: "session-not-found" });
+  }
 };

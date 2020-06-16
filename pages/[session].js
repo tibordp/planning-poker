@@ -35,6 +35,8 @@ import { SessionPanel } from "../src/SessionPanel";
 import { SessionUrlDisplay } from "../src/SessionUrlDisplay";
 import Logo from "../src/Logo";
 import Head from "next/head";
+import removeMarkdown from "remove-markdown";
+import ellipsis from "text-ellipsis";
 
 export const useStyles = makeStyles((theme) => ({
   card: {
@@ -84,7 +86,9 @@ export default function Session() {
   return (
     <>
       <Head>
-        {remoteState?.description && <title>Planning Poker - {remoteState.description}</title>}
+        {remoteState?.description && (
+          <title>Planning Poker - {ellipsis(removeMarkdown(remoteState.description), 20)}</title>
+        )}
       </Head>
       <Container maxWidth="sm">
         <Box my={4}>

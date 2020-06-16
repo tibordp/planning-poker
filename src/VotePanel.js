@@ -61,7 +61,7 @@ export function VotePanel({
       justify="space-between"
       alignItems="center"
     >
-      <Grid item sm={9} xs={12} className={classes.scoresContainer}>
+      <Grid item sm={controlEnabled ? 9 : 12} xs={12} className={classes.scoresContainer}>
         {scoreSet.map((score) => (
           <Button
             disabled={!votingEnabled}
@@ -75,30 +75,32 @@ export function VotePanel({
           </Button>
         ))}
       </Grid>
-      <Grid item sm={3} xs={12}>
-        <Button
-          disabled={!controlEnabled}
-          className={classes.actionButton}
-          onClick={() => onSetVisibility(!votesVisible)}
-          fullWidth
-          variant={votesVisible ? "contained" : "outlined"}
-          color="secondary"
-        >
-          {votesVisible && "Hide votes"}
-          {!votesVisible && "Show votes"}
-        </Button>
+      {controlEnabled && (
+        <Grid item sm={3} xs={12}>
+          <Button
+            disabled={!controlEnabled}
+            className={classes.actionButton}
+            onClick={() => onSetVisibility(!votesVisible)}
+            fullWidth
+            variant={votesVisible ? "contained" : "outlined"}
+            color="secondary"
+          >
+            {votesVisible && "Hide votes"}
+            {!votesVisible && "Show votes"}
+          </Button>
 
-        <Button
-          disabled={!controlEnabled}
-          className={classes.actionButton}
-          fullWidth
-          onClick={() => onReset()}
-          variant="outlined"
-          color="primary"
-        >
-          Clear votes
-        </Button>
-      </Grid>
+          <Button
+            disabled={!controlEnabled}
+            className={classes.actionButton}
+            fullWidth
+            onClick={() => onReset()}
+            variant="outlined"
+            color="primary"
+          >
+            Clear votes
+          </Button>
+        </Grid>
+      )}
     </Grid>
   );
 }

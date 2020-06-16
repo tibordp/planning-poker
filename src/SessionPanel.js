@@ -39,7 +39,7 @@ export const useStyles = makeStyles((theme) => ({
 export function SessionPanel({ remoteState, dispatch }) {
   const classes = useStyles();
   const [selectedName, setSelectedName] = React.useState("");
-  const { me } = remoteState;
+  const { me, host } = remoteState;
 
   const joinSubmit = (evt) => {
     dispatch({ action: "join", name: selectedName });
@@ -52,10 +52,10 @@ export function SessionPanel({ remoteState, dispatch }) {
         {!me.name && (
           <form onSubmit={joinSubmit}>
             <Grid container direction="row" alignItems="center" spacing={2}>
-              <Grid item xs={12} sm={5}>
-                <Typography>You are currently an observer.</Typography>
+              <Grid item xs={12} sm={4}>
+                <Typography>{"You are currently an observer."}</Typography>
               </Grid>
-              <Grid item xs={12} sm={5}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   className={classes.form}
                   id="standard-basic"
@@ -67,7 +67,7 @@ export function SessionPanel({ remoteState, dispatch }) {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12} sm={2}>
+              <Grid item xs={12} sm={4}>
                 <Button
                   disabled={!selectedName}
                   variant="outlined"
@@ -75,7 +75,7 @@ export function SessionPanel({ remoteState, dispatch }) {
                   type="submit"
                   fullWidth
                 >
-                  Join
+                  Join as voter
                 </Button>
               </Grid>
             </Grid>
@@ -85,7 +85,7 @@ export function SessionPanel({ remoteState, dispatch }) {
           <Grid container direction="row" alignItems="center" spacing={2}>
             <Grid item xs={12} sm={7}>
               <Typography>
-                You are currently joined as <b>{me.name}</b>.
+                You are voting as <b>{me.name}</b>.
               </Typography>
             </Grid>
             <Grid item xs={12} sm={5}>

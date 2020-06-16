@@ -29,13 +29,19 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import { scorePresets } from "../../server/scoreSets";
 import { ScoreSetSelector } from "./ScoreSetSelector";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 export function SettingsDialog({ open, onSave, onCancel, settings }) {
   const [scoreSet, setScoreSet] = React.useState(scorePresets[0].scores);
+  const [allowParticipantControl, setAllowParticipantControl] = React.useState(
+    scorePresets[0].scores
+  );
 
   React.useEffect(() => {
     if (open) {
       setScoreSet(settings.scoreSet);
+      setAllowParticipantControl(settings.allowParticipantControl);
     }
   }, [open]);
 
@@ -43,6 +49,7 @@ export function SettingsDialog({ open, onSave, onCancel, settings }) {
     const newSettings = {
       ...settings,
       scoreSet: scoreSet,
+      allowParticipantControl: allowParticipantControl,
     };
     onSave(newSettings);
   }
@@ -52,6 +59,16 @@ export function SettingsDialog({ open, onSave, onCancel, settings }) {
       <DialogTitle>Session settings</DialogTitle>
       <DialogContent>
         <ScoreSetSelector scoreSet={scoreSet} onSetScoreSet={setScoreSet} />
+        <FormControlLabel
+          style={{ marginTop: 10 }}
+          control={
+            <Switch
+              checked={allowParticipantControl}
+              onChange={() => setAllowParticipantControl(!allowParticipantControl)}
+            />
+          }
+          label="Allow everyone to control session"
+        />
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={onCancel} color="primary">
