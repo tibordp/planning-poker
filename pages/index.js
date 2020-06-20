@@ -29,8 +29,24 @@ import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import randomWords from "random-words";
 import Logo from "../src/Logo";
+import Footer from "../src/Footer";
 
-const useStyles = makeStyles((theme) => ({}));
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import Skeleton from "@material-ui/lab/Skeleton";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import useSWR from "swr";
+
+const useStyles = makeStyles((theme) => ({
+  tableContainer: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 const getSessionId = () =>
   randomWords({
@@ -39,20 +55,81 @@ const getSessionId = () =>
     separator: "-",
   })[0];
 
+function Statistics() {
+  const classes = useStyles();
+  const fetcher = (url) => fetch(url).then((r) => r.json());
+  const { data, error } = useSWR("/api/stats", fetcher);
+
+  return (
+    <>
+      {error && (
+        <Box my={2}>
+          <Alert variant="filled" severity="error">
+            <AlertTitle>Could not load statistics!</AlertTitle>
+            It's your fault probably.
+          </Alert>
+        </Box>
+      )}
+      {!error && (
+        <TableContainer component={Paper} variant="outlined" className={classes.tableContainer}>
+          {!data && (
+            <Box my={2} mx={2}>
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
+            </Box>
+          )}
+          {data && (
+            <Table aria-label="simple table">
+              <TableBody>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    Number of active sessions
+                  </TableCell>
+                  <TableCell align="right">{data.numSessions}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    Total number of players
+                  </TableCell>
+                  <TableCell align="right">{data.numPlayers}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    Number of voters
+                  </TableCell>
+                  <TableCell align="right">{data.numVoters}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    Number of observers
+                  </TableCell>
+                  <TableCell align="right">{data.numObservers}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          )}
+        </TableContainer>
+      )}
+    </>
+  );
+}
+
 export default function Home() {
   const classes = useStyles();
 
   return (
     <Container maxWidth="sm">
-      <Box my={4}>
-        <Logo />
-        <p>Click here to go to your own planning poker session.</p>
+      <Logo />
+      <Box my={2}>
         <Link href="/[session]" as={`/${getSessionId()}`}>
-          <Button fullWidth size="large" variant="outlined">
+          <Button color="secondary" fullWidth size="large" variant="contained">
             New session
           </Button>
         </Link>
+        <Statistics />
       </Box>
+      <Footer />
     </Container>
   );
 }

@@ -29,14 +29,14 @@ import Card from "@material-ui/core/Card";
 import Box from "@material-ui/core/Box";
 import { useRouter } from "next/router";
 import { useReconnector, connectionState } from "../src/remoteState";
-import { MainBoard } from "../src/MainBoard";
+import { Session } from "../src/Session";
 import { makeStyles } from "@material-ui/core/styles";
-import { SessionPanel } from "../src/SessionPanel";
-import { SessionUrlDisplay } from "../src/SessionUrlDisplay";
+import { SessionUrl } from "../src/SessionUrl";
 import Logo from "../src/Logo";
 import Head from "next/head";
 import removeMarkdown from "remove-markdown";
 import ellipsis from "text-ellipsis";
+import Footer from "../src/Footer";
 
 export const useStyles = makeStyles((theme) => ({
   card: {
@@ -69,7 +69,7 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Session() {
+export default function SessionPage() {
   const classes = useStyles();
   const router = useRouter();
   const { session } = router.query;
@@ -91,8 +91,8 @@ export default function Session() {
         )}
       </Head>
       <Container maxWidth="sm">
-        <Box my={4}>
-          <Logo />
+        <Logo />
+        <Box my={2}>
           {connectionStatus !== connectionState.CONNECTED && (
             <Card variant="outlined" className={classes.card}>
               <Box className={classes.connecting}>
@@ -106,16 +106,10 @@ export default function Session() {
               </Box>
             </Card>
           )}
-          {remoteState && (
-            <>
-              <MainBoard remoteState={remoteState} dispatch={dispatch} />
-              <SessionPanel remoteState={remoteState} dispatch={dispatch} />
-            </>
-          )}
-          <Box my={4}>
-            <SessionUrlDisplay />
-          </Box>
+          {remoteState && <Session remoteState={remoteState} dispatch={dispatch} />}
+          <SessionUrl />
         </Box>
+        <Footer />
       </Container>
       <audio src="nudge.mp3" ref={nudgeAudioRef} />
     </>

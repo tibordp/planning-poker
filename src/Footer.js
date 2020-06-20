@@ -21,22 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-const state = require("../../server/state").state;
 
-export default (req, res) => {
-  const sessions = Object.values(state);
-  const numVoters = sessions.reduce(
-    (a, b) => a + Object.values(b.clients).filter(({ name }) => name).length,
-    0
+import GitHubIcon from "@material-ui/icons/GitHub";
+import { makeStyles } from "@material-ui/core/styles";
+import Box from "@material-ui/core/Box";
+import Divider from "@material-ui/core/Divider";
+import Button from "@material-ui/core/Button";
+
+const useStyles = makeStyles((theme) => ({
+  button: {
+    color: theme.palette.grey[700],
+  },
+}));
+
+export default function Footer({}) {
+  const classes = useStyles();
+  return (
+    <>
+      <Divider />
+      <Box my={1} display="flex" flexDirection="row" justifyContent="flex-end">
+        <Button
+          variant="text"
+          target="_blank"
+          href="http://www.github.com/tibordp/planning-poker"
+          color="default"
+          className={classes.button}
+          startIcon={<GitHubIcon />}
+        >
+          View on GitHub
+        </Button>
+      </Box>
+    </>
   );
-  const numObservers = sessions.reduce(
-    (a, b) => a + Object.values(b.clients).filter(({ name }) => !name).length,
-    0
-  );
-  res.status(200).json({
-    numSessions: sessions.length,
-    numVoters,
-    numObservers,
-    numPlayers: numVoters + numObservers,
-  });
-};
+}

@@ -27,8 +27,16 @@ import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FileCopyOutlined from "@material-ui/icons/FileCopyOutlined";
 import Tooltip from "@material-ui/core/Tooltip";
+import { makeStyles } from "@material-ui/core/styles";
 
-export function SessionUrlDisplay() {
+export const useStyles = makeStyles((theme) => ({
+  sessionUrl: {
+    marginTop: theme.spacing(4),
+  },
+}));
+
+export function SessionUrl() {
+  const classes = useStyles();
   const inputRef = React.useRef();
 
   const onClick = () => {
@@ -46,6 +54,9 @@ export function SessionUrlDisplay() {
       variant="outlined"
       label="Session URL"
       inputRef={inputRef}
+      classes={{
+        root: classes.sessionUrl,
+      }}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">

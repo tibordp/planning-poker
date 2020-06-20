@@ -82,7 +82,7 @@ export function VotePanel({
             className={classes.actionButton}
             onClick={() => onSetVisibility(!votesVisible)}
             fullWidth
-            variant={votesVisible ? "contained" : "outlined"}
+            variant="outlined"
             color="secondary"
           >
             {votesVisible && "Hide votes"}

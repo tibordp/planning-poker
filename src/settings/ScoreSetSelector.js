@@ -110,21 +110,24 @@ export function ScoreSetSelector({ scoreSet, onSetScoreSet }) {
       </FormControl>
 
       {isCustom && (
-        <ChipInput
-          style={{ marginTop: 10, marginBottom: 20 }}
-          chipRenderer={chipRenderer}
-          fullWidth
-          blurBehavior="add"
-          alwaysShowPlaceholder
-          helperText={
-            scoreSet.length < 2
-              ? "You need at least two options"
-              : "Type new scores and press enter"
-          }
-          error={scoreSet.length < 2}
-          defaultValue={scoreSet}
-          onChange={(scores) => onSetScoreSet(scores)}
-        />
+        <>
+          <ChipInput
+            style={{ marginTop: 10, marginBottom: 20 }}
+            chipRenderer={chipRenderer}
+            fullWidth
+            blurBehavior="add"
+            alwaysShowPlaceholder
+            helperText={
+              scoreSet.length < 2
+                ? "You need at least two options"
+                : "Type new scores and press enter"
+            }
+            error={scoreSet.length < 2}
+            defaultValue={scoreSet}
+            onChange={(scores) => onSetScoreSet(scores)}
+          />
+          <p>The order in which the scores are defined will be used for computing the median.</p>
+        </>
       )}
       {!isCustom && (
         <>

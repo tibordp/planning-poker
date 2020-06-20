@@ -10,6 +10,7 @@
   "dependencies": {
     "@material-ui/core": "^4.10.1",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
     "global": "^4.4.0",
     "material-ui-chip-input": "^1.1.0",
     "next": "9.4.4",
@@ -21,6 +22,7 @@
     "reconnecting-websocket": "^4.4.0",
     "remove-markdown": "^0.3.0",
     "svg-react-loader": "^0.4.6",
+    "swr": "^0.2.3",
     "text-ellipsis": "^1.0.3",
     "uuid": "^8.1.0",
     "ws": "^7.3.0"

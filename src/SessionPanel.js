@@ -32,75 +32,73 @@ import TextField from "@material-ui/core/TextField";
 export const useStyles = makeStyles((theme) => ({
   sessionPaper: {
     padding: theme.spacing(2),
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(2),
   },
 }));
 
-export function SessionPanel({ remoteState, dispatch }) {
+export function SessionPanel({ name, onJoin, onLeave }) {
   const classes = useStyles();
   const [selectedName, setSelectedName] = React.useState("");
-  const { me, host } = remoteState;
 
-  const joinSubmit = (evt) => {
-    dispatch({ action: "join", name: selectedName });
-    evt.preventDefault();
-  };
+  React.useEffect(() => {
+    if (name) {
+      setSelectedName(name);
+    }
+  }, [name]);
 
   return (
-    <>
-      <Card variant="outlined" className={classes.sessionPaper}>
-        {!me.name && (
-          <form onSubmit={joinSubmit}>
-            <Grid container direction="row" alignItems="center" spacing={2}>
-              <Grid item xs={12} sm={4}>
-                <Typography>{"You are currently an observer."}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  className={classes.form}
-                  id="standard-basic"
-                  value={selectedName}
-                  onChange={(evt) => setSelectedName(evt.target.value)}
-                  label="Your name"
-                  style={{ marginTop: -10 }}
-                  margin="dense"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Button
-                  disabled={!selectedName}
-                  variant="outlined"
-                  color="primary"
-                  type="submit"
-                  fullWidth
-                >
-                  Join as voter
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-        )}
-        {me.name && (
+    <Card variant="outlined" className={classes.sessionPaper}>
+      {!name && (
+        <form
+          onSubmit={(evt) => {
+            evt.preventDefault();
+            onJoin(selectedName);
+          }}
+        >
           <Grid container direction="row" alignItems="center" spacing={2}>
-            <Grid item xs={12} sm={7}>
-              <Typography>
-                You are voting as <b>{me.name}</b>.
-              </Typography>
+            <Grid item xs={12} sm={4}>
+              <Typography>{"You are currently an observer."}</Typography>
             </Grid>
-            <Grid item xs={12} sm={5}>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                className={classes.form}
+                id="standard-basic"
+                value={selectedName}
+                onChange={(evt) => setSelectedName(evt.target.value)}
+                label="Your name"
+                style={{ marginTop: -10 }}
+                margin="dense"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
               <Button
-                onClick={() => dispatch({ action: "leave" })}
+                disabled={!selectedName}
                 variant="outlined"
-                color="secondary"
+                color="primary"
+                type="submit"
                 fullWidth
               >
-                Rejoin as observer
+                Join as voter
               </Button>
             </Grid>
           </Grid>
-        )}
-      </Card>
-    </>
+        </form>
+      )}
+      {name && (
+        <Grid container direction="row" alignItems="center" spacing={2}>
+          <Grid item xs={12} sm={7}>
+            <Typography>
+              You are voting as <b>{name}</b>.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={5}>
+            <Button onClick={onLeave} variant="outlined" color="secondary" fullWidth>
+              Rejoin as observer
+            </Button>
+          </Grid>
+        </Grid>
+      )}
+    </Card>
   );
 }
