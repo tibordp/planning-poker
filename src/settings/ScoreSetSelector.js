@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 import React from "react";
+import PropTypes from "prop-types";
 import Box from "@material-ui/core/Box";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Chip from "@material-ui/core/Chip";
 import Select from "@material-ui/core/Select";
-import { scorePresets } from "../../server/scoreSets";
+import { scorePresets } from "../../server/constants";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Zoom from "@material-ui/core/Zoom";
@@ -70,6 +71,7 @@ export function ScoreSetSelector({ scoreSet, onSetScoreSet }) {
 
   const isCustom = customSelected || !preset;
 
+  /* eslint-disable react/prop-types */
   const chipRenderer = ({ text, isFocused, handleClick, handleDelete, className }, key) => (
     <Chip
       key={key}
@@ -85,6 +87,7 @@ export function ScoreSetSelector({ scoreSet, onSetScoreSet }) {
       label={text}
     />
   );
+  /* eslint-enable react/prop-types */
 
   return (
     <>
@@ -161,3 +164,8 @@ export function ScoreSetSelector({ scoreSet, onSetScoreSet }) {
     </>
   );
 }
+
+ScoreSetSelector.propTypes = {
+  scoreSet: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onSetScoreSet: PropTypes.func.isRequired,
+};

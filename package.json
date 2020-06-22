@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "node server/index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "build": "next build",
     "start": "NODE_ENV=production node server/index.js"
   },
@@ -14,6 +16,7 @@
     "global": "^4.4.0",
     "material-ui-chip-input": "^1.1.0",
     "next": "9.4.4",
+    "notistack": "^0.9.17",
     "random-words": "^1.1.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -26,5 +29,13 @@
     "text-ellipsis": "^1.0.3",
     "uuid": "^8.1.0",
     "ws": "^7.3.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.3.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.0",
+    "prettier": "^2.0.5"
   }
 }

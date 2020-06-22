@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 import React from "react";
+import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
@@ -39,6 +40,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   container: {
     marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
 }));
 
@@ -53,6 +55,7 @@ export function VotePanel({
   onSetVisibility,
 }) {
   const classes = useStyles();
+
   return (
     <Grid
       className={classes.container}
@@ -104,3 +107,14 @@ export function VotePanel({
     </Grid>
   );
 }
+
+VotePanel.propTypes = {
+  scoreSet: PropTypes.arrayOf(PropTypes.string).isRequired,
+  votesVisible: PropTypes.bool.isRequired,
+  votingEnabled: PropTypes.bool.isRequired,
+  controlEnabled: PropTypes.bool.isRequired,
+  selectedScore: PropTypes.string,
+  onVote: PropTypes.func.isRequired,
+  onReset: PropTypes.func.isRequired,
+  onSetVisibility: PropTypes.func.isRequired,
+};

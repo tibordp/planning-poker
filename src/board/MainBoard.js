@@ -22,58 +22,14 @@
  * SOFTWARE.
  */
 import React from "react";
+import PropTypes from "prop-types";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import Zoom from "@material-ui/core/Zoom";
-import Chip from "@material-ui/core/Chip";
 import TableContainer from "@material-ui/core/TableContainer";
-import Slide from "@material-ui/core/Slide";
-import Notifications from "@material-ui/icons/Notifications";
-import VerifiedUser from "@material-ui/icons/VerifiedUser";
-import RemoveCircleOutline from "@material-ui/icons/RemoveCircleOutline";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import Box from "@material-ui/core/Box";
-import Alert from "@material-ui/lab/Alert";
-import AlertTitle from "@material-ui/lab/AlertTitle";
-import Card from "@material-ui/core/Card";
 import { TransitionGroup } from "react-transition-group";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-
-export const useStyles = makeStyles((theme) => ({
-  table: {},
-  participantNameCell: {
-    fontSize: "larger",
-  },
-  scoreCell: {
-    padding: theme.spacing(0.5),
-  },
-  scoreChip: {
-    marginLeft: theme.spacing(1),
-    fontSize: 14,
-  },
-  summaryChip: {
-    fontSize: 14,
-    whiteSpace: "nowrap",
-  },
-  summaryCard: {
-    padding: theme.spacing(1),
-  },
-  consensusAlert: {
-    marginBottom: theme.spacing(1),
-  },
-  hostBadge: {
-    color: theme.palette.text.secondary,
-    height: 18,
-    verticalAlign: "sub",
-  },
-  summaryPanel: {
-    marginTop: theme.spacing(2),
-    padding: theme.spacing(2),
-  },
-}));
+import { ScoreTableRow } from "./ScoreTableRow";
+import { ScoreSummary } from "./ScoreSummary";
+import { useTheme } from "@material-ui/core/styles";
 
 const makeChipStyle = (color, highlighted) => ({
   variant: highlighted ? "default" : "outlined",
@@ -91,133 +47,6 @@ const makeChipStyle = (color, highlighted) => ({
       },
 });
 
-function ScoreTableRow({
-  isSelf,
-  isHost,
-  chipStyleMap,
-  votesVisible,
-  name,
-  score,
-  canNudge,
-  canPromoteToHost,
-  onNudge,
-  onKick,
-  onPromoteToHost,
-  ...transitionProps
-}) {
-  const classes = useStyles();
-  const [isHover, setIsHover] = React.useState(false);
-  const isVisible = isSelf || votesVisible;
-
-  return (
-    <Slide direction="right" timeout={500} in mountOnEnter unmountOnExit {...transitionProps}>
-      <TableRow onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)} hover>
-        <TableCell className={classes.participantNameCell} component="th" scope="row">
-          {name}
-          {isHost && isHover && (
-            <Tooltip title="Session host">
-              <VerifiedUser className={classes.hostBadge} />
-            </Tooltip>
-          )}
-        </TableCell>
-        <TableCell className={classes.scoreCell} align="right">
-          {isHover && !isSelf && !isHost && canPromoteToHost && (
-            <Tooltip title={`Remove as voter`}>
-              <IconButton onClick={onKick}>
-                <RemoveCircleOutline />
-              </IconButton>
-            </Tooltip>
-          )}
-          {isHover && !isHost && canPromoteToHost && (
-            <Tooltip title={`Promote to host`}>
-              <IconButton onClick={onPromoteToHost}>
-                <VerifiedUser />
-              </IconButton>
-            </Tooltip>
-          )}
-          {score && (
-            // We want the score chip to be re-mounted on every change so that
-            // th animation gives a visual indication that something happened,
-            // even if the score is still hidden.
-            <Zoom key={`${score}_${votesVisible}`} in mountOnEnter unmountOnExit>
-              <Chip
-                {...chipStyleMap(score)}
-                size="medium"
-                className={classes.scoreChip}
-                label={isVisible ? score : "Hidden"}
-              />
-            </Zoom>
-          )}
-
-          {!score && isHover && !isSelf && canNudge && (
-            <Tooltip title={`Nudge`}>
-              <IconButton onClick={onNudge}>
-                <Notifications />
-              </IconButton>
-            </Tooltip>
-          )}
-        </TableCell>
-      </TableRow>
-    </Slide>
-  );
-}
-
-function ScoreSummary({
-  visible,
-  scoreDistribution,
-  chipStyleMap,
-  setHighlightedScore,
-  haveConsensus,
-}) {
-  const classes = useStyles();
-
-  return (
-    <TransitionGroup>
-      {visible && haveConsensus && (
-        <Zoom timeout={{ appear: 0, enter: 200, exit: 0 }} in>
-          <Alert variant="filled" severity="success" className={classes.consensusAlert}>
-            <AlertTitle>Consensus!</AlertTitle>
-            The score is {scoreDistribution[0][0]}
-          </Alert>
-        </Zoom>
-      )}
-      {visible && !haveConsensus && (
-        <Zoom timeout={{ appear: 0, enter: 200, exit: 0 }} in>
-          <Card variant="outlined" className={classes.summaryCard}>
-            <Box
-              display="flex"
-              flexWrap="wrap"
-              flexDirection="row"
-              alignItems="center"
-              justifyContent="space-evenly"
-            >
-              {scoreDistribution.map(([score, freq]) => (
-                <Box className={classes.summaryChip} my={0.5} mx={0.5} key={score}>
-                  <span>{`${freq} × `}</span>
-                  <Zoom
-                    timeout={{ appear: 0, enter: 400, exit: 400 }}
-                    in
-                    unmountOnExit
-                    key={`${score}_${freq}`}
-                  >
-                    <Chip
-                      onMouseEnter={() => setHighlightedScore(score)}
-                      onMouseLeave={() => setHighlightedScore(null)}
-                      {...chipStyleMap(score)}
-                      size="medium"
-                      label={score}
-                    />
-                  </Zoom>
-                </Box>
-              ))}
-            </Box>
-          </Card>
-        </Zoom>
-      )}
-    </TransitionGroup>
-  );
-}
-
 /**
  * Get pseudo medians of the vote set. As the votes can be non-numeric, we order the scores
  * according to the order of the score set (which we can usually assume to be monotonic).
@@ -231,7 +60,6 @@ function ScoreSummary({
  */
 function getPseudoMedians(scoreSet, allVotesCast) {
   const sortedIndexes = allVotesCast.map((score) => scoreSet.indexOf(score)).sort();
-  console.log(sortedIndexes);
   let indexes = [];
   if (!sortedIndexes.length) {
     indexes = [];
@@ -264,7 +92,6 @@ export function MainBoard({
   onKick,
 }) {
   const theme = useTheme();
-  const classes = useStyles();
   const [highlightedScore, setHighlightedScore] = React.useState(null);
 
   const allVotesCast = clients
@@ -277,7 +104,6 @@ export function MainBoard({
   const haveConsensus = votesCast.size === 1 && votesVisible;
   const summaryVisible = votesVisible && !!scoreDistribution.length;
   const medians = getPseudoMedians(scoreSet, allVotesCast);
-  console.log(scoreSet, allVotesCast, medians);
   const chipStyleMap = (vote) => {
     const isHighlighted = vote === highlightedScore;
     const ordinaryColor = isHighlighted ? theme.palette.secondary.main : theme.palette.primary.main;
@@ -318,7 +144,7 @@ export function MainBoard({
         setHighlightedScore={setHighlightedScore}
       />
       <TableContainer>
-        <Table className={classes.table} size="medium">
+        <Table size="medium">
           <TransitionGroup component={TableBody}>
             {sortedClients
               .filter(({ name }) => name)
@@ -344,3 +170,16 @@ export function MainBoard({
     </>
   );
 }
+
+MainBoard.propTypes = {
+  clients: PropTypes.arrayOf(PropTypes.object).isRequired,
+  scoreSet: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selfIdentifier: PropTypes.string.isRequired,
+  hostIdentifier: PropTypes.string.isRequired,
+  votesVisible: PropTypes.bool.isRequired,
+  canNudge: PropTypes.bool.isRequired,
+  canPromoteToHost: PropTypes.bool.isRequired,
+  onNudge: PropTypes.func.isRequired,
+  onPromoteToHost: PropTypes.func.isRequired,
+  onKick: PropTypes.func.isRequired,
+};

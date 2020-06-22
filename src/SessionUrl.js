@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 import React from "react";
+import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -35,7 +36,7 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function SessionUrl() {
+export function SessionUrl({ sessionName }) {
   const classes = useStyles();
   const inputRef = React.useRef();
 
@@ -44,15 +45,22 @@ export function SessionUrl() {
     document.execCommand("copy");
   };
 
-  // Cannot determine URL easily in SSR context.
-  const url = typeof window !== "undefined" ? window?.location.href : "<unknown>";
+  // Cannot determine hostname easily in SSR context.
+  let sessionUrl = `/${sessionName}`;
+  if (typeof window !== "undefined") {
+    const url = new URL(location.href);
+    url.pathname = `/${sessionName}`;
+    url.search = "";
+    url.hash = "";
+    sessionUrl = url.toString();
+  }
 
   return (
     <TextField
       fullWidth
-      value={url}
+      value={sessionUrl}
       variant="outlined"
-      label="Session URL"
+      label="Invite link"
       inputRef={inputRef}
       classes={{
         root: classes.sessionUrl,
@@ -71,3 +79,7 @@ export function SessionUrl() {
     />
   );
 }
+
+SessionUrl.propTypes = {
+  sessionName: PropTypes.string.isRequired,
+};

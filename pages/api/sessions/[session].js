@@ -23,32 +23,10 @@
  */
 
 const state = require("../../../server/state").state;
-
-const serializeSession = (sessionState) => {
-  const { epoch, description, clients, votesVisible, startedOn, settings, host } = sessionState;
-  const clientsData = Object.fromEntries(
-    Object.entries(clients).map(([identifier, { score, name }]) => [
-      identifier,
-      {
-        score,
-        name,
-        isHost: identifier === host,
-      },
-    ])
-  );
-
-  return {
-    epoch,
-    settings,
-    startedOn,
-    description,
-    votesVisible: votesVisible,
-    clients: clientsData,
-  };
-};
+const { serializeSession } = require("../../../server/serialization");
 
 export default (req, res) => {
-  const session = state[`/${req.query.session}`];
+  const session = state[`${req.query.session}`];
   if (session) {
     res.status(200).json(serializeSession(session));
   } else {

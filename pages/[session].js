@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 import React from "react";
+import PropTypes from "prop-types";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Card from "@material-ui/core/Card";
 import Box from "@material-ui/core/Box";
-import { useRouter } from "next/router";
 import { useReconnector, connectionState } from "../src/remoteState";
 import { Session } from "../src/Session";
 import { makeStyles } from "@material-ui/core/styles";
@@ -37,6 +37,8 @@ import Head from "next/head";
 import removeMarkdown from "remove-markdown";
 import ellipsis from "text-ellipsis";
 import Footer from "../src/Footer";
+
+import { useSnackbar } from "notistack";
 
 export const useStyles = makeStyles((theme) => ({
   card: {
@@ -69,19 +71,26 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SessionPage() {
+function SessionPage({ session }) {
   const classes = useStyles();
-  const router = useRouter();
-  const { session } = router.query;
   const nudgeAudioRef = React.useRef();
-  const [remoteState, dispatch, connectionStatus] = useReconnector(session, (message) => {
-    switch (message.action) {
-      case "nudge":
-        nudgeAudioRef.current?.play();
-        document.body.classList.add(classes.shaking);
-        setTimeout(() => document.body.classList.remove(classes.shaking), 500);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [remoteState, dispatch, connectionStatus, timeDrift] = useReconnector(
+    session,
+    (message) => {
+      switch (message.action) {
+        case "nudge":
+          nudgeAudioRef.current?.play();
+          document.body.classList.add(classes.shaking);
+          setTimeout(() => document.body.classList.remove(classes.shaking), 500);
+          break;
+        case "error":
+          enqueueSnackbar(message.error, { variant: "error" });
+          break;
+      }
     }
-  });
+  );
 
   return (
     <>
@@ -107,11 +116,27 @@ export default function SessionPage() {
             </Card>
           )}
           {remoteState && <Session remoteState={remoteState} dispatch={dispatch} />}
-          <SessionUrl />
+          <SessionUrl sessionName={session} />
         </Box>
-        <Footer />
+        <Footer
+          showTimer={remoteState?.settings.showTimer}
+          timerState={remoteState?.timerState}
+          dispatch={dispatch}
+          timeDrift={timeDrift}
+        />
       </Container>
       <audio src="nudge.mp3" ref={nudgeAudioRef} />
     </>
   );
 }
+
+SessionPage.propTypes = {
+  session: PropTypes.string.isRequired,
+};
+
+SessionPage.getInitialProps = ({ query }) => {
+  const { session } = query;
+  return { session };
+};
+
+export default SessionPage;

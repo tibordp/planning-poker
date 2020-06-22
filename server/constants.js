@@ -27,7 +27,21 @@ const scorePresets = [
     name: "Fibonacci",
     scores: ["0.5", "1", "2", "3", "5", "8", "13", "21", "100", "Pass"],
   },
-  { type: "tshirt", name: "T-shirt sizes", scores: ["XS", "S", "M", "L", "XL", "XXL", "Pass"] },
+  {
+    type: "tshirt",
+    name: "T-shirt sizes",
+    scores: ["XS", "S", "M", "L", "XL", "XXL", "Pass"],
+  },
 ];
 
+const defaultSettings = {
+  scoreSet: scorePresets[0].scores,
+  allowParticipantControl: true,
+  allowOpenVoting: true,
+  showTimer: true,
+  resetTimerOnNewEpoch: true,
+};
+
+exports.heartbeatTimeout = 10000;
+exports.defaultSettings = defaultSettings;
 exports.scorePresets = scorePresets;

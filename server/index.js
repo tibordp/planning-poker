@@ -25,73 +25,63 @@ const { createServer } = require("http");
 const { parse, URLSearchParams } = require("url");
 const next = require("next");
 const state = require("./state").state;
-const scorePresets = require("./scoreSets").scorePresets;
+const { defaultSettings, heartbeatTimeout } = require("./constants");
 const WebSocket = require("ws");
+
+const { serializeSession } = require("./serialization");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-function broadcastState(sessionState) {
-  const { epoch, description, clients, votesVisible, startedOn, settings, host } = sessionState;
+function sendMessage(now, clientState, action) {
+  const { socket } = clientState;
+  socket.send(
+    JSON.stringify({
+      ...action,
+      serverTime: now,
+    })
+  );
+}
 
-  const clientsData = Object.entries(clients)
-    .map(([identifier, { score, name }]) => ({
-      identifier,
-      score,
-      name,
-    }))
-    .sort((a, b) => {
-      // Sort by name, then by identifier. If the client is not participant, it doesn't matter,
-      // as they are invisible, so we put them all at the end.
-      if (!a.name || !b.name) {
-        return a.name ? -1 : b.name ? 1 : 0;
-      } else {
-        return a.name.localeCompare(b.name) || a.identifier.localeCompare(b.identifier);
-      }
+function broadcastState(now, sessionState) {
+  Object.entries(sessionState.clients).forEach((client) => {
+    const serializedState = serializeSession(sessionState, client);
+
+    const [, clientState] = client;
+    sendMessage(now, clientState, {
+      action: "updateState",
+      value: serializedState,
     });
-
-  Object.entries(clients).forEach(([identifier, { socket, score, name }]) => {
-    const serializedState = {
-      epoch,
-      host,
-      settings,
-      startedOn,
-      description,
-      me: { identifier, score, name },
-      votesVisible: votesVisible,
-      clients: clientsData,
-    };
-    socket.send(
-      JSON.stringify({
-        action: "updateState",
-        value: serializedState,
-      })
-    );
   });
 }
 
-function resetBoard(sessionState) {
+function resetBoard(now, sessionState) {
   sessionState.votesVisible = false;
   sessionState.epoch += 1;
-  sessionState.startedOn = new Date();
+  sessionState.startedOn = now;
+  if (sessionState.settings.resetTimerOnNewEpoch) {
+    resetTimer(now, sessionState.timerState);
+  }
   Object.values(sessionState.clients).forEach((c) => {
     c.score = null;
   });
 }
 
-function initializeSession(sessionName, identifier) {
+function initializeSession(now, sessionName, identifier) {
   let sessionState = state[sessionName];
   if (!sessionState) {
     console.log(`Creating new session ${sessionName}.`);
     sessionState = state[sessionName] = {
       description: "",
-      settings: {
-        scoreSet: scorePresets[0].scores,
-        allowParticipantControl: true,
+      settings: { ...defaultSettings },
+      timerState: {
+        startTime: now,
+        pausedTime: now,
+        pausedTotal: 0,
       },
       votesVisible: false,
-      startedOn: new Date(),
+      startedOn: now,
       host: identifier,
       epoch: 0,
       clients: {},
@@ -109,23 +99,44 @@ function setHeartbeat(clientState) {
   clearHeartbeat(clientState);
   clientState.lastHeartbeat = setTimeout(() => {
     clientState.socket.close();
-  }, 10000);
+  }, heartbeatTimeout);
 }
 
-function processMessage(sessionState, identifier, action) {
+function startTimer(now, timerState) {
+  if (timerState.pausedTime) {
+    const pausedDuration = now - timerState.pausedTime;
+    timerState.pausedTime = null;
+    timerState.pausedTotal += pausedDuration;
+  }
+}
+
+function pauseTimer(now, timerState) {
+  if (!timerState.pausedTime) {
+    timerState.pausedTime = now;
+  }
+}
+
+function resetTimer(now, timerState) {
+  timerState.startTime = now;
+  timerState.pausedTime = now;
+  timerState.pausedTotal = 0;
+}
+
+function processMessage(now, sessionState, identifier, action) {
   const clientState = sessionState.clients[identifier];
 
   setHeartbeat(clientState);
   switch (action.action) {
     case "ping":
-      clientState.socket.send(JSON.stringify({ action: "pong" }));
+      sendMessage(now, clientState, { action: "pong" });
       return;
-    case "nudge":
+    case "nudge": {
       const recipient = sessionState.clients[action.identifier];
       if (recipient) {
-        recipient.socket.send(JSON.stringify({ action: "nudge" }));
+        sendMessage(now, recipient, { action: "nudge" });
       }
       return;
+    }
     case "setDescription":
       sessionState.description = action.value;
       break;
@@ -136,7 +147,7 @@ function processMessage(sessionState, identifier, action) {
       clientState.name = null;
       clientState.score = null;
       break;
-    case "vote":
+    case "vote": {
       const hasNotVotedYet = !clientState.score;
       clientState.score = action.score;
       // Show votes after all participants have voted, but only if the board is not already
@@ -146,23 +157,25 @@ function processMessage(sessionState, identifier, action) {
         sessionState.votesVisible = true;
       }
       break;
+    }
     case "setVisibility":
       sessionState.votesVisible = action.votesVisible;
       break;
     case "setSettings":
       sessionState.settings = action.settings;
-      resetBoard(sessionState);
+      resetBoard(now, sessionState);
       break;
     case "setHost":
       sessionState.host = action.identifier;
       break;
-    case "kick":
+    case "kick": {
       const target = sessionState.clients[action.identifier];
       if (target) {
         target.name = null;
         target.score = null;
       }
       break;
+    }
     case "reconnect":
       clientState.name = action.name;
       // Only try to restore the score on reconnection if we are still on the same
@@ -176,10 +189,19 @@ function processMessage(sessionState, identifier, action) {
       }
       break;
     case "resetBoard":
-      resetBoard(sessionState);
+      resetBoard(now, sessionState);
+      break;
+    case "startTimer":
+      startTimer(now, sessionState.timerState);
+      break;
+    case "pauseTimer":
+      pauseTimer(now, sessionState.timerState);
+      break;
+    case "resetTimer":
+      resetTimer(now, sessionState.timerState);
       break;
   }
-  broadcastState(sessionState);
+  broadcastState(now, sessionState);
 }
 
 function initializeClient(sessionState, ws, identifier) {
@@ -210,20 +232,24 @@ app.prepare().then(() => {
   });
   const wss = new WebSocket.Server({ server: server });
   wss.on("connection", (ws, req) => {
+    const now = new Date();
     const parsedUrl = parse(req.url);
-    const sessionName = parsedUrl.pathname;
-    const identifier = new URLSearchParams(parsedUrl.search).get("client_id");
-    const sessionState = initializeSession(sessionName, identifier);
+    const sessionName = parsedUrl.pathname.slice(1); // Strip the slash
+    const identifier = new URLSearchParams(parsedUrl.search).get("client_id") || "";
+    const sessionState = initializeSession(now, sessionName, identifier);
     const clientState = initializeClient(sessionState, ws, identifier);
 
     ws.on("message", (data) => {
+      const now = new Date();
       try {
         const action = JSON.parse(data);
-        processMessage(sessionState, identifier, action);
+        processMessage(now, sessionState, identifier, action);
       } catch (error) {
-        // Guard against clients sending junk, so it doesn't kill the server
         console.error(error);
-        ws.close();
+        sendMessage(now, clientState, {
+          action: "error",
+          error: error.toString(),
+        });
       }
     });
 
@@ -232,6 +258,7 @@ app.prepare().then(() => {
       // cleanup anything here as it will be cleaned up when the new socket
       // disconnects.
       if (clientState.socket === ws) {
+        const now = new Date();
         console.log(`Client ${identifier} disconnected.`);
         clearHeartbeat(clientState);
         delete sessionState.clients[identifier];
@@ -241,12 +268,12 @@ app.prepare().then(() => {
           console.log(`Deleting session ${sessionName}.`);
           delete state[sessionName];
         } else {
-          broadcastState(sessionState);
+          broadcastState(now, sessionState);
         }
       }
     });
 
-    broadcastState(sessionState);
+    broadcastState(now, sessionState);
   });
 
   server.listen(3000, (err) => {
