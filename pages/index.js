@@ -24,10 +24,8 @@
 import React from "react";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
-import Link from "next/link";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import randomWords from "random-words";
 import Logo from "../src/Logo";
 import Footer from "../src/Footer";
 
@@ -48,13 +46,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const getSessionId = () =>
-  randomWords({
-    exactly: 1,
-    wordsPerString: 3,
-    separator: "-",
-  })[0];
-
 function Statistics() {
   const classes = useStyles();
   const fetcher = (url) => fetch(url).then((r) => r.json());
@@ -66,7 +57,7 @@ function Statistics() {
         <Box my={2}>
           <Alert variant="filled" severity="error">
             <AlertTitle>Could not load statistics!</AlertTitle>
-            It's your fault probably.
+            It&apos;s your fault probably.
           </Alert>
         </Box>
       )}
@@ -116,17 +107,13 @@ function Statistics() {
 }
 
 export default function Home() {
-  const classes = useStyles();
-
   return (
     <Container maxWidth="sm">
       <Logo />
       <Box my={2}>
-        <Link href="/[session]" as={`/${getSessionId()}`}>
-          <Button color="secondary" fullWidth size="large" variant="contained">
-            New session
-          </Button>
-        </Link>
+        <Button color="secondary" href="/new-session" fullWidth size="large" variant="contained">
+          New session
+        </Button>
         <Statistics />
       </Box>
       <Footer />

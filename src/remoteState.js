@@ -52,6 +52,7 @@ export function useInternetConnectivity() {
 export function useRemoteState(webSocketUri, onAction) {
   const [dispatch, setDispatch] = React.useState(null);
   const [remoteState, setRemoteState] = React.useState(null);
+  const [timeDrift, setTimeDrift] = React.useState(0);
 
   const haveConnectivity = useInternetConnectivity();
 
@@ -68,6 +69,7 @@ export function useRemoteState(webSocketUri, onAction) {
     };
 
     socket.onmessage = (message) => {
+      setTimeDrift(new Date(message.serverTime) - new Date());
       switch (message.action) {
         case "updateState":
           setRemoteState(message.value);
@@ -87,7 +89,7 @@ export function useRemoteState(webSocketUri, onAction) {
     };
   }, [webSocketUri, haveConnectivity]);
 
-  return [remoteState, dispatch];
+  return [remoteState, dispatch, timeDrift];
 }
 
 export const connectionState = {
@@ -114,6 +116,7 @@ function getSocketUri(sessionName) {
   url.search = new URLSearchParams({
     client_id: clientId,
   }).toString();
+  url.hash = "";
   return url.toString();
 }
 
@@ -124,7 +127,7 @@ function getSocketUri(sessionName) {
  */
 export function useReconnector(sessionName, onAction) {
   const socketUri = getSocketUri(sessionName);
-  const [remoteState, dispatch] = useRemoteState(socketUri, onAction);
+  const [remoteState, dispatch, timeDrift] = useRemoteState(socketUri, onAction);
   const haveConnectivity = useInternetConnectivity();
 
   React.useEffect(() => {
@@ -163,5 +166,5 @@ export function useReconnector(sessionName, onAction) {
     state = connectionState.CONNECTING;
   }
 
-  return [remoteState, dispatch, state];
+  return [remoteState, dispatch, state, timeDrift];
 }

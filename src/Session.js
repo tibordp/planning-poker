@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 import React from "react";
+import PropTypes from "prop-types";
 import { VotePanel } from "./VotePanel";
-import { MainBoard } from "./MainBoard";
+import { MainBoard } from "./board/MainBoard";
 import { Description } from "./Description";
 import { SettingsDialog } from "./settings/SettingsDialog";
 import { SessionPanel } from "./SessionPanel";
@@ -61,7 +62,7 @@ export function Session({ remoteState, dispatch }) {
         controlEnabled={canControlSession}
         scoreSet={settings.scoreSet}
         votesVisible={votesVisible}
-        votingEnabled={me.name !== null}
+        votingEnabled={me.name !== null && (settings.allowOpenVoting || !votesVisible)}
         selectedScore={me.score}
         onSetVisibility={(visibility) =>
           dispatch({
@@ -117,3 +118,8 @@ export function Session({ remoteState, dispatch }) {
     </>
   );
 }
+
+Session.propTypes = {
+  remoteState: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
+};

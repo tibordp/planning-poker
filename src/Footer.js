@@ -21,12 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
+import React from "react";
+import PropTypes from "prop-types";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
+import { Timer } from "./Timer";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -34,12 +36,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Footer({}) {
+export default function Footer({ showTimer, timerState, dispatch, timeDrift }) {
   const classes = useStyles();
   return (
     <>
       <Divider />
-      <Box my={1} display="flex" flexDirection="row" justifyContent="flex-end">
+      <Box
+        my={1}
+        display="flex"
+        flexDirection="row"
+        flexWrap="wrap"
+        alignItems="center"
+        justifyContent="flex-end"
+      >
+        {timerState && showTimer && (
+          <>
+            <Timer timerState={timerState} dispatch={dispatch} timeDrift={timeDrift} />
+            <div style={{ flexGrow: 1 }} />
+          </>
+        )}
         <Button
           variant="text"
           target="_blank"
@@ -54,3 +69,10 @@ export default function Footer({}) {
     </>
   );
 }
+
+Footer.propTypes = {
+  showTimer: PropTypes.bool,
+  timerState: PropTypes.object,
+  dispatch: PropTypes.func,
+  timeDrift: PropTypes.number,
+};

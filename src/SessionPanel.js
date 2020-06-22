@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 import React from "react";
+import PropTypes from "prop-types";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
@@ -102,3 +103,9 @@ export function SessionPanel({ name, onJoin, onLeave }) {
     </Card>
   );
 }
+
+SessionPanel.propTypes = {
+  name: PropTypes.string,
+  onJoin: PropTypes.func.isRequired,
+  onLeave: PropTypes.func.isRequired,
+};

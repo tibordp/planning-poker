@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import React from "react";
 import LogoIcon from "svg-react-loader?name=LogoIcon!../src/assets/logo.svg";
-
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Link from "next/link";
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Logo({}) {
+export default function Logo() {
   const classes = useStyles();
   return (
     <Box my={2} display="flex" flexDirection="column" alignItems="center" justifyItems="center">

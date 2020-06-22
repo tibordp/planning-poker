@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 import React from "react";
+import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 import Settings from "@material-ui/icons/Settings";
 import IconButton from "@material-ui/core/IconButton";
@@ -171,3 +172,11 @@ export function Description({
     </>
   );
 }
+
+Description.propTypes = {
+  editingEnabled: PropTypes.bool.isRequired,
+  settingsEnabled: PropTypes.bool.isRequired,
+  description: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onSettingsClick: PropTypes.func.isRequired,
+};
