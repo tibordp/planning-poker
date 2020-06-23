@@ -37,7 +37,7 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function SessionPanel({ name, onJoin, onLeave }) {
+export function ParticipantPanel({ name, onJoin, onLeave }) {
   const classes = useStyles();
   const [selectedName, setSelectedName] = React.useState("");
 
@@ -104,7 +104,7 @@ export function SessionPanel({ name, onJoin, onLeave }) {
   );
 }
 
-SessionPanel.propTypes = {
+ParticipantPanel.propTypes = {
   name: PropTypes.string,
   onJoin: PropTypes.func.isRequired,
   onLeave: PropTypes.func.isRequired,

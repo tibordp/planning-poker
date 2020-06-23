@@ -7,13 +7,17 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "build": "next build",
-    "start": "NODE_ENV=production node server/index.js"
+    "start": "NODE_ENV=production node server/index.js",
+    "test": "jest --watch",
+    "test:ci": "jest --ci"
   },
   "dependencies": {
     "@material-ui/core": "^4.10.1",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@svgr/webpack": "^5.4.0",
     "global": "^4.4.0",
+    "killable": "^1.0.1",
     "material-ui-chip-input": "^1.1.0",
     "next": "9.4.4",
     "notistack": "^0.9.17",
@@ -24,7 +28,6 @@
     "react-transition-group": "^4.4.1",
     "reconnecting-websocket": "^4.4.0",
     "remove-markdown": "^0.3.0",
-    "svg-react-loader": "^0.4.6",
     "swr": "^0.2.3",
     "text-ellipsis": "^1.0.3",
     "uuid": "^8.1.0",
@@ -32,10 +35,13 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.3.0",
+    "babel-jest": "^26.0.1",
+    "eslint": "^7.3.1",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.0",
-    "prettier": "^2.0.5"
+    "jest": "^26.0.1",
+    "prettier": "^2.0.5",
+    "react-test-renderer": "^16.13.1"
   }
 }

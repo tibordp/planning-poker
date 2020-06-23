@@ -27,18 +27,14 @@ import { VotePanel } from "./VotePanel";
 import { MainBoard } from "./board/MainBoard";
 import { Description } from "./Description";
 import { SettingsDialog } from "./settings/SettingsDialog";
-import { SessionPanel } from "./SessionPanel";
+import { ParticipantPanel } from "./ParticipantPanel";
+import { calculatePermissions } from "./permissions";
 
 export function Session({ remoteState, dispatch }) {
   const [settingsOpen, setSettingsOpen] = React.useState(false);
 
   const { votesVisible, me, settings, host, clients, description } = remoteState;
-
-  // If the host has disconnected, we allow anyone to control the session until they
-  // rejoin.
-  const isActingHost =
-    me.identifier === host || !clients.find((client) => client.identifier === host);
-  const canControlSession = settings.allowParticipantControl || isActingHost;
+  const permissions = calculatePermissions(remoteState);
 
   return (
     <>
@@ -52,17 +48,17 @@ export function Session({ remoteState, dispatch }) {
         }}
       />
       <Description
-        editingEnabled={canControlSession}
-        settingsEnabled={isActingHost}
+        editingEnabled={permissions.canEditDescription}
+        settingsEnabled={permissions.canEditSettings}
         onChange={(value) => dispatch({ action: "setDescription", value: value })}
         description={description}
         onSettingsClick={() => setSettingsOpen(true)}
       />
       <VotePanel
-        controlEnabled={canControlSession}
+        controlEnabled={permissions.canControlVotes}
         scoreSet={settings.scoreSet}
         votesVisible={votesVisible}
-        votingEnabled={me.name !== null && (settings.allowOpenVoting || !votesVisible)}
+        votingEnabled={permissions.canVote}
         selectedScore={me.score}
         onSetVisibility={(visibility) =>
           dispatch({
@@ -81,31 +77,31 @@ export function Session({ remoteState, dispatch }) {
       <MainBoard
         clients={clients}
         scoreSet={settings.scoreSet}
-        selfIdentifier={me.identifier}
-        hostIdentifier={host}
+        selfClientId={me.clientId}
+        hostClientId={host}
         votesVisible={votesVisible}
-        canNudge={canControlSession}
-        canPromoteToHost={isActingHost}
-        onNudge={(identifier) =>
+        canNudge={permissions.canNudge}
+        canPromoteToHost={permissions.canPromoteToHost}
+        onNudge={(clientId) =>
           dispatch({
             action: "nudge",
-            identifier: identifier,
+            clientId: clientId,
           })
         }
-        onPromoteToHost={(identifier) =>
+        onPromoteToHost={(clientId) =>
           dispatch({
             action: "setHost",
-            identifier: identifier,
+            clientId: clientId,
           })
         }
-        onKick={(identifier) =>
+        onKick={(clientId) =>
           dispatch({
             action: "kick",
-            identifier: identifier,
+            clientId: clientId,
           })
         }
       />
-      <SessionPanel
+      <ParticipantPanel
         name={me.name}
         onJoin={(name) =>
           dispatch({

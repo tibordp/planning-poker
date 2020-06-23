@@ -19,19 +19,19 @@ export function formatDuration(milliseconds) {
  * date the server sent the response. This allows for rudimentary time drift correction if the
  * difference between server and local time is large.
  */
-export function Timer({ timerState, dispatch, timeDrift }) {
+export function Timer({ timerState, dispatch, canControlTimer }) {
   const [timer, setTimer] = React.useState(0);
 
   const startTime = new Date(timerState.startTime);
   const pausedTime = timerState.pausedTime ? new Date(timerState.pausedTime) : null;
 
-  const tick = () => {
-    const endTime = pausedTime || new Date();
-    const newValue = endTime - startTime - timerState.pausedTotal + timeDrift;
-    setTimer(newValue);
-  };
-
   React.useEffect(() => {
+    const tick = () => {
+      const endTime = pausedTime || new Date();
+      const newValue = endTime - startTime - timerState.pausedTotal;
+      setTimer(newValue);
+    };
+
     if (pausedTime) {
       tick();
       return () => {};
@@ -40,30 +40,34 @@ export function Timer({ timerState, dispatch, timeDrift }) {
       const interval = setInterval(tick, 1000);
       return () => clearInterval(interval);
     }
-  }, [pausedTime]);
+  }, [timerState]);
 
   return (
     <>
       <Typography variant="body1">{formatDuration(timer)}</Typography>
-      {!pausedTime && (
-        <IconButton onClick={() => dispatch({ action: "pauseTimer" })}>
-          <Pause />
-        </IconButton>
+      {canControlTimer && (
+        <>
+          {!pausedTime && (
+            <IconButton onClick={() => dispatch({ action: "pauseTimer" })}>
+              <Pause />
+            </IconButton>
+          )}
+          {!!pausedTime && (
+            <IconButton onClick={() => dispatch({ action: "startTimer" })}>
+              <PlayArrow />
+            </IconButton>
+          )}
+          <IconButton onClick={() => dispatch({ action: "resetTimer" })}>
+            <Replay />
+          </IconButton>
+        </>
       )}
-      {!!pausedTime && (
-        <IconButton onClick={() => dispatch({ action: "startTimer" })}>
-          <PlayArrow />
-        </IconButton>
-      )}
-      <IconButton onClick={() => dispatch({ action: "resetTimer" })}>
-        <Replay />
-      </IconButton>
     </>
   );
 }
 
 Timer.propTypes = {
-  timerState: PropTypes.object,
-  dispatch: PropTypes.func,
-  timeDrift: PropTypes.number.isRequired,
+  timerState: PropTypes.object.isRequired,
+  canControlTimer: PropTypes.bool.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };

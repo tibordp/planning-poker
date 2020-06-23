@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-function serializeClient([identifier, data]) {
+function serializeClient([clientId, data]) {
   const { score, name } = data;
   return {
-    identifier,
+    clientId,
     score,
     name,
   };
@@ -34,12 +34,12 @@ function serializeClients(clients) {
   return Object.entries(clients)
     .map(serializeClient)
     .sort((a, b) => {
-      // Sort by name, then by identifier. If the client is not participant, it doesn't matter,
+      // Sort by name, then by clientId. If the client is not participant, it doesn't matter,
       // as they are invisible, so we put them all at the end.
       if (!a.name || !b.name) {
         return a.name ? -1 : b.name ? 1 : 0;
       } else {
-        return a.name.localeCompare(b.name) || a.identifier.localeCompare(b.identifier);
+        return a.name.localeCompare(b.name) || a.clientId.localeCompare(b.clientId);
       }
     });
 }
