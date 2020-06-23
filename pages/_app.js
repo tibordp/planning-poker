@@ -48,8 +48,8 @@ export default function MyApp(props) {
       </Head>
 
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <SnackbarProvider maxSnack={3}>
-          <CssBaseline />
           <Component {...pageProps} />
         </SnackbarProvider>
       </ThemeProvider>

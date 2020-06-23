@@ -39,9 +39,12 @@ const defaultSettings = {
   allowParticipantControl: true,
   allowOpenVoting: true,
   showTimer: true,
-  resetTimerOnNewEpoch: true,
+  resetTimerOnNewEpoch: false,
 };
 
+exports.shutdownTimeout = 5000;
 exports.heartbeatTimeout = 10000;
+// For how long to persist the session data after the last client disconnected.
+exports.sessionTtl = 30000;
 exports.defaultSettings = defaultSettings;
 exports.scorePresets = scorePresets;

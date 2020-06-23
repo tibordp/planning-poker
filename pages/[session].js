@@ -76,21 +76,18 @@ function SessionPage({ session }) {
   const nudgeAudioRef = React.useRef();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [remoteState, dispatch, connectionStatus, timeDrift] = useReconnector(
-    session,
-    (message) => {
-      switch (message.action) {
-        case "nudge":
-          nudgeAudioRef.current?.play();
-          document.body.classList.add(classes.shaking);
-          setTimeout(() => document.body.classList.remove(classes.shaking), 500);
-          break;
-        case "error":
-          enqueueSnackbar(message.error, { variant: "error" });
-          break;
-      }
+  const [remoteState, dispatch, connectionStatus] = useReconnector(session, (message) => {
+    switch (message.action) {
+      case "nudge":
+        nudgeAudioRef.current?.play();
+        document.body.classList.add(classes.shaking);
+        setTimeout(() => document.body.classList.remove(classes.shaking), 500);
+        break;
+      case "error":
+        enqueueSnackbar(message.error, { variant: "error" });
+        break;
     }
-  );
+  });
 
   return (
     <>
@@ -118,12 +115,7 @@ function SessionPage({ session }) {
           {remoteState && <Session remoteState={remoteState} dispatch={dispatch} />}
           <SessionUrl sessionName={session} />
         </Box>
-        <Footer
-          showTimer={remoteState?.settings.showTimer}
-          timerState={remoteState?.timerState}
-          dispatch={dispatch}
-          timeDrift={timeDrift}
-        />
+        <Footer remoteState={remoteState} dispatch={dispatch} />
       </Container>
       <audio src="nudge.mp3" ref={nudgeAudioRef} />
     </>

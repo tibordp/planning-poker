@@ -82,8 +82,8 @@ function getPseudoMedians(scoreSet, allVotesCast) {
 export function MainBoard({
   clients,
   scoreSet,
-  selfIdentifier,
-  hostIdentifier,
+  selfClientId,
+  hostClientId,
   votesVisible,
   canNudge,
   canPromoteToHost,
@@ -148,20 +148,20 @@ export function MainBoard({
           <TransitionGroup component={TableBody}>
             {sortedClients
               .filter(({ name }) => name)
-              .map(({ identifier, name, score }) => (
+              .map(({ clientId, name, score }) => (
                 <ScoreTableRow
-                  key={identifier}
+                  key={clientId}
                   votesVisible={votesVisible}
-                  isSelf={identifier === selfIdentifier}
-                  isHost={identifier === hostIdentifier}
+                  isSelf={clientId === selfClientId}
+                  isHost={clientId === hostClientId}
                   chipStyleMap={chipStyleMap}
                   name={name}
                   score={score}
                   canNudge={canNudge}
                   canPromoteToHost={canPromoteToHost}
-                  onNudge={() => onNudge(identifier)}
-                  onPromoteToHost={() => onPromoteToHost(identifier)}
-                  onKick={() => onKick(identifier)}
+                  onNudge={() => onNudge(clientId)}
+                  onPromoteToHost={() => onPromoteToHost(clientId)}
+                  onKick={() => onKick(clientId)}
                 />
               ))}
           </TransitionGroup>
@@ -174,8 +174,8 @@ export function MainBoard({
 MainBoard.propTypes = {
   clients: PropTypes.arrayOf(PropTypes.object).isRequired,
   scoreSet: PropTypes.arrayOf(PropTypes.string).isRequired,
-  selfIdentifier: PropTypes.string.isRequired,
-  hostIdentifier: PropTypes.string.isRequired,
+  selfClientId: PropTypes.string.isRequired,
+  hostClientId: PropTypes.string.isRequired,
   votesVisible: PropTypes.bool.isRequired,
   canNudge: PropTypes.bool.isRequired,
   canPromoteToHost: PropTypes.bool.isRequired,

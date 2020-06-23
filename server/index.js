@@ -24,226 +24,56 @@
 const { createServer } = require("http");
 const { parse, URLSearchParams } = require("url");
 const next = require("next");
-const state = require("./state").state;
-const { defaultSettings, heartbeatTimeout } = require("./constants");
+const killable = require("killable");
 const WebSocket = require("ws");
-
-const { serializeSession } = require("./serialization");
-
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
+const {
+  sendMessage,
+  initializeSession,
+  processMessage,
+  initializeClient,
+  cleanupClient,
+  broadcastState,
+} = require("./session");
+const { shutdownTimeout } = require("./constants");
 
-function sendMessage(now, clientState, action) {
-  const { socket } = clientState;
-  socket.send(
-    JSON.stringify({
-      ...action,
-      serverTime: now,
-    })
-  );
-}
-
-function broadcastState(now, sessionState) {
-  Object.entries(sessionState.clients).forEach((client) => {
-    const serializedState = serializeSession(sessionState, client);
-
-    const [, clientState] = client;
-    sendMessage(now, clientState, {
-      action: "updateState",
-      value: serializedState,
-    });
-  });
-}
-
-function resetBoard(now, sessionState) {
-  sessionState.votesVisible = false;
-  sessionState.epoch += 1;
-  sessionState.startedOn = now;
-  if (sessionState.settings.resetTimerOnNewEpoch) {
-    resetTimer(now, sessionState.timerState);
-  }
-  Object.values(sessionState.clients).forEach((c) => {
-    c.score = null;
-  });
-}
-
-function initializeSession(now, sessionName, identifier) {
-  let sessionState = state[sessionName];
-  if (!sessionState) {
-    console.log(`Creating new session ${sessionName}.`);
-    sessionState = state[sessionName] = {
-      description: "",
-      settings: { ...defaultSettings },
-      timerState: {
-        startTime: now,
-        pausedTime: now,
-        pausedTotal: 0,
-      },
-      votesVisible: false,
-      startedOn: now,
-      host: identifier,
-      epoch: 0,
-      clients: {},
-    };
-  }
-  return sessionState;
-}
-
-function clearHeartbeat(clientState) {
-  clearTimeout(clientState.lastHeartbeat);
-  clientState.lastHeartbeat = null;
-}
-
-function setHeartbeat(clientState) {
-  clearHeartbeat(clientState);
-  clientState.lastHeartbeat = setTimeout(() => {
-    clientState.socket.close();
-  }, heartbeatTimeout);
-}
-
-function startTimer(now, timerState) {
-  if (timerState.pausedTime) {
-    const pausedDuration = now - timerState.pausedTime;
-    timerState.pausedTime = null;
-    timerState.pausedTotal += pausedDuration;
-  }
-}
-
-function pauseTimer(now, timerState) {
-  if (!timerState.pausedTime) {
-    timerState.pausedTime = now;
-  }
-}
-
-function resetTimer(now, timerState) {
-  timerState.startTime = now;
-  timerState.pausedTime = now;
-  timerState.pausedTotal = 0;
-}
-
-function processMessage(now, sessionState, identifier, action) {
-  const clientState = sessionState.clients[identifier];
-
-  setHeartbeat(clientState);
-  switch (action.action) {
-    case "ping":
-      sendMessage(now, clientState, { action: "pong" });
-      return;
-    case "nudge": {
-      const recipient = sessionState.clients[action.identifier];
-      if (recipient) {
-        sendMessage(now, recipient, { action: "nudge" });
-      }
-      return;
-    }
-    case "setDescription":
-      sessionState.description = action.value;
-      break;
-    case "join":
-      clientState.name = action.name;
-      break;
-    case "leave":
-      clientState.name = null;
-      clientState.score = null;
-      break;
-    case "vote": {
-      const hasNotVotedYet = !clientState.score;
-      clientState.score = action.score;
-      // Show votes after all participants have voted, but only if the board is not already
-      // full so we can hide the scores and let people re-vote without clearing everything.
-      const participants = Object.values(sessionState.clients).filter(({ name }) => name);
-      if (hasNotVotedYet && participants.length > 1 && participants.every(({ score }) => score)) {
-        sessionState.votesVisible = true;
-      }
-      break;
-    }
-    case "setVisibility":
-      sessionState.votesVisible = action.votesVisible;
-      break;
-    case "setSettings":
-      sessionState.settings = action.settings;
-      resetBoard(now, sessionState);
-      break;
-    case "setHost":
-      sessionState.host = action.identifier;
-      break;
-    case "kick": {
-      const target = sessionState.clients[action.identifier];
-      if (target) {
-        target.name = null;
-        target.score = null;
-      }
-      break;
-    }
-    case "reconnect":
-      clientState.name = action.name;
-      // Only try to restore the score on reconnection if we are still on the same
-      // thing we are scoring (implied by the fact that the board has not been reset).
-      // Received epoch can be larger than the local one in case the last connected
-      // client disconnected and we deleted the session.
-      if (action.epoch >= sessionState.epoch) {
-        clientState.score = action.score;
-        sessionState.description = action.description;
-        sessionState.settings = action.settings;
-      }
-      break;
-    case "resetBoard":
-      resetBoard(now, sessionState);
-      break;
-    case "startTimer":
-      startTimer(now, sessionState.timerState);
-      break;
-    case "pauseTimer":
-      pauseTimer(now, sessionState.timerState);
-      break;
-    case "resetTimer":
-      resetTimer(now, sessionState.timerState);
-      break;
-  }
-  broadcastState(now, sessionState);
-}
-
-function initializeClient(sessionState, ws, identifier) {
-  let clientState = sessionState.clients[identifier];
-  if (clientState) {
-    console.log(`Client ${identifier} reconnected using a different socket.`);
-    const previousSocket = clientState.socket;
-    clientState.socket = ws;
-    previousSocket.terminate();
-  } else {
-    console.log(`New client ${identifier} connected.`);
-    clientState = {
-      socket: ws,
-      score: null,
-      name: null,
-      lastHeartbeat: null,
-    };
-    sessionState.clients[identifier] = clientState;
-  }
-  setHeartbeat(clientState);
-  return clientState;
-}
+let shuttingDown = false;
 
 app.prepare().then(() => {
-  const server = createServer((req, res) => {
-    const parsedUrl = parse(req.url, true);
-    handle(req, res, parsedUrl);
-  });
-  const wss = new WebSocket.Server({ server: server });
-  wss.on("connection", (ws, req) => {
+  const server = killable(
+    createServer((req, res) => {
+      const parsedUrl = parse(req.url, true);
+
+      if (req.method === "GET" && parsedUrl.pathname === "/health") {
+        if (shuttingDown) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({ errorCode: "shutting-down" }));
+        } else {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({}));
+        }
+      } else {
+        return handle(req, res, parsedUrl);
+      }
+    })
+  );
+
+  const wss = new WebSocket.Server({ server });
+  wss.on("connection", (socket, req) => {
     const now = new Date();
     const parsedUrl = parse(req.url);
     const sessionName = parsedUrl.pathname.slice(1); // Strip the slash
-    const identifier = new URLSearchParams(parsedUrl.search).get("client_id") || "";
-    const sessionState = initializeSession(now, sessionName, identifier);
-    const clientState = initializeClient(sessionState, ws, identifier);
+    const clientId = new URLSearchParams(parsedUrl.search).get("client_id") || "";
+    const sessionState = initializeSession(now, sessionName, clientId);
+    const clientState = initializeClient(sessionState, socket, clientId);
 
-    ws.on("message", (data) => {
+    socket.on("message", (data) => {
       const now = new Date();
       try {
         const action = JSON.parse(data);
-        processMessage(now, sessionState, identifier, action);
+        processMessage(now, clientState, action);
       } catch (error) {
         console.error(error);
         sendMessage(now, clientState, {
@@ -253,23 +83,13 @@ app.prepare().then(() => {
       }
     });
 
-    ws.on("close", () => {
+    socket.on("close", () => {
       // If another connection took over with the same client ID, we don't
       // cleanup anything here as it will be cleaned up when the new socket
       // disconnects.
-      if (clientState.socket === ws) {
+      if (clientState.socket === socket) {
         const now = new Date();
-        console.log(`Client ${identifier} disconnected.`);
-        clearHeartbeat(clientState);
-        delete sessionState.clients[identifier];
-
-        // Delete the session after last client disconnects
-        if (!Object.keys(sessionState.clients).length) {
-          console.log(`Deleting session ${sessionName}.`);
-          delete state[sessionName];
-        } else {
-          broadcastState(now, sessionState);
-        }
+        cleanupClient(now, clientState);
       }
     });
 
@@ -278,6 +98,20 @@ app.prepare().then(() => {
 
   server.listen(3000, (err) => {
     if (err) throw err;
-    console.log("> Ready on http://localhost:3000");
+    console.log("Listening on :3000");
+  });
+
+  process.on("SIGTERM", () => {
+    console.log("Starting graceful shutdown");
+    shuttingDown = true;
+
+    setTimeout(() => {
+      server.close((err) => {
+        if (err) throw err;
+        console.info("Successful graceful shutdown");
+        process.exit(0);
+      });
+      server.kill();
+    }, shutdownTimeout);
   });
 });

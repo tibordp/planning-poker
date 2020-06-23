@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: planning-poker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: planning-poker
+  namespace: planning-poker
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+  selector:
+    app: planning-poker
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: planning-poker
+  namespace: planning-poker
+spec:
+  selector:
+    matchLabels:
+      app: planning-poker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: planning-poker
+    spec:  
+      containers:
+      - name: planning-poker
+        image: tibordp/planning-poker:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 2
+          periodSeconds: 2
+          successThreshold: 1
+          timeoutSeconds: 1
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: planning-poker
+  namespace: planning-poker
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.com/health-checks: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - planning-poker.example
+    secretName: planning-poker-tls
+  rules:
+  - host: planning-poker.example
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: planning-poker
+          servicePort: 80

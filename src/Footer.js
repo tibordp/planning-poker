@@ -29,29 +29,39 @@ import Box from "@material-ui/core/Box";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import { Timer } from "./Timer";
+import { calculatePermissions } from "./permissions";
 
 const useStyles = makeStyles((theme) => ({
   button: {
     color: theme.palette.grey[700],
   },
+  footer: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    minHeight: theme.spacing(6),
+  },
 }));
 
-export default function Footer({ showTimer, timerState, dispatch, timeDrift }) {
+export default function Footer({ remoteState, dispatch }) {
   const classes = useStyles();
+
+  const showTimer = !!remoteState && remoteState.settings.showTimer;
+  const permissions = !!remoteState && calculatePermissions(remoteState);
+
   return (
     <>
       <Divider />
-      <Box
-        my={1}
-        display="flex"
-        flexDirection="row"
-        flexWrap="wrap"
-        alignItems="center"
-        justifyContent="flex-end"
-      >
-        {timerState && showTimer && (
+      <Box className={classes.footer}>
+        {showTimer && (
           <>
-            <Timer timerState={timerState} dispatch={dispatch} timeDrift={timeDrift} />
+            <Timer
+              canControlTimer={permissions.canControlTimer}
+              timerState={remoteState.timerState}
+              dispatch={dispatch}
+            />
             <div style={{ flexGrow: 1 }} />
           </>
         )}
@@ -71,8 +81,6 @@ export default function Footer({ showTimer, timerState, dispatch, timeDrift }) {
 }
 
 Footer.propTypes = {
-  showTimer: PropTypes.bool,
-  timerState: PropTypes.object,
+  remoteState: PropTypes.object,
   dispatch: PropTypes.func,
-  timeDrift: PropTypes.number,
 };

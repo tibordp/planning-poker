@@ -106,7 +106,7 @@ function Statistics() {
   );
 }
 
-export default function Home() {
+export default function Index() {
   return (
     <Container maxWidth="sm">
       <Logo />
