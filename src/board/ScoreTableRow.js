@@ -15,9 +15,11 @@ import { makeStyles } from "@material-ui/core/styles";
 export const useStyles = makeStyles((theme) => ({
   participantNameCell: {
     fontSize: "larger",
+    wordBreak: "break-all",
   },
   scoreCell: {
     padding: theme.spacing(0.5),
+    whiteSpace: "nowrap",
   },
   scoreChip: {
     marginLeft: theme.spacing(1),

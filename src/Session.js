@@ -50,7 +50,7 @@ export function Session({ remoteState, dispatch }) {
       <Description
         editingEnabled={permissions.canEditDescription}
         settingsEnabled={permissions.canEditSettings}
-        onChange={(value) => dispatch({ action: "setDescription", value: value })}
+        onChange={(value) => dispatch({ action: "setDescription", description: value })}
         description={description}
         onSettingsClick={() => setSettingsOpen(true)}
       />
@@ -62,7 +62,7 @@ export function Session({ remoteState, dispatch }) {
         selectedScore={me.score}
         onSetVisibility={(visibility) =>
           dispatch({
-            action: "setVisibility",
+            action: "setVotesVisible",
             votesVisible: visibility,
           })
         }

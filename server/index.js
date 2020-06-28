@@ -23,6 +23,7 @@
  */
 const { createServer } = require("http");
 const { parse, URLSearchParams } = require("url");
+const { v4: uuidv4 } = require("uuid");
 const next = require("next");
 const killable = require("killable");
 const WebSocket = require("ws");
@@ -65,7 +66,7 @@ app.prepare().then(() => {
     const now = new Date();
     const parsedUrl = parse(req.url);
     const sessionName = parsedUrl.pathname.slice(1); // Strip the slash
-    const clientId = new URLSearchParams(parsedUrl.search).get("client_id") || "";
+    const clientId = new URLSearchParams(parsedUrl.search).get("client_id") || uuidv4();
     const sessionState = initializeSession(now, sessionName, clientId);
     const clientState = initializeClient(sessionState, socket, clientId);
 

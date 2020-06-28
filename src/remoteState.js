@@ -137,7 +137,8 @@ export function useReconnector(sessionName, onAction) {
             epoch: remoteState.epoch,
             settings: remoteState.settings,
             description: remoteState.description,
-            ...remoteState.me,
+            name: remoteState.me.name,
+            score: remoteState.me.score,
           })
         );
       }

@@ -106,16 +106,18 @@ export function MainBoard({
   const medians = getPseudoMedians(scoreSet, allVotesCast);
   const chipStyleMap = (vote) => {
     const isHighlighted = vote === highlightedScore;
-    const ordinaryColor = isHighlighted ? theme.palette.secondary.main : theme.palette.primary.main;
 
     if (!votesVisible || !votesCast.has(vote)) {
       return makeChipStyle(theme.palette.grey[500], false);
     } else if (haveConsensus && vote === scoreDistribution[0][0]) {
       return makeChipStyle(theme.palette.success.main, true);
     } else if (medians.includes(vote)) {
-      return makeChipStyle(ordinaryColor, true);
+      return makeChipStyle(
+        isHighlighted ? theme.palette.primary.main : theme.palette.secondary.main,
+        true
+      );
     } else {
-      return makeChipStyle(ordinaryColor, isHighlighted);
+      return makeChipStyle(theme.palette.primary.main, isHighlighted);
     }
   };
 

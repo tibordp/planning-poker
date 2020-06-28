@@ -21,6 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+const Joi = require("@hapi/joi");
+
 const scorePresets = [
   {
     type: "fibonacci",
@@ -33,18 +35,60 @@ const scorePresets = [
     scores: ["XS", "S", "M", "L", "XL", "XXL", "Pass"],
   },
 ];
+exports.scorePresets = scorePresets;
 
-const defaultSettings = {
-  scoreSet: scorePresets[0].scores,
-  allowParticipantControl: true,
-  allowOpenVoting: true,
-  showTimer: true,
-  resetTimerOnNewEpoch: false,
-};
+const settingsSchema = Joi.object().keys({
+  scoreSet: Joi.array().items(Joi.string()).min(2).default(scorePresets[0].scores),
+  allowParticipantControl: Joi.boolean().default(true),
+  allowOpenVoting: Joi.boolean().default(true),
+  showTimer: Joi.boolean().default(true),
+  resetTimerOnNewEpoch: Joi.boolean().default(false),
+});
+
+exports.defaultSettings = settingsSchema.validate({}).value;
+exports.actionSchema = Joi.alternatives()
+  .try(
+    Joi.object({
+      action: Joi.string().valid("nudge", "setHost", "kick").required(),
+      clientId: Joi.string().required(),
+    }),
+    Joi.object({
+      action: Joi.string().valid("setDescription").required(),
+      description: Joi.string().allow("").required(),
+    }),
+    Joi.object({
+      action: Joi.string().valid("join").required(),
+      name: Joi.string().required(),
+    }),
+    Joi.object({
+      action: Joi.string().valid("vote").required(),
+      score: Joi.string().allow(null).required(),
+    }),
+    Joi.object({
+      action: Joi.string().valid("setVotesVisible").required(),
+      votesVisible: Joi.boolean().required(),
+    }),
+    Joi.object({
+      action: Joi.string().valid("setSettings").required(),
+      settings: settingsSchema.required(),
+    }),
+    Joi.object({
+      action: Joi.string().valid("reconnect").required(),
+      epoch: Joi.number().required(),
+      score: Joi.string().allow(null).required(),
+      name: Joi.string().allow(null).required(),
+      description: Joi.string().allow("").required(),
+      settings: settingsSchema.required(),
+    }),
+    Joi.object({
+      action: Joi.string()
+        .valid("ping", "leave", "resetBoard", "startTimer", "pauseTimer", "resetTimer")
+        .required(),
+    })
+  )
+  .required();
 
 exports.shutdownTimeout = 5000;
 exports.heartbeatTimeout = 10000;
 // For how long to persist the session data after the last client disconnected.
 exports.sessionTtl = 30000;
-exports.defaultSettings = defaultSettings;
-exports.scorePresets = scorePresets;
