@@ -35,6 +35,9 @@ export const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     marginTop: theme.spacing(2),
   },
+  participantText: {
+    wordBreak: "break-all",
+  },
 }));
 
 export function ParticipantPanel({ name, onJoin, onLeave }) {
@@ -89,7 +92,7 @@ export function ParticipantPanel({ name, onJoin, onLeave }) {
       {name && (
         <Grid container direction="row" alignItems="center" spacing={2}>
           <Grid item xs={12} sm={7}>
-            <Typography>
+            <Typography className={classes.participantText}>
               You are voting as <b>{name}</b>.
             </Typography>
           </Grid>

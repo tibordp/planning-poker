@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 const state = require("./state").state;
-const { defaultSettings, heartbeatTimeout, sessionTtl } = require("./constants");
+const { defaultSettings, heartbeatTimeout, sessionTtl, actionSchema } = require("./constants");
 const { serializeSession } = require("./serialization");
 
 function sendMessage(now, clientState, action) {
@@ -123,10 +123,13 @@ function cleanupSession(sessionState) {
   delete state[sessionState.sessionName];
 }
 
-function processMessage(now, clientState, action) {
+function processMessage(now, clientState, receivedAction) {
+  setHeartbeat(clientState);
   const sessionState = clientState.session;
 
-  setHeartbeat(clientState);
+  const { error, value: action } = actionSchema.validate(receivedAction);
+  if (error) throw error;
+
   switch (action.action) {
     case "ping":
       sendMessage(now, clientState, { action: "pong" });
@@ -139,7 +142,7 @@ function processMessage(now, clientState, action) {
       return;
     }
     case "setDescription":
-      sessionState.description = action.value;
+      sessionState.description = action.description;
       break;
     case "join":
       clientState.name = action.name;
@@ -150,16 +153,18 @@ function processMessage(now, clientState, action) {
       break;
     case "vote": {
       const hasNotVotedYet = !clientState.score;
-      clientState.score = action.score;
-      // Show votes after all participants have voted, but only if the board is not already
-      // full so we can hide the scores and let people re-vote without clearing everything.
-      const participants = Object.values(sessionState.clients).filter(({ name }) => name);
-      if (hasNotVotedYet && participants.length > 1 && participants.every(({ score }) => score)) {
-        sessionState.votesVisible = true;
+      if (action.score === null || sessionState.settings.scoreSet.includes(action.score)) {
+        clientState.score = action.score;
+        // Show votes after all participants have voted, but only if the board is not already
+        // full so we can hide the scores and let people re-vote without clearing everything.
+        const participants = Object.values(sessionState.clients).filter(({ name }) => name);
+        if (hasNotVotedYet && participants.length > 1 && participants.every(({ score }) => score)) {
+          sessionState.votesVisible = true;
+        }
       }
       break;
     }
-    case "setVisibility":
+    case "setVotesVisible":
       sessionState.votesVisible = action.votesVisible;
       break;
     case "setSettings":
@@ -184,9 +189,11 @@ function processMessage(now, clientState, action) {
       // Received epoch can be larger than the local one in case the last connected
       // client disconnected and we deleted the session.
       if (action.epoch >= sessionState.epoch) {
-        clientState.score = action.score;
-        sessionState.description = action.description;
         sessionState.settings = action.settings;
+        sessionState.description = action.description;
+        if (action.score === null || sessionState.settings.scoreSet.includes(action.score)) {
+          clientState.score = action.score;
+        }
       }
       break;
     case "resetBoard":

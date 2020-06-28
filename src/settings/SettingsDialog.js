@@ -77,7 +77,7 @@ export function SettingsDialog({ open, onSave, onCancel, settings }) {
               onChange={() => setAllowParticipantControl(!allowParticipantControl)}
             />
           }
-          label="Allow everyone to control session"
+          label="Allow everyone to control the session"
         />
         <FormControlLabel
           control={
