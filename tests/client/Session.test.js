@@ -18,7 +18,7 @@ test.each([
   const tree = renderer
     .create(
       <ThemeProvider theme={theme}>
-        <Session remoteState={state} dispatch={jest.fn()} />
+        <Session remoteState={state} dispatch={jest.fn()} sessionName="session" />
       </ThemeProvider>
     )
     .toJSON();

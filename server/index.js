@@ -68,7 +68,7 @@ app.prepare().then(() => {
     const sessionName = parsedUrl.pathname.slice(1); // Strip the slash
     const clientId = new URLSearchParams(parsedUrl.search).get("client_id") || uuidv4();
     const sessionState = initializeSession(now, sessionName, clientId);
-    const clientState = initializeClient(sessionState, socket, clientId);
+    const clientState = initializeClient(now, sessionState, socket, clientId);
 
     socket.on("message", (data) => {
       const now = new Date();

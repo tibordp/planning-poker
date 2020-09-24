@@ -24,10 +24,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
-import Settings from "@material-ui/icons/Settings";
-import IconButton from "@material-ui/core/IconButton";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Tooltip from "@material-ui/core/Tooltip";
 import Link from "@material-ui/core/Link";
 import ReactMarkdown from "react-markdown";
 import { makeStyles } from "@material-ui/core/styles";
@@ -86,17 +82,11 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.fontSize,
     color: theme.palette.text.primary,
     overflowX: "hidden",
-    maxHeight: 200,
+    maxHeight: 400,
   },
 }));
 
-export function Description({
-  editingEnabled,
-  settingsEnabled,
-  description,
-  onChange,
-  onSettingsClick,
-}) {
+export function Description({ editingEnabled, description, onChange }) {
   const classes = useStyles();
 
   const [localDescription, setLocalDescription] = React.useState(description);
@@ -157,15 +147,6 @@ export function Description({
                 link: Link,
               },
             },
-            endAdornment: settingsEnabled && (
-              <InputAdornment position="end">
-                <Tooltip title="Session settings">
-                  <IconButton onClick={onSettingsClick}>
-                    <Settings />
-                  </IconButton>
-                </Tooltip>
-              </InputAdornment>
-            ),
           }}
         />
       )}
@@ -175,8 +156,6 @@ export function Description({
 
 Description.propTypes = {
   editingEnabled: PropTypes.bool.isRequired,
-  settingsEnabled: PropTypes.bool.isRequired,
   description: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  onSettingsClick: PropTypes.func.isRequired,
 };

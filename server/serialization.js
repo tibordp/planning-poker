@@ -50,7 +50,7 @@ function serializeSession(sessionState, me) {
     description,
     clients,
     votesVisible,
-    startedOn,
+    pagination,
     settings,
     host,
     timerState,
@@ -61,15 +61,31 @@ function serializeSession(sessionState, me) {
     epoch,
     host,
     settings,
-    startedOn,
+    pagination: {
+      ticketIndex: pagination.ticketIndex,
+      ticketCount: pagination.tickets.length,
+    },
     description,
     timerState,
-    votesVisible: votesVisible,
+    votesVisible,
     clients: clientsData,
     ...(me ? { me: serializeClient(me) } : {}),
+  };
+}
+
+function exportSession(sessionState) {
+  const { pagination, settings } = sessionState;
+
+  return {
+    settings,
+    tickets: pagination.tickets.map(({ description, votes }) => ({
+      description,
+      votes,
+    })),
   };
 }
 
 exports.serializeClient = serializeClient;
 exports.serializeClients = serializeClients;
 exports.serializeSession = serializeSession;
+exports.exportSession = exportSession;

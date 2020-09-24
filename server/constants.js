@@ -35,22 +35,27 @@ const scorePresets = [
     scores: ["XS", "S", "M", "L", "XL", "XXL", "Pass"],
   },
 ];
-exports.scorePresets = scorePresets;
 
 const settingsSchema = Joi.object().keys({
-  scoreSet: Joi.array().items(Joi.string()).min(2).default(scorePresets[0].scores),
+  scoreSet: Joi.array().items(Joi.string()).min(2).unique().default(scorePresets[0].scores),
   allowParticipantControl: Joi.boolean().default(true),
   allowOpenVoting: Joi.boolean().default(true),
   showTimer: Joi.boolean().default(true),
-  resetTimerOnNewEpoch: Joi.boolean().default(false),
 });
 
-exports.defaultSettings = settingsSchema.validate({}).value;
 exports.actionSchema = Joi.alternatives()
   .try(
     Joi.object({
       action: Joi.string().valid("nudge", "setHost", "kick").required(),
       clientId: Joi.string().required(),
+    }),
+    Joi.object({
+      action: Joi.string().valid("newTicket").required(),
+      description: Joi.string().optional(),
+    }),
+    Joi.object({
+      action: Joi.string().valid("navigate").required(),
+      ticketIndex: Joi.number().min(0).required(),
     }),
     Joi.object({
       action: Joi.string().valid("setDescription").required(),
@@ -73,6 +78,21 @@ exports.actionSchema = Joi.alternatives()
       settings: settingsSchema.required(),
     }),
     Joi.object({
+      action: Joi.string().valid("importSession").required(),
+      sessionData: Joi.object({
+        settings: settingsSchema.required(),
+        tickets: Joi.array()
+          .items(
+            Joi.object({
+              description: Joi.string().allow("").required(),
+            })
+          )
+          .min(1)
+          .unique()
+          .required(),
+      }),
+    }),
+    Joi.object({
       action: Joi.string().valid("reconnect").required(),
       epoch: Joi.number().required(),
       score: Joi.string().allow(null).required(),
@@ -82,12 +102,22 @@ exports.actionSchema = Joi.alternatives()
     }),
     Joi.object({
       action: Joi.string()
-        .valid("ping", "leave", "resetBoard", "startTimer", "pauseTimer", "resetTimer")
+        .valid(
+          "ping",
+          "leave",
+          "resetBoard",
+          "startTimer",
+          "pauseTimer",
+          "resetTimer",
+          "deleteTicket"
+        )
         .required(),
     })
   )
   .required();
 
+exports.scorePresets = scorePresets;
+exports.defaultSettings = settingsSchema.validate({}).value;
 exports.shutdownTimeout = 5000;
 exports.heartbeatTimeout = 10000;
 // For how long to persist the session data after the last client disconnected.

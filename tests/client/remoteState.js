@@ -10,7 +10,6 @@ const defaultSettings = {
   allowParticipantControl: true,
   allowOpenVoting: true,
   showTimer: true,
-  resetTimerOnNewEpoch: false,
 };
 
 const noControlSettings = {
@@ -22,9 +21,12 @@ const defaultState = {
   epoch: 0,
   host: "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f",
   settings: defaultSettings,
-  startedOn: "2020-06-23T21:31:09.727Z",
   description: "### Markdown",
   timerState: { startTime: "2020-06-23T21:31:09.727Z", pausedTime: null, pausedTotal: 0 },
+  pagination: {
+    ticketIndex: 0,
+    ticketCount: 1,
+  },
   votesVisible: false,
   clients,
   me: host,

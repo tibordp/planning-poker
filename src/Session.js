@@ -24,16 +24,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { VotePanel } from "./VotePanel";
+import { PaginationPanel } from "./PaginationPanel";
 import { MainBoard } from "./board/MainBoard";
 import { Description } from "./Description";
 import { SettingsDialog } from "./settings/SettingsDialog";
 import { ParticipantPanel } from "./ParticipantPanel";
 import { calculatePermissions } from "./permissions";
 
-export function Session({ remoteState, dispatch }) {
+export function Session({ remoteState, dispatch, sessionName }) {
   const [settingsOpen, setSettingsOpen] = React.useState(false);
 
-  const { votesVisible, me, settings, host, clients, description } = remoteState;
+  const { votesVisible, me, settings, host, clients, description, pagination } = remoteState;
   const permissions = calculatePermissions(remoteState);
 
   return (
@@ -41,18 +42,30 @@ export function Session({ remoteState, dispatch }) {
       <SettingsDialog
         open={settingsOpen}
         settings={settings}
+        sessionName={sessionName}
         onCancel={() => setSettingsOpen(false)}
         onSave={(newSettings) => {
           dispatch({ action: "setSettings", settings: newSettings });
           setSettingsOpen(false);
         }}
+        onImport={(sessionData) => {
+          dispatch({ action: "importSession", sessionData });
+          setSettingsOpen(false);
+        }}
+      />
+      <PaginationPanel
+        pagination={pagination}
+        settingsEnabled={permissions.canEditSettings}
+        navigationEnabled={permissions.canEditSettings}
+        onNewTicket={() => dispatch({ action: "newTicket" })}
+        onDeleteTicket={() => dispatch({ action: "deleteTicket" })}
+        onNavigate={(index) => dispatch({ action: "navigate", ticketIndex: index })}
+        onSettingsClick={() => setSettingsOpen(true)}
       />
       <Description
         editingEnabled={permissions.canEditDescription}
-        settingsEnabled={permissions.canEditSettings}
         onChange={(value) => dispatch({ action: "setDescription", description: value })}
         description={description}
-        onSettingsClick={() => setSettingsOpen(true)}
       />
       <VotePanel
         controlEnabled={permissions.canControlVotes}
@@ -118,4 +131,5 @@ export function Session({ remoteState, dispatch }) {
 Session.propTypes = {
   remoteState: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
+  sessionName: PropTypes.string.isRequired,
 };

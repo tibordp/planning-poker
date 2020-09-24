@@ -47,16 +47,55 @@ function broadcastState(now, sessionState) {
   });
 }
 
-function resetBoard(now, sessionState) {
+function resetBoard(now, sessionState, shouldResetTimer = false) {
   sessionState.votesVisible = false;
   sessionState.epoch += 1;
-  sessionState.startedOn = now;
-  if (sessionState.settings.resetTimerOnNewEpoch) {
+  if (shouldResetTimer) {
     resetTimer(now, sessionState.timerState);
   }
   Object.values(sessionState.clients).forEach((c) => {
     c.score = null;
   });
+  sessionState.pagination.tickets[sessionState.pagination.ticketIndex].votes = {};
+}
+
+function savePaginationData(now, sessionState) {
+  const { description, pagination, clients, timerState } = sessionState;
+
+  // Always just merge the scores in to avoid losing info about clients who disconnect
+  const newVotes = pagination.tickets[pagination.ticketIndex].votes || {};
+  Object.values(clients).forEach(({ name, score }) => {
+    if (name) {
+      newVotes[name] = score;
+    }
+  });
+
+  const updatedObject = {
+    description,
+    timerState: {
+      ...timerState,
+      pausedTime: timerState.pausedTime || now,
+    },
+    votes: newVotes,
+  };
+
+  pagination.tickets[pagination.ticketIndex] = updatedObject;
+}
+
+function restorePaginationData(now, sessionState) {
+  const { pagination } = sessionState;
+  const { description, timerState, votes } = pagination.tickets[pagination.ticketIndex];
+  sessionState.description = description;
+  sessionState.timerState = { ...timerState };
+  Object.values(sessionState.clients).forEach((c) => {
+    const score = votes[c.name];
+    if (typeof score !== "undefined") {
+      c.score = score;
+    } else {
+      c.score = null;
+    }
+  });
+  sessionState.votesVisible = true;
 }
 
 function initializeSession(now, sessionName, clientId) {
@@ -68,22 +107,51 @@ function initializeSession(now, sessionName, clientId) {
       description: "",
       ttlTimer: null,
       settings: { ...defaultSettings },
+      pagination: {
+        tickets: [{}],
+        ticketIndex: 0,
+      },
       timerState: {
         startTime: now,
         pausedTime: null,
         pausedTotal: 0,
       },
       votesVisible: false,
-      startedOn: now,
       host: clientId,
       epoch: 0,
       clients: {},
     };
+    savePaginationData(now, sessionState);
   } else {
     clearTimeout(sessionState.ttlTimer);
     sessionState.ttlTimer = null;
   }
   return sessionState;
+}
+
+function initializeClient(now, sessionState, socket, clientId) {
+  let clientState = sessionState.clients[clientId];
+  if (clientState) {
+    console.log(
+      `[${sessionState.sessionName}] Client ${clientId} reconnected using a different socket.`
+    );
+    const previousSocket = clientState.socket;
+    clientState.socket = socket;
+    previousSocket.terminate();
+  } else {
+    console.log(`[${sessionState.sessionName}] New client ${clientId} connected.`);
+    clientState = {
+      session: sessionState,
+      clientId,
+      socket,
+      score: null,
+      name: null,
+      lastHeartbeat: null,
+    };
+    sessionState.clients[clientId] = clientState;
+  }
+  setHeartbeat(clientState);
+  return clientState;
 }
 
 function clearHeartbeat(clientState) {
@@ -131,6 +199,7 @@ function processMessage(now, clientState, receivedAction) {
   if (error) throw error;
 
   switch (action.action) {
+    // Imperative actions that do not mutate server state
     case "ping":
       sendMessage(now, clientState, { action: "pong" });
       return;
@@ -141,10 +210,16 @@ function processMessage(now, clientState, receivedAction) {
       }
       return;
     }
+    // Everything else
     case "setDescription":
       sessionState.description = action.description;
       break;
     case "join":
+      if (
+        Object.values(sessionState.clients).filter(({ name }) => name == action.name).length > 0
+      ) {
+        throw new Error("There is already a participant with this name");
+      }
       clientState.name = action.name;
       break;
     case "leave":
@@ -169,7 +244,7 @@ function processMessage(now, clientState, receivedAction) {
       break;
     case "setSettings":
       sessionState.settings = action.settings;
-      resetBoard(now, sessionState);
+      resetBoard(now, sessionState, true);
       break;
     case "setHost":
       sessionState.host = action.clientId;
@@ -208,33 +283,51 @@ function processMessage(now, clientState, receivedAction) {
     case "resetTimer":
       resetTimer(now, sessionState.timerState);
       break;
-  }
-  broadcastState(now, sessionState);
-}
+    case "importSession":
+      sessionState.pagination.ticketIndex = 0;
+      sessionState.settings = action.sessionData.settings;
+      sessionState.pagination.tickets = action.sessionData.tickets.map(({ description }) => ({
+        description,
+        timerState: {
+          startTime: now,
+          pausedTime: now,
+          pausedTotal: 0,
+        },
+        clients: {},
+      }));
+      restorePaginationData(now, sessionState);
+      resetBoard(now, sessionState);
+      break;
+    case "newTicket":
+      savePaginationData(now, sessionState);
+      sessionState.description = action.description || "";
+      resetBoard(now, sessionState, true);
 
-function initializeClient(sessionState, socket, clientId) {
-  let clientState = sessionState.clients[clientId];
-  if (clientState) {
-    console.log(
-      `[${sessionState.sessionName}] Client ${clientId} reconnected using a different socket.`
-    );
-    const previousSocket = clientState.socket;
-    clientState.socket = socket;
-    previousSocket.terminate();
-  } else {
-    console.log(`[${sessionState.sessionName}] New client ${clientId} connected.`);
-    clientState = {
-      session: sessionState,
-      clientId,
-      socket,
-      score: null,
-      name: null,
-      lastHeartbeat: null,
-    };
-    sessionState.clients[clientId] = clientState;
+      sessionState.pagination.tickets.push({});
+      sessionState.pagination.ticketIndex = sessionState.pagination.tickets.length - 1;
+      sessionState.epoch += 1;
+      break;
+    case "deleteTicket":
+      if (sessionState.pagination.tickets.length > 1) {
+        sessionState.pagination.tickets.splice(sessionState.pagination.ticketIndex, 1);
+        if (sessionState.pagination.ticketIndex == sessionState.pagination.tickets.length) {
+          sessionState.pagination.ticketIndex -= 1;
+        }
+        sessionState.epoch += 1;
+        restorePaginationData(now, sessionState);
+      }
+      break;
+    case "navigate":
+      if (action.ticketIndex < sessionState.pagination.tickets.length) {
+        savePaginationData(now, sessionState);
+        sessionState.pagination.ticketIndex = action.ticketIndex;
+        sessionState.epoch += 1;
+        restorePaginationData(now, sessionState);
+      }
+      break;
   }
-  setHeartbeat(clientState);
-  return clientState;
+  savePaginationData(now, sessionState);
+  broadcastState(now, sessionState);
 }
 
 function cleanupClient(now, clientState) {

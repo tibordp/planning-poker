@@ -20,6 +20,7 @@
     "global": "^4.4.0",
     "killable": "^1.0.1",
     "material-ui-chip-input": "^1.1.0",
+    "material-ui-dropzone": "^3.5.0",
     "next": "9.4.4",
     "notistack": "^0.9.17",
     "random-words": "^1.1.1",

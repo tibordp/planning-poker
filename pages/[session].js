@@ -112,7 +112,9 @@ function SessionPage({ session }) {
               </Box>
             </Card>
           )}
-          {remoteState && <Session remoteState={remoteState} dispatch={dispatch} />}
+          {remoteState && (
+            <Session sessionName={session} remoteState={remoteState} dispatch={dispatch} />
+          )}
           <SessionUrl sessionName={session} />
         </Box>
         <Footer remoteState={remoteState} dispatch={dispatch} />
