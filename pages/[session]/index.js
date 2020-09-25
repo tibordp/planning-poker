@@ -28,16 +28,15 @@ import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Card from "@material-ui/core/Card";
 import Box from "@material-ui/core/Box";
-import { useReconnector, connectionState } from "../src/remoteState";
-import { Session } from "../src/Session";
+import { useReconnector, connectionState, IS_SSR } from "../../src/remoteState";
+import { Session } from "../../src/Session";
 import { makeStyles } from "@material-ui/core/styles";
-import { SessionUrl } from "../src/SessionUrl";
-import Logo from "../src/Logo";
+import { SessionUrl } from "../../src/SessionUrl";
+import Logo from "../../src/Logo";
 import Head from "next/head";
 import removeMarkdown from "remove-markdown";
 import ellipsis from "text-ellipsis";
-import Footer from "../src/Footer";
-
+import Footer from "../../src/Footer";
 import { useSnackbar } from "notistack";
 
 export const useStyles = makeStyles((theme) => ({
@@ -71,6 +70,33 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Something to make it easier to hook TamperMonkey scripts
+function useBrowserApi(sessionName, remoteState, dispatch) {
+  const remoteStateRef = React.useRef();
+  React.useEffect(() => {
+    if (!IS_SSR) {
+      window.__PP_DISPATCH = dispatch;
+      window.__PP_SESSION_NAME = sessionName;
+    }
+  }, [dispatch, sessionName]);
+
+  React.useEffect(() => {
+    if (!IS_SSR) {
+      window.__PP_STATE = remoteState;
+      window.dispatchEvent(
+        new CustomEvent("ppStateChanged", {
+          bubbles: false,
+          detail: {
+            current: remoteState,
+            previous: remoteStateRef.current,
+          },
+        })
+      );
+      remoteStateRef.current = remoteState;
+    }
+  }, [remoteState]);
+}
+
 function SessionPage({ session }) {
   const classes = useStyles();
   const nudgeAudioRef = React.useRef();
@@ -83,11 +109,15 @@ function SessionPage({ session }) {
         document.body.classList.add(classes.shaking);
         setTimeout(() => document.body.classList.remove(classes.shaking), 500);
         break;
+      case "kicked":
+        enqueueSnackbar("You have been kicked from the session!", { variant: "warning" });
+        break;
       case "error":
         enqueueSnackbar(message.error, { variant: "error" });
         break;
     }
   });
+  useBrowserApi(session, remoteState, dispatch);
 
   return (
     <>
@@ -112,7 +142,9 @@ function SessionPage({ session }) {
               </Box>
             </Card>
           )}
-          {remoteState && <Session remoteState={remoteState} dispatch={dispatch} />}
+          {remoteState && (
+            <Session sessionName={session} remoteState={remoteState} dispatch={dispatch} />
+          )}
           <SessionUrl sessionName={session} />
         </Box>
         <Footer remoteState={remoteState} dispatch={dispatch} />

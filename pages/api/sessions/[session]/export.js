@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-const state = require("../../../server/state").state;
-const { serializeSession } = require("../../../server/serialization");
+const state = require("../../../../server/state").state;
+const { exportSession } = require("../../../../server/serialization");
 
 export default (req, res) => {
   const session = state[`${req.query.session}`];
   if (session) {
-    res.status(200).json(serializeSession(session));
+    res.setHeader("Content-Disposition", `attachment; filename=${session.sessionName}.json`);
+    res.status(200).json(exportSession(session));
   } else {
     res.status(404).json({ errorCode: "session-not-found" });
   }

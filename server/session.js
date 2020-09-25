@@ -47,16 +47,60 @@ function broadcastState(now, sessionState) {
   });
 }
 
-function resetBoard(now, sessionState) {
+function resetBoard(now, sessionState, shouldResetTimer = false) {
   sessionState.votesVisible = false;
   sessionState.epoch += 1;
-  sessionState.startedOn = now;
-  if (sessionState.settings.resetTimerOnNewEpoch) {
+  if (shouldResetTimer) {
     resetTimer(now, sessionState.timerState);
   }
   Object.values(sessionState.clients).forEach((c) => {
     c.score = null;
   });
+  sessionState.pagination.pages[sessionState.pagination.pageIndex].votes = {};
+}
+
+function savePaginationData(now, sessionState) {
+  const { description, pagination, clients, timerState } = sessionState;
+
+  // Always just merge the scores in to avoid losing info about clients who disconnect
+  const newVotes = pagination.pages[pagination.pageIndex].votes || {};
+  Object.values(clients).forEach(({ name, score }) => {
+    if (name) {
+      if (score) {
+        newVotes[name] = score;
+      } else {
+        delete newVotes[name];
+      }
+    }
+  });
+
+  const updatedObject = {
+    description,
+    timerState: {
+      ...timerState,
+      pausedTime: timerState.pausedTime || now,
+    },
+    votes: newVotes,
+  };
+
+  pagination.pages[pagination.pageIndex] = updatedObject;
+}
+
+function restorePaginationData(now, sessionState) {
+  const { pagination, clients } = sessionState;
+  const { description, timerState, votes } = pagination.pages[pagination.pageIndex];
+  sessionState.description = description;
+  sessionState.timerState = { ...timerState };
+  Object.values(sessionState.clients).forEach((c) => {
+    const score = votes[c.name];
+    if (typeof score !== "undefined") {
+      c.score = score;
+    } else {
+      c.score = null;
+    }
+  });
+  const participants = Object.values(clients).filter(({ name }) => name);
+  sessionState.votesVisible = participants.length > 1 && participants.every(({ score }) => score);
 }
 
 function initializeSession(now, sessionName, clientId) {
@@ -68,22 +112,51 @@ function initializeSession(now, sessionName, clientId) {
       description: "",
       ttlTimer: null,
       settings: { ...defaultSettings },
+      pagination: {
+        pages: [{}],
+        pageIndex: 0,
+      },
       timerState: {
         startTime: now,
         pausedTime: null,
         pausedTotal: 0,
       },
       votesVisible: false,
-      startedOn: now,
       host: clientId,
       epoch: 0,
       clients: {},
     };
+    savePaginationData(now, sessionState);
   } else {
     clearTimeout(sessionState.ttlTimer);
     sessionState.ttlTimer = null;
   }
   return sessionState;
+}
+
+function initializeClient(now, sessionState, socket, clientId) {
+  let clientState = sessionState.clients[clientId];
+  if (clientState) {
+    console.log(
+      `[${sessionState.sessionName}] Client ${clientId} reconnected using a different socket.`
+    );
+    const previousSocket = clientState.socket;
+    clientState.socket = socket;
+    previousSocket.terminate();
+  } else {
+    console.log(`[${sessionState.sessionName}] New client ${clientId} connected.`);
+    clientState = {
+      session: sessionState,
+      clientId,
+      socket,
+      score: null,
+      name: null,
+      lastHeartbeat: null,
+    };
+    sessionState.clients[clientId] = clientState;
+  }
+  setHeartbeat(clientState);
+  return clientState;
 }
 
 function clearHeartbeat(clientState) {
@@ -126,11 +199,13 @@ function cleanupSession(sessionState) {
 function processMessage(now, clientState, receivedAction) {
   setHeartbeat(clientState);
   const sessionState = clientState.session;
+  const currentPage = sessionState.pagination.pages[sessionState.pagination.pageIndex];
 
   const { error, value: action } = actionSchema.validate(receivedAction);
   if (error) throw error;
 
   switch (action.action) {
+    // Imperative actions that do not mutate server state
     case "ping":
       sendMessage(now, clientState, { action: "pong" });
       return;
@@ -141,11 +216,18 @@ function processMessage(now, clientState, receivedAction) {
       }
       return;
     }
+    // Everything else
     case "setDescription":
       sessionState.description = action.description;
       break;
     case "join":
+      if (
+        Object.values(sessionState.clients).filter(({ name }) => name == action.name).length > 0
+      ) {
+        throw new Error("There is already a participant with this name");
+      }
       clientState.name = action.name;
+      clientState.score = currentPage.votes[clientState.name] || null;
       break;
     case "leave":
       clientState.name = null;
@@ -169,7 +251,7 @@ function processMessage(now, clientState, receivedAction) {
       break;
     case "setSettings":
       sessionState.settings = action.settings;
-      resetBoard(now, sessionState);
+      resetBoard(now, sessionState, true);
       break;
     case "setHost":
       sessionState.host = action.clientId;
@@ -177,22 +259,34 @@ function processMessage(now, clientState, receivedAction) {
     case "kick": {
       const target = sessionState.clients[action.clientId];
       if (target) {
+        delete currentPage.votes[target.name];
         target.name = null;
         target.score = null;
+        sendMessage(now, target, { action: "kicked" });
       }
       break;
     }
+    case "kickDisconnected": {
+      delete currentPage.votes[action.name];
+      break;
+    }
     case "reconnect":
-      clientState.name = action.name;
-      // Only try to restore the score on reconnection if we are still on the same
-      // thing we are scoring (implied by the fact that the board has not been reset).
-      // Received epoch can be larger than the local one in case the last connected
-      // client disconnected and we deleted the session.
-      if (action.epoch >= sessionState.epoch) {
-        sessionState.settings = action.settings;
-        sessionState.description = action.description;
-        if (action.score === null || sessionState.settings.scoreSet.includes(action.score)) {
+      if (
+        Object.values(sessionState.clients).filter(({ name }) => name == action.name).length == 0
+      ) {
+        clientState.name = action.name;
+        // Only try to restore the score on reconnection if we are still on the same
+        // thing we are scoring (implied by the fact that the board has not been reset).
+        // Received epoch can be larger than the local one in case the last connected
+        // client disconnected and we deleted the session. Otherwise we restore from
+        // stored scores.
+        if (
+          action.epoch == sessionState.epoch &&
+          (action.score === null || sessionState.settings.scoreSet.includes(action.score))
+        ) {
           clientState.score = action.score;
+        } else {
+          clientState.score = currentPage.votes[clientState.name] || null;
         }
       }
       break;
@@ -208,33 +302,51 @@ function processMessage(now, clientState, receivedAction) {
     case "resetTimer":
       resetTimer(now, sessionState.timerState);
       break;
-  }
-  broadcastState(now, sessionState);
-}
+    case "importSession":
+      sessionState.pagination.pageIndex = 0;
+      sessionState.settings = action.sessionData.settings;
+      sessionState.pagination.pages = action.sessionData.pages.map(({ description }) => ({
+        description,
+        timerState: {
+          startTime: now,
+          pausedTime: now,
+          pausedTotal: 0,
+        },
+        votes: {},
+      }));
+      restorePaginationData(now, sessionState);
+      resetBoard(now, sessionState);
+      break;
+    case "newPage":
+      savePaginationData(now, sessionState);
+      sessionState.description = action.description || "";
+      sessionState.pagination.pages.push({});
+      sessionState.pagination.pageIndex = sessionState.pagination.pages.length - 1;
+      sessionState.epoch += 1;
 
-function initializeClient(sessionState, socket, clientId) {
-  let clientState = sessionState.clients[clientId];
-  if (clientState) {
-    console.log(
-      `[${sessionState.sessionName}] Client ${clientId} reconnected using a different socket.`
-    );
-    const previousSocket = clientState.socket;
-    clientState.socket = socket;
-    previousSocket.terminate();
-  } else {
-    console.log(`[${sessionState.sessionName}] New client ${clientId} connected.`);
-    clientState = {
-      session: sessionState,
-      clientId,
-      socket,
-      score: null,
-      name: null,
-      lastHeartbeat: null,
-    };
-    sessionState.clients[clientId] = clientState;
+      resetBoard(now, sessionState, true);
+      break;
+    case "deletePage":
+      if (sessionState.pagination.pages.length > 1) {
+        sessionState.pagination.pages.splice(sessionState.pagination.pageIndex, 1);
+        if (sessionState.pagination.pageIndex == sessionState.pagination.pages.length) {
+          sessionState.pagination.pageIndex -= 1;
+        }
+        sessionState.epoch += 1;
+        restorePaginationData(now, sessionState);
+      }
+      break;
+    case "navigate":
+      if (action.pageIndex < sessionState.pagination.pages.length) {
+        savePaginationData(now, sessionState);
+        sessionState.pagination.pageIndex = action.pageIndex;
+        sessionState.epoch += 1;
+        restorePaginationData(now, sessionState);
+      }
+      break;
   }
-  setHeartbeat(clientState);
-  return clientState;
+  savePaginationData(now, sessionState);
+  broadcastState(now, sessionState);
 }
 
 function cleanupClient(now, clientState) {
@@ -245,9 +357,7 @@ function cleanupClient(now, clientState) {
   delete sessionState.clients[clientState.clientId];
 
   // Delete the session after last client disconnects, but allow for a grace period
-  // in case e.g. the host had some connectivity issues. The reconnection logic will
-  // restore the session state even if we already reaped the session, but certain things,
-  // like the timer state are not preserved.
+  // in case e.g. the host had some connectivity issues.
   if (!Object.keys(sessionState.clients).length) {
     console.log(`[${sessionState.sessionName}] Scheduling session for deletion.`);
     sessionState.ttlTimer = setTimeout(cleanupSession, sessionTtl, sessionState);

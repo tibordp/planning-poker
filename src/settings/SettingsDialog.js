@@ -32,26 +32,36 @@ import { scorePresets } from "../../server/constants";
 import { ScoreSetSelector } from "./ScoreSetSelector";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Link from "@material-ui/core/Link";
+import { DropzoneAreaBase } from "material-ui-dropzone";
 
-export function SettingsDialog({ open, onSave, onCancel, settings }) {
+import { makeStyles } from "@material-ui/core/styles";
+
+export const useStyles = makeStyles((theme) => ({
+  dropArea: {
+    padding: theme.spacing(2),
+  },
+}));
+
+export function SettingsDialog({ open, onSave, onCancel, onImport, settings, sessionName }) {
+  const classes = useStyles();
+
   const [scoreSet, setScoreSet] = React.useState(scorePresets[0].scores);
   const [allowParticipantControl, setAllowParticipantControl] = React.useState(
     settings.allowParticipantControl
   );
   const [allowOpenVoting, setAllowOpenVoting] = React.useState(settings.allowOpenVoting);
-  const [showTimer, setShowTimer] = React.useState(settings.showTimer);
-  const [resetTimerOnNewEpoch, setResetTimerOnNewEpoch] = React.useState(
-    settings.resetTimerOnNewEpoch
+  const [allowParticipantPagination, setAllowParticipantPagination] = React.useState(
+    settings.allowParticipantPagination
   );
+  const [showTimer, setShowTimer] = React.useState(settings.showTimer);
 
   React.useEffect(() => {
     if (open) {
       setScoreSet(settings.scoreSet);
       setAllowParticipantControl(settings.allowParticipantControl);
+      setAllowParticipantPagination(settings.allowParticipantPagination);
       setAllowOpenVoting(settings.allowOpenVoting);
       setShowTimer(settings.showTimer);
-      setResetTimerOnNewEpoch(settings.resetTimerOnNewEpoch);
     }
   }, [open]);
 
@@ -59,9 +69,21 @@ export function SettingsDialog({ open, onSave, onCancel, settings }) {
     ...settings,
     scoreSet: scoreSet,
     allowParticipantControl: allowParticipantControl,
+    allowParticipantPagination: allowParticipantPagination,
     allowOpenVoting: allowOpenVoting,
     showTimer: showTimer,
-    resetTimerOnNewEpoch: resetTimerOnNewEpoch,
+  };
+
+  const exportPages = () => {
+    window.open(`/api/sessions/${encodeURIComponent(sessionName)}/export`);
+  };
+
+  const handleUpload = (files) => {
+    var reader = new FileReader();
+    reader.onload = (event) => {
+      onImport(JSON.parse(event.target.result));
+    };
+    reader.readAsText(files[0].file);
   };
 
   return (
@@ -77,7 +99,16 @@ export function SettingsDialog({ open, onSave, onCancel, settings }) {
               onChange={() => setAllowParticipantControl(!allowParticipantControl)}
             />
           }
-          label="Allow everyone to control the session"
+          label="Allow everyone to show/hide/clear votes"
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={allowParticipantPagination}
+              onChange={() => setAllowParticipantPagination(!allowParticipantPagination)}
+            />
+          }
+          label="Allow everyone to change pages"
         />
         <FormControlLabel
           control={
@@ -92,28 +123,20 @@ export function SettingsDialog({ open, onSave, onCancel, settings }) {
           control={<Switch checked={showTimer} onChange={() => setShowTimer(!showTimer)} />}
           label="Show timer"
         />
-        <FormControlLabel
-          control={
-            <Switch
-              disabled={!showTimer}
-              checked={resetTimerOnNewEpoch}
-              onChange={() => setResetTimerOnNewEpoch(!resetTimerOnNewEpoch)}
-            />
-          }
-          label="Reset timer when the votes are cleared"
-        />
-        <p>
-          Bookmarklet for creating new sessions with the selected settings:{" "}
-          <Link
-            target="_blank"
-            title="New Planning Poker session"
-            href={`/new-session?settings=${encodeURIComponent(JSON.stringify(updatedSettings))}`}
-          >
-            New Planning Poker session
-          </Link>
-        </p>
       </DialogContent>
+      <div className={classes.dropArea}>
+        <DropzoneAreaBase
+          dropzoneText="Import exported session"
+          onAdd={handleUpload}
+          showAlerts={false}
+          filesLimit={1}
+        />
+      </div>
       <DialogActions>
+        <Button autoFocus onClick={exportPages} color="primary">
+          Export session
+        </Button>
+        <div style={{ flex: "1 0 0" }} />
         <Button autoFocus onClick={onCancel} color="primary">
           Cancel
         </Button>
@@ -133,6 +156,8 @@ export function SettingsDialog({ open, onSave, onCancel, settings }) {
 SettingsDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onSave: PropTypes.func.isRequired,
+  onImport: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
+  sessionName: PropTypes.string.isRequired,
 };

@@ -135,8 +135,6 @@ export function useReconnector(sessionName, onAction) {
           `session_data:${sessionName}`,
           JSON.stringify({
             epoch: remoteState.epoch,
-            settings: remoteState.settings,
-            description: remoteState.description,
             name: remoteState.me.name,
             score: remoteState.me.score,
           })

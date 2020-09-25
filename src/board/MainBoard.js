@@ -31,7 +31,7 @@ import { ScoreTableRow } from "./ScoreTableRow";
 import { ScoreSummary } from "./ScoreSummary";
 import { useTheme } from "@material-ui/core/styles";
 
-const makeChipStyle = (color, highlighted) => ({
+export const makeChipStyle = (color, highlighted) => ({
   variant: highlighted ? "default" : "outlined",
   style: highlighted
     ? {
@@ -58,7 +58,7 @@ const makeChipStyle = (color, highlighted) => ({
  * @param {*} scoreSet
  * @param {*} allVotesCast
  */
-function getPseudoMedians(scoreSet, allVotesCast) {
+export function getPseudoMedians(scoreSet, allVotesCast) {
   const sortedIndexes = allVotesCast.map((score) => scoreSet.indexOf(score)).sort();
   let indexes = [];
   if (!sortedIndexes.length) {
@@ -85,18 +85,26 @@ export function MainBoard({
   selfClientId,
   hostClientId,
   votesVisible,
+  disconnectedClients,
+  canSeeDisconnectedClients,
   canNudge,
   canPromoteToHost,
   onNudge,
   onPromoteToHost,
   onKick,
+  onKickDisconnected,
 }) {
   const theme = useTheme();
   const [highlightedScore, setHighlightedScore] = React.useState(null);
 
-  const allVotesCast = clients
+  let allVotesCast = clients
     .filter(({ name, score }) => name && scoreSet.includes(score) && score !== "Pass")
     .map(({ score }) => score);
+
+  if (canSeeDisconnectedClients) {
+    allVotesCast = [...allVotesCast, ...Object.values(disconnectedClients)];
+  }
+
   const votesCast = new Set(allVotesCast);
   const scoreDistribution = [...votesCast]
     .map((score) => [score, allVotesCast.filter((s) => score === s).length])
@@ -124,16 +132,28 @@ export function MainBoard({
   // Sort the table by the value of the votes, putting the abstainers at the
   // bottom. If the votes are not visible, we use the default order so as not
   // to leak information about scores before the reveal.
-  let sortedClients;
+  let displayedClients = clients
+    .filter(({ name }) => name)
+    .map(({ clientId, name, score }) => ({ clientId, name, score }));
+
+  if (canSeeDisconnectedClients) {
+    displayedClients = [
+      ...displayedClients,
+      ...Object.entries(disconnectedClients).map(([name, score]) => ({
+        clientId: null,
+        name,
+        score,
+      })),
+    ].sort((a, b) => a.name.localeCompare(b.name));
+  }
+
   if (votesVisible) {
-    sortedClients = [
-      ...clients
+    displayedClients = [
+      ...displayedClients
         .filter(({ score }) => votesCast.has(score))
         .sort((a, b) => scoreSet.indexOf(a.score) - scoreSet.indexOf(b.score)),
-      ...clients.filter(({ score }) => !votesCast.has(score)),
+      ...displayedClients.filter(({ score }) => !votesCast.has(score)),
     ];
-  } else {
-    sortedClients = clients;
   }
 
   return (
@@ -148,24 +168,24 @@ export function MainBoard({
       <TableContainer>
         <Table size="medium">
           <TransitionGroup component={TableBody}>
-            {sortedClients
-              .filter(({ name }) => name)
-              .map(({ clientId, name, score }) => (
-                <ScoreTableRow
-                  key={clientId}
-                  votesVisible={votesVisible}
-                  isSelf={clientId === selfClientId}
-                  isHost={clientId === hostClientId}
-                  chipStyleMap={chipStyleMap}
-                  name={name}
-                  score={score}
-                  canNudge={canNudge}
-                  canPromoteToHost={canPromoteToHost}
-                  onNudge={() => onNudge(clientId)}
-                  onPromoteToHost={() => onPromoteToHost(clientId)}
-                  onKick={() => onKick(clientId)}
-                />
-              ))}
+            {displayedClients.map(({ clientId, name, score }) => (
+              <ScoreTableRow
+                key={name}
+                votesVisible={votesVisible}
+                isSelf={clientId === selfClientId}
+                isHost={clientId === hostClientId}
+                isDisconnected={!clientId}
+                chipStyleMap={chipStyleMap}
+                name={name}
+                score={score}
+                canNudge={clientId && canNudge}
+                canPromoteToHost={clientId && canPromoteToHost}
+                canKick={canPromoteToHost}
+                onNudge={() => onNudge(clientId)}
+                onPromoteToHost={() => onPromoteToHost(clientId)}
+                onKick={() => (clientId ? onKick(clientId) : onKickDisconnected(name))}
+              />
+            ))}
           </TransitionGroup>
         </Table>
       </TableContainer>
@@ -176,12 +196,15 @@ export function MainBoard({
 MainBoard.propTypes = {
   clients: PropTypes.arrayOf(PropTypes.object).isRequired,
   scoreSet: PropTypes.arrayOf(PropTypes.string).isRequired,
+  disconnectedClients: PropTypes.object.isRequired,
   selfClientId: PropTypes.string.isRequired,
   hostClientId: PropTypes.string.isRequired,
   votesVisible: PropTypes.bool.isRequired,
   canNudge: PropTypes.bool.isRequired,
   canPromoteToHost: PropTypes.bool.isRequired,
+  canSeeDisconnectedClients: PropTypes.bool.isRequired,
   onNudge: PropTypes.func.isRequired,
   onPromoteToHost: PropTypes.func.isRequired,
   onKick: PropTypes.func.isRequired,
+  onKickDisconnected: PropTypes.func.isRequired,
 };

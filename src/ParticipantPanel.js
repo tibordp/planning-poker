@@ -40,7 +40,7 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function ParticipantPanel({ name, onJoin, onLeave }) {
+export function ParticipantPanel({ name, participantNames, onJoin, onLeave }) {
   const classes = useStyles();
   const [selectedName, setSelectedName] = React.useState("");
 
@@ -77,7 +77,7 @@ export function ParticipantPanel({ name, onJoin, onLeave }) {
             </Grid>
             <Grid item xs={12} sm={4}>
               <Button
-                disabled={!selectedName}
+                disabled={!selectedName || participantNames.includes(selectedName)}
                 variant="outlined"
                 color="primary"
                 type="submit"
@@ -109,6 +109,7 @@ export function ParticipantPanel({ name, onJoin, onLeave }) {
 
 ParticipantPanel.propTypes = {
   name: PropTypes.string,
+  participantNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   onJoin: PropTypes.func.isRequired,
   onLeave: PropTypes.func.isRequired,
 };

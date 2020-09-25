@@ -15,7 +15,7 @@ test("client connected", () => {
 
   const socket = fakeSocket();
   const sessionState = session.initializeSession(now, sessionName, "client-id");
-  const clientState = session.initializeClient(sessionState, socket, "client-id");
+  const clientState = session.initializeClient(now, sessionState, socket, "client-id");
 
   expect(state[sessionName]).toBe(sessionState);
   expect(sessionState.clients["client-id"]).toBe(clientState);
@@ -37,11 +37,9 @@ test("client connected", () => {
     settings: {
       allowOpenVoting: true,
       allowParticipantControl: true,
-      resetTimerOnNewEpoch: false,
       scoreSet: ["0.5", "1", "2", "3", "5", "8", "13", "21", "100", "Pass"],
       showTimer: true,
     },
-    startedOn: now,
     timerState: {
       pausedTime: null,
       pausedTotal: 0,
@@ -58,11 +56,11 @@ test("client reconnected", () => {
 
   const socket1 = fakeSocket();
   const sessionState1 = session.initializeSession(now, sessionName, "client-id");
-  const clientState1 = session.initializeClient(sessionState1, socket1, "client-id");
+  const clientState1 = session.initializeClient(now, sessionState1, socket1, "client-id");
 
   const socket2 = fakeSocket();
   const sessionState2 = session.initializeSession(now, sessionName, "client-id");
-  const clientState2 = session.initializeClient(sessionState2, socket2, "client-id");
+  const clientState2 = session.initializeClient(now, sessionState2, socket2, "client-id");
 
   expect(sessionState1).toBe(sessionState2);
   expect(clientState1).toBe(clientState2);
@@ -76,7 +74,7 @@ test("client disconnected", () => {
 
   const socket = fakeSocket();
   const sessionState = session.initializeSession(now, sessionName, "client-id");
-  const clientState = session.initializeClient(sessionState, socket, "client-id");
+  const clientState = session.initializeClient(now, sessionState, socket, "client-id");
 
   jest.useFakeTimers(); // Clean any timers from before
 

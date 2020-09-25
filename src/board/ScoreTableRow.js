@@ -8,6 +8,7 @@ import Slide from "@material-ui/core/Slide";
 import Notifications from "@material-ui/icons/Notifications";
 import VerifiedUser from "@material-ui/icons/VerifiedUser";
 import RemoveCircleOutline from "@material-ui/icons/RemoveCircleOutline";
+import WifiOff from "@material-ui/icons/WifiOff";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import { makeStyles } from "@material-ui/core/styles";
@@ -30,16 +31,25 @@ export const useStyles = makeStyles((theme) => ({
     height: 18,
     verticalAlign: "sub",
   },
+  disconnected: {
+    color: theme.palette.text.secondary,
+  },
+  disconnectedBadge: {
+    height: 18,
+    verticalAlign: "sub",
+  },
 }));
 
 export function ScoreTableRow({
   isSelf,
   isHost,
+  isDisconnected,
   chipStyleMap,
   votesVisible,
   name,
   score,
   canNudge,
+  canKick,
   canPromoteToHost,
   onNudge,
   onKick,
@@ -54,7 +64,15 @@ export function ScoreTableRow({
     <Slide direction="right" timeout={500} in mountOnEnter unmountOnExit {...transitionProps}>
       <TableRow onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)} hover>
         <TableCell className={classes.participantNameCell} component="th" scope="row">
-          {name}
+          <span className={isDisconnected ? classes.disconnected : undefined}>
+            {name}
+            {isDisconnected && (
+              <Tooltip title="Disconnected">
+                <WifiOff className={classes.disconnectedBadge} />
+              </Tooltip>
+            )}
+          </span>
+
           {isHost && isHover && (
             <Tooltip title="Session host">
               <VerifiedUser className={classes.hostBadge} />
@@ -62,8 +80,8 @@ export function ScoreTableRow({
           )}
         </TableCell>
         <TableCell className={classes.scoreCell} align="right">
-          {isHover && !isSelf && !isHost && canPromoteToHost && (
-            <Tooltip title={`Remove as voter`}>
+          {isHover && !isSelf && !isHost && canKick && (
+            <Tooltip title={`Kick`}>
               <IconButton onClick={onKick}>
                 <RemoveCircleOutline />
               </IconButton>
@@ -106,11 +124,13 @@ export function ScoreTableRow({
 ScoreTableRow.propTypes = {
   isSelf: PropTypes.bool.isRequired,
   isHost: PropTypes.bool.isRequired,
+  isDisconnected: PropTypes.bool.isRequired,
   chipStyleMap: PropTypes.func.isRequired,
   votesVisible: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   score: PropTypes.string,
   canNudge: PropTypes.bool.isRequired,
+  canKick: PropTypes.bool.isRequired,
   canPromoteToHost: PropTypes.bool.isRequired,
   onNudge: PropTypes.func.isRequired,
   onKick: PropTypes.func.isRequired,

@@ -24,16 +24,26 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { VotePanel } from "./VotePanel";
+import { PaginationPanel } from "./PaginationPanel";
 import { MainBoard } from "./board/MainBoard";
 import { Description } from "./Description";
 import { SettingsDialog } from "./settings/SettingsDialog";
 import { ParticipantPanel } from "./ParticipantPanel";
 import { calculatePermissions } from "./permissions";
 
-export function Session({ remoteState, dispatch }) {
+export function Session({ remoteState, dispatch, sessionName }) {
   const [settingsOpen, setSettingsOpen] = React.useState(false);
 
-  const { votesVisible, me, settings, host, clients, description } = remoteState;
+  const {
+    votesVisible,
+    me,
+    settings,
+    host,
+    clients,
+    description,
+    disconnectedClients,
+    pagination,
+  } = remoteState;
   const permissions = calculatePermissions(remoteState);
 
   return (
@@ -41,18 +51,30 @@ export function Session({ remoteState, dispatch }) {
       <SettingsDialog
         open={settingsOpen}
         settings={settings}
+        sessionName={sessionName}
         onCancel={() => setSettingsOpen(false)}
         onSave={(newSettings) => {
           dispatch({ action: "setSettings", settings: newSettings });
           setSettingsOpen(false);
         }}
+        onImport={(sessionData) => {
+          dispatch({ action: "importSession", sessionData });
+          setSettingsOpen(false);
+        }}
+      />
+      <PaginationPanel
+        pagination={pagination}
+        settingsEnabled={permissions.canEditSettings}
+        paginationEnabled={permissions.canPaginate}
+        onNewPage={() => dispatch({ action: "newPage" })}
+        onDeletePage={() => dispatch({ action: "deletePage" })}
+        onNavigate={(index) => dispatch({ action: "navigate", pageIndex: index })}
+        onSettingsClick={() => setSettingsOpen(true)}
       />
       <Description
         editingEnabled={permissions.canEditDescription}
-        settingsEnabled={permissions.canEditSettings}
         onChange={(value) => dispatch({ action: "setDescription", description: value })}
         description={description}
-        onSettingsClick={() => setSettingsOpen(true)}
       />
       <VotePanel
         controlEnabled={permissions.canControlVotes}
@@ -81,28 +103,37 @@ export function Session({ remoteState, dispatch }) {
         hostClientId={host}
         votesVisible={votesVisible}
         canNudge={permissions.canNudge}
+        disconnectedClients={disconnectedClients}
+        canSeeDisconnectedClients={permissions.canSeeDisconnectedClients}
         canPromoteToHost={permissions.canPromoteToHost}
         onNudge={(clientId) =>
           dispatch({
             action: "nudge",
-            clientId: clientId,
+            clientId,
           })
         }
         onPromoteToHost={(clientId) =>
           dispatch({
             action: "setHost",
-            clientId: clientId,
+            clientId,
           })
         }
         onKick={(clientId) =>
           dispatch({
             action: "kick",
-            clientId: clientId,
+            clientId,
+          })
+        }
+        onKickDisconnected={(name) =>
+          dispatch({
+            action: "kickDisconnected",
+            name,
           })
         }
       />
       <ParticipantPanel
         name={me.name}
+        participantNames={clients.map(({ name }) => name)}
         onJoin={(name) =>
           dispatch({
             action: "join",
@@ -118,4 +149,5 @@ export function Session({ remoteState, dispatch }) {
 Session.propTypes = {
   remoteState: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
+  sessionName: PropTypes.string.isRequired,
 };
