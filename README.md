@@ -4,9 +4,9 @@ This is a a Planning Poker app, useful for Scrum grooming sessions to avoid anch
 
 ## Screenshots
 
-Scores hidden                |  Scores visible              |  Session settings
-:---------------------------:|:----------------------------:|:-----------------:
-![](./docs/hidden_scores.png)|![](./docs/visible_scores.png)| ![](./docs/settings.png)
+Scores hidden           |  Scores visible          |  Session settings
+:----------------------:|:------------------------:|:------------------------:
+![](./docs/hidden.png)  |![](./docs/visible.png)   | ![](./docs/settings.png)
 
 ## Features
 
@@ -31,7 +31,7 @@ When you are in a live session, Planning Poker injects three objects to `window`
  
 A custom event `ppStateChanged` is also dispatched to `window` every time the state of the state of the board changes, for example:
 
-```
+```javascript
 window.addEventListener("ppStateChanged", function(evt) {
     const { previous, current } = evt.detail;
     if (previous.votesVisible !== current.votesVisible) {
@@ -45,7 +45,7 @@ window.addEventListener("ppStateChanged", function(evt) {
 
 ### Command reference
 
-```
+```javascript
 const dispatch = window.__PP_DISPATCH;
 
 // Set the session parameters
