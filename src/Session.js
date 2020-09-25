@@ -34,7 +34,16 @@ import { calculatePermissions } from "./permissions";
 export function Session({ remoteState, dispatch, sessionName }) {
   const [settingsOpen, setSettingsOpen] = React.useState(false);
 
-  const { votesVisible, me, settings, host, clients, description, pagination } = remoteState;
+  const {
+    votesVisible,
+    me,
+    settings,
+    host,
+    clients,
+    description,
+    disconnectedClients,
+    pagination,
+  } = remoteState;
   const permissions = calculatePermissions(remoteState);
 
   return (
@@ -56,10 +65,10 @@ export function Session({ remoteState, dispatch, sessionName }) {
       <PaginationPanel
         pagination={pagination}
         settingsEnabled={permissions.canEditSettings}
-        navigationEnabled={permissions.canEditSettings}
-        onNewTicket={() => dispatch({ action: "newTicket" })}
-        onDeleteTicket={() => dispatch({ action: "deleteTicket" })}
-        onNavigate={(index) => dispatch({ action: "navigate", ticketIndex: index })}
+        paginationEnabled={permissions.canPaginate}
+        onNewPage={() => dispatch({ action: "newPage" })}
+        onDeletePage={() => dispatch({ action: "deletePage" })}
+        onNavigate={(index) => dispatch({ action: "navigate", pageIndex: index })}
         onSettingsClick={() => setSettingsOpen(true)}
       />
       <Description
@@ -94,28 +103,37 @@ export function Session({ remoteState, dispatch, sessionName }) {
         hostClientId={host}
         votesVisible={votesVisible}
         canNudge={permissions.canNudge}
+        disconnectedClients={disconnectedClients}
+        canSeeDisconnectedClients={permissions.canSeeDisconnectedClients}
         canPromoteToHost={permissions.canPromoteToHost}
         onNudge={(clientId) =>
           dispatch({
             action: "nudge",
-            clientId: clientId,
+            clientId,
           })
         }
         onPromoteToHost={(clientId) =>
           dispatch({
             action: "setHost",
-            clientId: clientId,
+            clientId,
           })
         }
         onKick={(clientId) =>
           dispatch({
             action: "kick",
-            clientId: clientId,
+            clientId,
+          })
+        }
+        onKickDisconnected={(name) =>
+          dispatch({
+            action: "kickDisconnected",
+            name,
           })
         }
       />
       <ParticipantPanel
         name={me.name}
+        participantNames={clients.map(({ name }) => name)}
         onJoin={(name) =>
           dispatch({
             action: "join",

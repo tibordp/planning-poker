@@ -50,12 +50,16 @@ export function SettingsDialog({ open, onSave, onCancel, onImport, settings, ses
     settings.allowParticipantControl
   );
   const [allowOpenVoting, setAllowOpenVoting] = React.useState(settings.allowOpenVoting);
+  const [allowParticipantPagination, setAllowParticipantPagination] = React.useState(
+    settings.allowParticipantPagination
+  );
   const [showTimer, setShowTimer] = React.useState(settings.showTimer);
 
   React.useEffect(() => {
     if (open) {
       setScoreSet(settings.scoreSet);
       setAllowParticipantControl(settings.allowParticipantControl);
+      setAllowParticipantPagination(settings.allowParticipantPagination);
       setAllowOpenVoting(settings.allowOpenVoting);
       setShowTimer(settings.showTimer);
     }
@@ -65,11 +69,12 @@ export function SettingsDialog({ open, onSave, onCancel, onImport, settings, ses
     ...settings,
     scoreSet: scoreSet,
     allowParticipantControl: allowParticipantControl,
+    allowParticipantPagination: allowParticipantPagination,
     allowOpenVoting: allowOpenVoting,
     showTimer: showTimer,
   };
 
-  const exportTickets = () => {
+  const exportPages = () => {
     window.open(`/api/sessions/${encodeURIComponent(sessionName)}/export`);
   };
 
@@ -94,7 +99,16 @@ export function SettingsDialog({ open, onSave, onCancel, onImport, settings, ses
               onChange={() => setAllowParticipantControl(!allowParticipantControl)}
             />
           }
-          label="Allow everyone to control the session"
+          label="Allow everyone to show/hide/clear votes"
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={allowParticipantPagination}
+              onChange={() => setAllowParticipantPagination(!allowParticipantPagination)}
+            />
+          }
+          label="Allow everyone to change pages"
         />
         <FormControlLabel
           control={
@@ -119,7 +133,7 @@ export function SettingsDialog({ open, onSave, onCancel, onImport, settings, ses
         />
       </div>
       <DialogActions>
-        <Button autoFocus onClick={exportTickets} color="primary">
+        <Button autoFocus onClick={exportPages} color="primary">
           Export session
         </Button>
         <div style={{ flex: "1 0 0" }} />

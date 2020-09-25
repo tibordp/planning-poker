@@ -24,9 +24,10 @@ const defaultState = {
   description: "### Markdown",
   timerState: { startTime: "2020-06-23T21:31:09.727Z", pausedTime: null, pausedTotal: 0 },
   pagination: {
-    ticketIndex: 0,
-    ticketCount: 1,
+    pageIndex: 0,
+    pageCount: 1,
   },
+  disconnectedClients: {},
   votesVisible: false,
   clients,
   me: host,

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders Footer unchanged {"clients": [Array], "description": "### Markdown", "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 1`] = `
+exports[`renders Footer unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 1`] = `
 Array [
   <hr
     className="MuiDivider-root"
@@ -128,7 +128,7 @@ Array [
 ]
 `;
 
-exports[`renders Footer unchanged {"clients": [Array], "description": "### Markdown", "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 2`] = `
+exports[`renders Footer unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 2`] = `
 Array [
   <hr
     className="MuiDivider-root"
@@ -193,7 +193,7 @@ Array [
 ]
 `;
 
-exports[`renders Footer unchanged {"clients": [Array], "description": "### Markdown", "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 3`] = `
+exports[`renders Footer unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 3`] = `
 Array [
   <hr
     className="MuiDivider-root"

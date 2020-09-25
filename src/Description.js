@@ -28,6 +28,32 @@ import Link from "@material-ui/core/Link";
 import ReactMarkdown from "react-markdown";
 import { makeStyles } from "@material-ui/core/styles";
 
+export const mdStyles = (theme) => ({
+  "& img": {
+    verticalAlign: "sub",
+  },
+  "& code": {
+    fontFamily: "Roboto Mono",
+  },
+  "& pre": {
+    backgroundColor: theme.palette.background.default,
+    borderWidth: 1,
+    borderColor: theme.palette.divider,
+    borderStyle: "solid",
+    borderRadius: 4,
+    padding: theme.spacing(1),
+    overflow: "auto",
+  },
+  "& blockquote": {
+    borderLeft: "2px solid",
+    marginLeft: 0,
+    paddingLeft: theme.spacing(1),
+    borderColor: theme.palette.secondary.light,
+  },
+  fontSize: theme.typography.fontSize,
+  color: theme.palette.text.primary,
+});
+
 export const useStyles = makeStyles((theme) => ({
   table: {},
   description: {
@@ -48,27 +74,7 @@ export const useStyles = makeStyles((theme) => ({
     "& *:last-child": {
       marginBottom: 0,
     },
-    "& img": {
-      verticalAlign: "sub",
-    },
-    "& code": {
-      fontFamily: "Roboto Mono",
-    },
-    "& pre": {
-      backgroundColor: theme.palette.background.default,
-      borderWidth: 1,
-      borderColor: theme.palette.divider,
-      borderStyle: "solid",
-      borderRadius: 4,
-      padding: theme.spacing(1),
-      overflow: "auto",
-    },
-    "& blockquote": {
-      borderLeft: "2px solid",
-      marginLeft: 0,
-      paddingLeft: theme.spacing(1),
-      borderColor: theme.palette.secondary.light,
-    },
+    ...mdStyles(theme),
     "&:before": {
       content: '""',
       width: "100%",
@@ -79,8 +85,6 @@ export const useStyles = makeStyles((theme) => ({
       pointerEvents: "none",
       background: `linear-gradient(${theme.palette.background.paper} 0%, transparent 10%, transparent 90%, ${theme.palette.background.paper} 100%)`,
     },
-    fontSize: theme.typography.fontSize,
-    color: theme.palette.text.primary,
     overflowX: "hidden",
     maxHeight: 400,
   },

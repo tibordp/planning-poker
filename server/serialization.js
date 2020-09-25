@@ -31,17 +31,16 @@ function serializeClient([clientId, data]) {
 }
 
 function serializeClients(clients) {
-  return Object.entries(clients)
-    .map(serializeClient)
-    .sort((a, b) => {
-      // Sort by name, then by clientId. If the client is not participant, it doesn't matter,
-      // as they are invisible, so we put them all at the end.
-      if (!a.name || !b.name) {
-        return a.name ? -1 : b.name ? 1 : 0;
-      } else {
-        return a.name.localeCompare(b.name) || a.clientId.localeCompare(b.clientId);
-      }
-    });
+  return Object.entries(clients).map(serializeClient);
+}
+
+function serializeDisconnectedVotes(sessionState) {
+  const { clients, pagination } = sessionState;
+  const votes = pagination.pages[pagination.pageIndex].votes;
+  const connectedNames = new Set(Object.values(clients).map(({ name }) => name));
+  return Object.fromEntries(
+    Object.entries(votes).filter(([name, score]) => !connectedNames.has(name) && score)
+  );
 }
 
 function serializeSession(sessionState, me) {
@@ -57,18 +56,21 @@ function serializeSession(sessionState, me) {
   } = sessionState;
 
   const clientsData = serializeClients(clients);
+  const disconnectedClients = serializeDisconnectedVotes(sessionState);
+
   return {
     epoch,
     host,
     settings,
     pagination: {
-      ticketIndex: pagination.ticketIndex,
-      ticketCount: pagination.tickets.length,
+      pageIndex: pagination.pageIndex,
+      pageCount: pagination.pages.length,
     },
     description,
     timerState,
     votesVisible,
     clients: clientsData,
+    disconnectedClients,
     ...(me ? { me: serializeClient(me) } : {}),
   };
 }
@@ -78,9 +80,10 @@ function exportSession(sessionState) {
 
   return {
     settings,
-    tickets: pagination.tickets.map(({ description, votes }) => ({
+    pages: pagination.pages.map(({ description, votes, timerState }) => ({
       description,
       votes,
+      duration: timerState.pausedTime - timerState.startTime - timerState.pausedTotal,
     })),
   };
 }

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 
 const scorePresets = [
   {
@@ -39,6 +39,7 @@ const scorePresets = [
 const settingsSchema = Joi.object().keys({
   scoreSet: Joi.array().items(Joi.string()).min(2).unique().default(scorePresets[0].scores),
   allowParticipantControl: Joi.boolean().default(true),
+  allowParticipantPagination: Joi.boolean().default(true),
   allowOpenVoting: Joi.boolean().default(true),
   showTimer: Joi.boolean().default(true),
 });
@@ -50,19 +51,19 @@ exports.actionSchema = Joi.alternatives()
       clientId: Joi.string().required(),
     }),
     Joi.object({
-      action: Joi.string().valid("newTicket").required(),
+      action: Joi.string().valid("newPage").required(),
       description: Joi.string().optional(),
     }),
     Joi.object({
       action: Joi.string().valid("navigate").required(),
-      ticketIndex: Joi.number().min(0).required(),
+      pageIndex: Joi.number().min(0).required(),
     }),
     Joi.object({
       action: Joi.string().valid("setDescription").required(),
       description: Joi.string().allow("").required(),
     }),
     Joi.object({
-      action: Joi.string().valid("join").required(),
+      action: Joi.string().valid("join", "kickDisconnected").required(),
       name: Joi.string().required(),
     }),
     Joi.object({
@@ -81,10 +82,11 @@ exports.actionSchema = Joi.alternatives()
       action: Joi.string().valid("importSession").required(),
       sessionData: Joi.object({
         settings: settingsSchema.required(),
-        tickets: Joi.array()
+        pages: Joi.array()
           .items(
             Joi.object({
               description: Joi.string().allow("").required(),
+              votes: Joi.any(),
             })
           )
           .min(1)
@@ -97,8 +99,6 @@ exports.actionSchema = Joi.alternatives()
       epoch: Joi.number().required(),
       score: Joi.string().allow(null).required(),
       name: Joi.string().allow(null).required(),
-      description: Joi.string().allow("").required(),
-      settings: settingsSchema.required(),
     }),
     Joi.object({
       action: Joi.string()
@@ -109,7 +109,7 @@ exports.actionSchema = Joi.alternatives()
           "startTimer",
           "pauseTimer",
           "resetTimer",
-          "deleteTicket"
+          "deletePage"
         )
         .required(),
     })

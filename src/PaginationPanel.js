@@ -46,10 +46,10 @@ export function PaginationPanel({
   pagination,
   onNavigate,
   onSettingsClick,
-  onNewTicket,
-  onDeleteTicket,
+  onNewPage,
+  onDeletePage,
   settingsEnabled,
-  navigationEnabled,
+  paginationEnabled,
 }) {
   const classes = useStyles();
   const theme = useTheme();
@@ -65,30 +65,30 @@ export function PaginationPanel({
       container
       direction="row"
       alignItems="center"
-      justify={matches && (navigationEnabled || settingsEnabled) ? "space-between" : "space-around"}
+      justify={matches && (paginationEnabled || settingsEnabled) ? "space-between" : "space-around"}
       spacing={1}
     >
       <Grid item>
         <Pagination
           size="medium"
           shape="rounded"
-          page={pagination.ticketIndex + 1}
+          page={pagination.pageIndex + 1}
           onChange={handleChange}
-          count={pagination.ticketCount}
-          disabled={!navigationEnabled}
+          count={pagination.pageCount}
+          disabled={!paginationEnabled}
         />
       </Grid>
-      {(navigationEnabled || settingsEnabled) && (
+      {(paginationEnabled || settingsEnabled) && (
         <Grid item>
-          {navigationEnabled && (
+          {paginationEnabled && (
             <>
-              <Tooltip title="New ticket">
-                <IconButton onClick={onNewTicket}>
+              <Tooltip title="New page">
+                <IconButton onClick={onNewPage}>
                   <AddBox />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Delete this ticket">
-                <IconButton onClick={onDeleteTicket} disabled={pagination.ticketCount <= 1}>
+              <Tooltip title="Delete this page">
+                <IconButton onClick={onDeletePage} disabled={pagination.pageCount <= 1}>
                   <Delete />
                 </IconButton>
               </Tooltip>
@@ -111,12 +111,12 @@ export function PaginationPanel({
 
 PaginationPanel.propTypes = {
   name: PropTypes.string,
-  pagination: PropTypes.shape({ ticketIndex: PropTypes.number, ticketCount: PropTypes.number })
+  pagination: PropTypes.shape({ pageIndex: PropTypes.number, pageCount: PropTypes.number })
     .isRequired,
   onNavigate: PropTypes.func.isRequired,
   onSettingsClick: PropTypes.func.isRequired,
-  onNewTicket: PropTypes.func.isRequired,
-  onDeleteTicket: PropTypes.func.isRequired,
+  onNewPage: PropTypes.func.isRequired,
+  onDeletePage: PropTypes.func.isRequired,
   settingsEnabled: PropTypes.bool,
-  navigationEnabled: PropTypes.bool,
+  paginationEnabled: PropTypes.bool,
 };

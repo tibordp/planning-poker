@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 1`] = `
+exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 1`] = `
 Array [
   <div
     className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
@@ -130,7 +130,7 @@ Array [
         onTouchMove={[Function]}
         onTouchStart={[Function]}
         tabIndex={0}
-        title="New ticket"
+        title="New page"
         type="button"
       >
         <span
@@ -169,7 +169,7 @@ Array [
         onTouchMove={[Function]}
         onTouchStart={[Function]}
         tabIndex={-1}
-        title="Delete this ticket"
+        title="Delete this page"
         type="button"
       >
         <span
@@ -629,7 +629,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Host
+            <span>
+              Host
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -673,7 +675,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Voter 1
+            <span>
+              Voter 1
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -717,7 +721,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Voter 2
+            <span>
+              Voter 2
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -728,7 +734,7 @@ Array [
     </table>
   </div>,
   <div
-    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-23 MuiPaper-outlined MuiPaper-rounded"
+    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-25 MuiPaper-outlined MuiPaper-rounded"
   >
     <div
       className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center"
@@ -737,7 +743,7 @@ Array [
         className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-7"
       >
         <p
-          className="MuiTypography-root makeStyles-participantText-24 MuiTypography-body1"
+          className="MuiTypography-root makeStyles-participantText-26 MuiTypography-body1"
         >
           You are voting as 
           <b>
@@ -782,7 +788,7 @@ Array [
 ]
 `;
 
-exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 2`] = `
+exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 2`] = `
 Array [
   <div
     className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
@@ -1259,7 +1265,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Host
+            <span>
+              Host
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -1303,7 +1311,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Voter 1
+            <span>
+              Voter 1
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -1347,7 +1357,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Voter 2
+            <span>
+              Voter 2
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -1358,7 +1370,7 @@ Array [
     </table>
   </div>,
   <div
-    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-23 MuiPaper-outlined MuiPaper-rounded"
+    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-25 MuiPaper-outlined MuiPaper-rounded"
   >
     <form
       onSubmit={[Function]}
@@ -1448,7 +1460,7 @@ Array [
 ]
 `;
 
-exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 3`] = `
+exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 3`] = `
 Array [
   <div
     className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
@@ -1955,7 +1967,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Host
+            <span>
+              Host
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -1999,7 +2013,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Voter 1
+            <span>
+              Voter 1
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -2043,7 +2059,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Voter 2
+            <span>
+              Voter 2
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -2054,7 +2072,7 @@ Array [
     </table>
   </div>,
   <div
-    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-23 MuiPaper-outlined MuiPaper-rounded"
+    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-25 MuiPaper-outlined MuiPaper-rounded"
   >
     <div
       className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center"
@@ -2063,7 +2081,7 @@ Array [
         className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-7"
       >
         <p
-          className="MuiTypography-root makeStyles-participantText-24 MuiTypography-body1"
+          className="MuiTypography-root makeStyles-participantText-26 MuiTypography-body1"
         >
           You are voting as 
           <b>
@@ -2108,7 +2126,7 @@ Array [
 ]
 `;
 
-exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 4`] = `
+exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 4`] = `
 Array [
   <div
     className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
@@ -2557,7 +2575,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Host
+            <span>
+              Host
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -2601,7 +2621,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Voter 1
+            <span>
+              Voter 1
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -2645,7 +2667,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Voter 2
+            <span>
+              Voter 2
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -2656,7 +2680,7 @@ Array [
     </table>
   </div>,
   <div
-    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-23 MuiPaper-outlined MuiPaper-rounded"
+    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-25 MuiPaper-outlined MuiPaper-rounded"
   >
     <div
       className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center"
@@ -2665,7 +2689,7 @@ Array [
         className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-7"
       >
         <p
-          className="MuiTypography-root makeStyles-participantText-24 MuiTypography-body1"
+          className="MuiTypography-root makeStyles-participantText-26 MuiTypography-body1"
         >
           You are voting as 
           <b>
@@ -2710,7 +2734,7 @@ Array [
 ]
 `;
 
-exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": true} 1`] = `
+exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": true} 1`] = `
 Array [
   <div
     className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
@@ -2840,7 +2864,7 @@ Array [
         onTouchMove={[Function]}
         onTouchStart={[Function]}
         tabIndex={0}
-        title="New ticket"
+        title="New page"
         type="button"
       >
         <span
@@ -2879,7 +2903,7 @@ Array [
         onTouchMove={[Function]}
         onTouchStart={[Function]}
         tabIndex={-1}
-        title="Delete this ticket"
+        title="Delete this page"
         type="button"
       >
         <span
@@ -3376,7 +3400,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Host
+            <span>
+              Host
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -3423,7 +3449,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Voter 1
+            <span>
+              Voter 1
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -3470,7 +3498,9 @@ Array [
             role="cell"
             scope="row"
           >
-            Voter 2
+            <span>
+              Voter 2
+            </span>
           </th>
           <td
             aria-sort={null}
@@ -3481,7 +3511,7 @@ Array [
     </table>
   </div>,
   <div
-    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-23 MuiPaper-outlined MuiPaper-rounded"
+    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-25 MuiPaper-outlined MuiPaper-rounded"
   >
     <div
       className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center"
@@ -3490,7 +3520,7 @@ Array [
         className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-7"
       >
         <p
-          className="MuiTypography-root makeStyles-participantText-24 MuiTypography-body1"
+          className="MuiTypography-root makeStyles-participantText-26 MuiTypography-body1"
         >
           You are voting as 
           <b>
