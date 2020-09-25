@@ -12,16 +12,17 @@
     "test:ci": "jest --ci"
   },
   "dependencies": {
-    "joi": "^17.1.1",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@svgr/webpack": "^5.4.0",
     "global": "^4.4.0",
+    "joi": "^17.1.1",
     "killable": "^1.0.1",
     "material-ui-chip-input": "^1.1.0",
     "material-ui-dropzone": "^3.5.0",
     "next": "9.5.3",
+    "node-fetch": "^2.6.1",
     "notistack": "^1.0.0",
     "random-words": "^1.1.1",
     "react": "16.13.1",
@@ -41,7 +42,7 @@
     "eslint": "^7.9.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-react": "^7.21.1",
+    "eslint-plugin-react": "^7.21.2",
     "jest": "^26.4.2",
     "prettier": "^2.1.2",
     "react-test-renderer": "^16.13.1"
