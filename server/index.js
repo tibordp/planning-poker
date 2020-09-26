@@ -47,8 +47,8 @@ function handleConnection(sessionName, socket, req, useHeartbeat) {
   const now = new Date();
   const parsedUrl = parse(req.url, true);
   const clientId = new URLSearchParams(parsedUrl.search).get("client_id") || uuidv4();
-  const sessionState = initializeSession(now, sessionName, clientId, useHeartbeat);
-  const clientState = initializeClient(now, sessionState, socket, clientId);
+  const sessionState = initializeSession(now, sessionName, clientId);
+  const clientState = initializeClient(now, sessionState, socket, clientId, useHeartbeat);
 
   socket.on("message", (data) => {
     const now = new Date();

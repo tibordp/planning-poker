@@ -103,13 +103,12 @@ function restorePaginationData(now, sessionState) {
   sessionState.votesVisible = participants.length > 1 && participants.every(({ score }) => score);
 }
 
-function initializeSession(now, sessionName, clientId, useHeartbeat) {
+function initializeSession(now, sessionName, clientId) {
   let sessionState = state[sessionName];
   if (!sessionState) {
     console.log(`[${sessionName}] Creating new session.`);
     sessionState = state[sessionName] = {
       sessionName,
-      useHeartbeat,
       description: "",
       ttlTimer: null,
       settings: { ...defaultSettings },
@@ -135,18 +134,21 @@ function initializeSession(now, sessionName, clientId, useHeartbeat) {
   return sessionState;
 }
 
-function initializeClient(now, sessionState, socket, clientId) {
+function initializeClient(now, sessionState, socket, clientId, useHeartbeat) {
   let clientState = sessionState.clients[clientId];
   if (clientState) {
     console.log(
       `[${sessionState.sessionName}] Client ${clientId} reconnected using a different socket.`
     );
     const previousSocket = clientState.socket;
+    // E.g. if the client re-connects from WS connection to a long-poll connection
+    clientState.useHeartbeat = useHeartbeat;
     clientState.socket = socket;
     previousSocket.terminate();
   } else {
     console.log(`[${sessionState.sessionName}] New client ${clientId} connected.`);
     clientState = {
+      useHeartbeat,
       session: sessionState,
       clientId,
       socket,
@@ -167,7 +169,7 @@ function clearHeartbeat(clientState) {
 }
 
 function setHeartbeat(clientState) {
-  if (clientState.session.useHeartbeat) {
+  if (clientState.useHeartbeat) {
     clearHeartbeat(clientState);
     clientState.lastHeartbeat = setTimeout(() => {
       clientState.socket.close();

@@ -14,14 +14,15 @@ test("client connected", () => {
   const sessionName = getSessionName();
 
   const socket = fakeSocket();
-  const sessionState = session.initializeSession(now, sessionName, "client-id", true);
-  const clientState = session.initializeClient(now, sessionState, socket, "client-id");
+  const sessionState = session.initializeSession(now, sessionName, "client-id");
+  const clientState = session.initializeClient(now, sessionState, socket, "client-id", true);
 
   expect(state[sessionName]).toBe(sessionState);
   expect(sessionState.clients["client-id"]).toBe(clientState);
   expect(sessionState).toMatchObject({
     clients: {
       "client-id": {
+        useHeartbeat: true,
         clientId: "client-id",
         lastHeartbeat: expect.anything(),
         name: null,
@@ -30,7 +31,6 @@ test("client connected", () => {
         socket: socket,
       },
     },
-    useHeartbeat: true,
     description: "",
     epoch: 0,
     host: "client-id",
@@ -56,12 +56,12 @@ test("client reconnected", () => {
   const sessionName = getSessionName();
 
   const socket1 = fakeSocket();
-  const sessionState1 = session.initializeSession(now, sessionName, "client-id", true);
-  const clientState1 = session.initializeClient(now, sessionState1, socket1, "client-id");
+  const sessionState1 = session.initializeSession(now, sessionName, "client-id");
+  const clientState1 = session.initializeClient(now, sessionState1, socket1, "client-id", true);
 
   const socket2 = fakeSocket();
-  const sessionState2 = session.initializeSession(now, sessionName, "client-id", true);
-  const clientState2 = session.initializeClient(now, sessionState2, socket2, "client-id");
+  const sessionState2 = session.initializeSession(now, sessionName, "client-id");
+  const clientState2 = session.initializeClient(now, sessionState2, socket2, "client-id", true);
 
   expect(sessionState1).toBe(sessionState2);
   expect(clientState1).toBe(clientState2);
@@ -74,8 +74,8 @@ test("client disconnected", () => {
   const sessionName = getSessionName();
 
   const socket = fakeSocket();
-  const sessionState = session.initializeSession(now, sessionName, "client-id", true);
-  const clientState = session.initializeClient(now, sessionState, socket, "client-id");
+  const sessionState = session.initializeSession(now, sessionName, "client-id");
+  const clientState = session.initializeClient(now, sessionState, socket, "client-id", true);
 
   jest.useFakeTimers(); // Clean any timers from before
 
