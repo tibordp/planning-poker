@@ -14,7 +14,7 @@ test("client connected", () => {
   const sessionName = getSessionName();
 
   const socket = fakeSocket();
-  const sessionState = session.initializeSession(now, sessionName, "client-id");
+  const sessionState = session.initializeSession(now, sessionName, "client-id", true);
   const clientState = session.initializeClient(now, sessionState, socket, "client-id");
 
   expect(state[sessionName]).toBe(sessionState);
@@ -30,6 +30,7 @@ test("client connected", () => {
         socket: socket,
       },
     },
+    useHeartbeat: true,
     description: "",
     epoch: 0,
     host: "client-id",
@@ -55,11 +56,11 @@ test("client reconnected", () => {
   const sessionName = getSessionName();
 
   const socket1 = fakeSocket();
-  const sessionState1 = session.initializeSession(now, sessionName, "client-id");
+  const sessionState1 = session.initializeSession(now, sessionName, "client-id", true);
   const clientState1 = session.initializeClient(now, sessionState1, socket1, "client-id");
 
   const socket2 = fakeSocket();
-  const sessionState2 = session.initializeSession(now, sessionName, "client-id");
+  const sessionState2 = session.initializeSession(now, sessionName, "client-id", true);
   const clientState2 = session.initializeClient(now, sessionState2, socket2, "client-id");
 
   expect(sessionState1).toBe(sessionState2);
@@ -73,7 +74,7 @@ test("client disconnected", () => {
   const sessionName = getSessionName();
 
   const socket = fakeSocket();
-  const sessionState = session.initializeSession(now, sessionName, "client-id");
+  const sessionState = session.initializeSession(now, sessionName, "client-id", true);
   const clientState = session.initializeClient(now, sessionState, socket, "client-id");
 
   jest.useFakeTimers(); // Clean any timers from before
@@ -84,7 +85,7 @@ test("client disconnected", () => {
 
   expect(setTimeout).toHaveBeenCalledTimes(1);
   const [callback, interval, ...args] = setTimeout.mock.calls[0];
-  expect(interval).toBe(30000);
+  expect(interval).toBe(60000);
 
   callback(...args);
   expect(state).not.toHaveProperty(sessionName);
