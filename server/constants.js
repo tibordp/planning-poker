@@ -86,7 +86,9 @@ exports.actionSchema = Joi.alternatives()
           .items(
             Joi.object({
               description: Joi.string().allow("").required(),
+              // These are not imported, so they can be whatever
               votes: Joi.any(),
+              duration: Joi.any(),
             })
           )
           .min(1)
