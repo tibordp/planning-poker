@@ -178,8 +178,8 @@ export function MainBoard({
                 chipStyleMap={chipStyleMap}
                 name={name}
                 score={score}
-                canNudge={clientId && canNudge}
-                canPromoteToHost={clientId && canPromoteToHost}
+                canNudge={!!clientId && canNudge}
+                canPromoteToHost={!!clientId && canPromoteToHost}
                 canKick={canPromoteToHost}
                 onNudge={() => onNudge(clientId)}
                 onPromoteToHost={() => onPromoteToHost(clientId)}

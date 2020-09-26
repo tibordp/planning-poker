@@ -11,6 +11,7 @@ Scores hidden           |  Scores visible          |  Session settings
 ## Features
 
 - A self contained stateful Node app, no database required
+- Supports both WebSockets and HTTP Long Polling as transport
 - Ephemeral sessions that are created and cleaned up on demand
 - Easily customizable score sets and other session parameters
 - Support for multiple pages (e.g. tickets) that can be prepared in advance

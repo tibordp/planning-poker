@@ -38,6 +38,18 @@ spec:
         ports:
         - containerPort: 3000
           name: http
+        env:
+          # Planning Poker uses Websockets by default, but long polling is supported
+          # for better experience with reverse proxies that do not pass through Websockets
+          # very well. It also uses rather aggressive heartbeat intervals, to detect
+          # client disconnections and reconnect sooner. This helps user experience, but
+          # can increase resource utilization, so it is adjustable through environment variables.
+          - name: USE_LONG_POLLING
+            value: "false"
+          - name: HEARTBEAT_INTERVAL
+            value: "5000"
+          - name: HEARTBEAT_TIMEOUT
+            value: "10000"
         livenessProbe:
           failureThreshold: 3
           httpGet:
