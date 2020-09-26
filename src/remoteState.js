@@ -22,10 +22,14 @@
  * SOFTWARE.
  */
 import React from "react";
-import { HeartbeatingWebsocket } from "./websocket";
+import getConfig from "next/config";
+
+import { HeartbeatingWebsocket } from "./connection/websocket";
+import { LongPollSocket } from "./connection/longpoll";
 import { v4 as uuidv4 } from "uuid";
 
 export const IS_SSR = typeof navigator === "undefined" || typeof window === "undefined";
+const { publicRuntimeConfig } = getConfig();
 
 export function useInternetConnectivity() {
   const [haveConnectivity, setHaveConnectivity] = React.useState(IS_SSR || navigator.onLine);
@@ -49,7 +53,41 @@ export function useInternetConnectivity() {
   return haveConnectivity;
 }
 
-export function useRemoteState(webSocketUri, onAction) {
+function getSocket(sessionName) {
+  let clientId = window.sessionStorage.getItem("client_id");
+  if (!clientId) {
+    clientId = uuidv4();
+    window.sessionStorage.setItem("client_id", clientId);
+  }
+
+  if (publicRuntimeConfig.useLongPolling) {
+    const url = new URL(location.href);
+    url.pathname = `/lp/`;
+    return new LongPollSocket(
+      url.toString(),
+      {
+        client_id: clientId,
+        session_name: sessionName,
+      },
+      publicRuntimeConfig.heartbeatTimeout
+    );
+  } else {
+    const url = new URL(location.href);
+    url.protocol = url.protocol.replace("http", "ws");
+    url.pathname = `/${sessionName}`;
+    url.search = new URLSearchParams({
+      client_id: clientId,
+    }).toString();
+    url.hash = "";
+    return new HeartbeatingWebsocket(
+      url.toString(),
+      publicRuntimeConfig.heartbeatInterval,
+      publicRuntimeConfig.heartbeatTimeout
+    );
+  }
+}
+
+export function useRemoteState(sessionName, onAction) {
   const [dispatch, setDispatch] = React.useState(null);
   const [remoteState, setRemoteState] = React.useState(null);
 
@@ -60,8 +98,8 @@ export function useRemoteState(webSocketUri, onAction) {
       // If we are in SSR context or offline, do not try to continuously reconnect
       return () => {};
     }
-
-    const socket = new HeartbeatingWebsocket(webSocketUri);
+    console.log("Recreating!!!!");
+    const socket = getSocket(sessionName);
 
     socket.onopen = () => {
       setDispatch(() => (message) => socket.send(message));
@@ -85,7 +123,7 @@ export function useRemoteState(webSocketUri, onAction) {
     return () => {
       socket.close();
     };
-  }, [webSocketUri, haveConnectivity]);
+  }, [haveConnectivity]);
 
   return [remoteState, dispatch];
 }
@@ -97,35 +135,13 @@ export const connectionState = {
   CONNECTED: "connected",
 };
 
-function getSocketUri(sessionName) {
-  if (IS_SSR) {
-    return null;
-  }
-
-  let clientId = window.sessionStorage.getItem("client_id");
-  if (!clientId) {
-    clientId = uuidv4();
-    window.sessionStorage.setItem("client_id", clientId);
-  }
-
-  const url = new URL(location.href);
-  url.protocol = url.protocol.replace("http", "ws");
-  url.pathname = `/${sessionName}`;
-  url.search = new URLSearchParams({
-    client_id: clientId,
-  }).toString();
-  url.hash = "";
-  return url.toString();
-}
-
 /**
  * Stores part of the state in sessionStorage (vote for the current epoch and
  * whether we are participant or not (along with name), so we can refresh the
  * page and stay connected seamlessly.
  */
 export function useReconnector(sessionName, onAction) {
-  const socketUri = getSocketUri(sessionName);
-  const [remoteState, dispatch] = useRemoteState(socketUri, onAction);
+  const [remoteState, dispatch] = useRemoteState(sessionName, onAction);
   const haveConnectivity = useInternetConnectivity();
 
   React.useEffect(() => {

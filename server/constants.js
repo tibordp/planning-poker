@@ -119,6 +119,7 @@ exports.actionSchema = Joi.alternatives()
 exports.scorePresets = scorePresets;
 exports.defaultSettings = settingsSchema.validate({}).value;
 exports.shutdownTimeout = 5000;
-exports.heartbeatTimeout = 10000;
+exports.heartbeatInterval = Number(process.env.PP_HEARTBEAT_INTERVAL) || 5000;
+exports.heartbeatTimeout = Number(process.env.PP_HEARTBEAT_TIMEOUT) || 10000;
 // For how long to persist the session data after the last client disconnected.
-exports.sessionTtl = 30000;
+exports.sessionTtl = Number(process.env.PP_SESSION_TTL) || 60000;

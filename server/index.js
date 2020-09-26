@@ -38,11 +38,53 @@ const {
   cleanupClient,
   broadcastState,
 } = require("./session");
-const { shutdownTimeout } = require("./constants");
+const { shutdownTimeout, heartbeatInterval, heartbeatTimeout } = require("./constants");
+const LongPollHandler = require("./longpoll");
 
 let shuttingDown = false;
 
+function handleConnection(sessionName, socket, req, useHeartbeat) {
+  const now = new Date();
+  const parsedUrl = parse(req.url, true);
+  const clientId = new URLSearchParams(parsedUrl.search).get("client_id") || uuidv4();
+  const sessionState = initializeSession(now, sessionName, clientId, useHeartbeat);
+  const clientState = initializeClient(now, sessionState, socket, clientId);
+
+  socket.on("message", (data) => {
+    const now = new Date();
+    try {
+      const action = JSON.parse(data);
+      processMessage(now, clientState, action);
+    } catch (error) {
+      console.error(error);
+      sendMessage(now, clientState, {
+        action: "error",
+        error: error.toString(),
+      });
+    }
+  });
+
+  socket.on("close", () => {
+    // If another connection took over with the same client ID, we don't
+    // cleanup anything here as it will be cleaned up when the new socket
+    // disconnects.
+    if (clientState.socket === socket) {
+      const now = new Date();
+      cleanupClient(now, clientState);
+    }
+  });
+
+  broadcastState(now, sessionState);
+}
+
 app.prepare().then(() => {
+  const longPollHandler = new LongPollHandler(heartbeatInterval, heartbeatTimeout);
+  longPollHandler.on("connection", (socket, req) => {
+    const parsedUrl = parse(req.url, true);
+    const sessionName = new URLSearchParams(parsedUrl.search).get("session_name") || "";
+    handleConnection(sessionName, socket, req, false);
+  });
+
   const server = killable(
     createServer((req, res) => {
       const parsedUrl = parse(req.url, true);
@@ -55,6 +97,8 @@ app.prepare().then(() => {
           res.writeHead(200, { "Content-Type": "application/json" });
           return res.end(JSON.stringify({}));
         }
+      } else if (parsedUrl.pathname.startsWith("/lp/")) {
+        return longPollHandler.handle(req, res);
       } else {
         return handle(req, res, parsedUrl);
       }
@@ -63,38 +107,9 @@ app.prepare().then(() => {
 
   const wss = new WebSocket.Server({ server });
   wss.on("connection", (socket, req) => {
-    const now = new Date();
     const parsedUrl = parse(req.url);
     const sessionName = parsedUrl.pathname.slice(1); // Strip the slash
-    const clientId = new URLSearchParams(parsedUrl.search).get("client_id") || uuidv4();
-    const sessionState = initializeSession(now, sessionName, clientId);
-    const clientState = initializeClient(now, sessionState, socket, clientId);
-
-    socket.on("message", (data) => {
-      const now = new Date();
-      try {
-        const action = JSON.parse(data);
-        processMessage(now, clientState, action);
-      } catch (error) {
-        console.error(error);
-        sendMessage(now, clientState, {
-          action: "error",
-          error: error.toString(),
-        });
-      }
-    });
-
-    socket.on("close", () => {
-      // If another connection took over with the same client ID, we don't
-      // cleanup anything here as it will be cleaned up when the new socket
-      // disconnects.
-      if (clientState.socket === socket) {
-        const now = new Date();
-        cleanupClient(now, clientState);
-      }
-    });
-
-    broadcastState(now, sessionState);
+    handleConnection(sessionName, socket, req, true);
   });
 
   server.listen(3000, (err) => {

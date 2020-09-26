@@ -16,6 +16,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@svgr/webpack": "^5.4.0",
+    "buffer": "^5.6.0",
     "global": "^4.4.0",
     "joi": "^17.1.1",
     "killable": "^1.0.1",

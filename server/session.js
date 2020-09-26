@@ -103,12 +103,13 @@ function restorePaginationData(now, sessionState) {
   sessionState.votesVisible = participants.length > 1 && participants.every(({ score }) => score);
 }
 
-function initializeSession(now, sessionName, clientId) {
+function initializeSession(now, sessionName, clientId, useHeartbeat) {
   let sessionState = state[sessionName];
   if (!sessionState) {
     console.log(`[${sessionName}] Creating new session.`);
     sessionState = state[sessionName] = {
       sessionName,
+      useHeartbeat,
       description: "",
       ttlTimer: null,
       settings: { ...defaultSettings },
@@ -155,6 +156,7 @@ function initializeClient(now, sessionState, socket, clientId) {
     };
     sessionState.clients[clientId] = clientState;
   }
+
   setHeartbeat(clientState);
   return clientState;
 }
@@ -165,10 +167,12 @@ function clearHeartbeat(clientState) {
 }
 
 function setHeartbeat(clientState) {
-  clearHeartbeat(clientState);
-  clientState.lastHeartbeat = setTimeout(() => {
-    clientState.socket.close();
-  }, heartbeatTimeout);
+  if (clientState.session.useHeartbeat) {
+    clearHeartbeat(clientState);
+    clientState.lastHeartbeat = setTimeout(() => {
+      clientState.socket.close();
+    }, heartbeatTimeout);
+  }
 }
 
 function startTimer(now, timerState) {
