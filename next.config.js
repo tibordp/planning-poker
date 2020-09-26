@@ -9,7 +9,7 @@ module.exports = {
   publicRuntimeConfig: {
     // Will be available on both server and client
     useLongPolling: process.env.USE_LONG_POLLING === "true",
-    heartbeatInterval: Number(process.env.HEARTBEAT_INTERVAL) || 5000,
-    heartbeatTimeout: Number(process.env.HEARTBEAT_TIMEOUT) || 10000,
+    heartbeatInterval: Number(process.env.PP_HEARTBEAT_INTERVAL) || 5000,
+    heartbeatTimeout: Number(process.env.PP_HEARTBEAT_TIMEOUT) || 10000,
   },
 };
