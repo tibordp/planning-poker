@@ -38,6 +38,7 @@ import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import randomWords from "random-words";
 import useSWR from "swr";
 
 const useStyles = makeStyles((theme) => ({
@@ -107,11 +108,26 @@ function Statistics() {
 }
 
 export default function Index() {
+  const handleNewSession = () => {
+    const sessionId = randomWords({
+      exactly: 1,
+      wordsPerString: 3,
+      separator: "-",
+    })[0];
+    window.open(`/${sessionId}`, "_blank");
+  };
+
   return (
     <Container maxWidth="sm">
       <Logo />
       <Box my={2}>
-        <Button color="secondary" href="/new-session" fullWidth size="large" variant="contained">
+        <Button
+          color="secondary"
+          onClick={handleNewSession}
+          fullWidth
+          size="large"
+          variant="contained"
+        >
           New session
         </Button>
         <Statistics />
