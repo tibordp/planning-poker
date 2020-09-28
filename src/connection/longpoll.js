@@ -114,7 +114,7 @@ export class LongPollSocket {
       this._abortController = null;
       this.onclose?.();
       if (this._active) {
-        console.warn(`Connection lost, reconnecting in ${this._reconnectDelay} seconds`);
+        console.warn(`Connection lost, reconnecting in ${this._reconnectDelay}ms`);
         await new Promise((resolve) => setTimeout(resolve, this._reconnectDelay));
       }
     }
