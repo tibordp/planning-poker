@@ -103,30 +103,35 @@ function restorePaginationData(now, sessionState) {
   sessionState.votesVisible = participants.length > 1 && participants.every(({ score }) => score);
 }
 
+function createNewSession(now, sessionName, clientId) {
+  const sessionState = {
+    sessionName,
+    description: "",
+    ttlTimer: null,
+    settings: { ...defaultSettings },
+    pagination: {
+      pages: [{}],
+      pageIndex: 0,
+    },
+    timerState: {
+      startTime: now,
+      pausedTime: null,
+      pausedTotal: 0,
+    },
+    votesVisible: false,
+    host: clientId,
+    epoch: 0,
+    clients: {},
+  };
+  savePaginationData(now, sessionState);
+  return sessionState;
+}
+
 function initializeSession(now, sessionName, clientId) {
   let sessionState = state[sessionName];
   if (!sessionState) {
     console.log(`[${sessionName}] Creating new session.`);
-    sessionState = state[sessionName] = {
-      sessionName,
-      description: "",
-      ttlTimer: null,
-      settings: { ...defaultSettings },
-      pagination: {
-        pages: [{}],
-        pageIndex: 0,
-      },
-      timerState: {
-        startTime: now,
-        pausedTime: null,
-        pausedTotal: 0,
-      },
-      votesVisible: false,
-      host: clientId,
-      epoch: 0,
-      clients: {},
-    };
-    savePaginationData(now, sessionState);
+    sessionState = state[sessionName] = createNewSession(now, sessionName, clientId);
   } else {
     clearTimeout(sessionState.ttlTimer);
     sessionState.ttlTimer = null;
@@ -378,3 +383,4 @@ exports.processMessage = processMessage;
 exports.initializeClient = initializeClient;
 exports.cleanupClient = cleanupClient;
 exports.broadcastState = broadcastState;
+exports.createNewSession = createNewSession;

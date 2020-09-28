@@ -33,10 +33,11 @@ import { makeStyles } from "@material-ui/core/styles";
 export const useStyles = makeStyles((theme) => ({
   sessionUrl: {
     marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(2),
   },
 }));
 
-export function SessionUrl({ sessionName }) {
+export function SessionUrl({ origin, sessionName }) {
   const classes = useStyles();
   const inputRef = React.useRef();
 
@@ -46,14 +47,7 @@ export function SessionUrl({ sessionName }) {
   };
 
   // Cannot determine hostname easily in SSR context.
-  let sessionUrl = `/${sessionName}`;
-  if (typeof window !== "undefined") {
-    const url = new URL(location.href);
-    url.pathname = `/${sessionName}`;
-    url.search = "";
-    url.hash = "";
-    sessionUrl = url.toString();
-  }
+  let sessionUrl = `${origin.protocol}//${origin.host}/${sessionName}`;
 
   return (
     <TextField
@@ -82,4 +76,5 @@ export function SessionUrl({ sessionName }) {
 
 SessionUrl.propTypes = {
   sessionName: PropTypes.string.isRequired,
+  origin: PropTypes.shape({ protocol: PropTypes.string, host: PropTypes.string }).isRequired,
 };

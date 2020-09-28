@@ -54,11 +54,11 @@ export function Session({ remoteState, dispatch, sessionName }) {
         sessionName={sessionName}
         onCancel={() => setSettingsOpen(false)}
         onSave={(newSettings) => {
-          dispatch({ action: "setSettings", settings: newSettings });
+          dispatch?.({ action: "setSettings", settings: newSettings });
           setSettingsOpen(false);
         }}
         onImport={(sessionData) => {
-          dispatch({ action: "importSession", sessionData });
+          dispatch?.({ action: "importSession", sessionData });
           setSettingsOpen(false);
         }}
       />
@@ -66,14 +66,14 @@ export function Session({ remoteState, dispatch, sessionName }) {
         pagination={pagination}
         settingsEnabled={permissions.canEditSettings}
         paginationEnabled={permissions.canPaginate}
-        onNewPage={() => dispatch({ action: "newPage" })}
-        onDeletePage={() => dispatch({ action: "deletePage" })}
-        onNavigate={(index) => dispatch({ action: "navigate", pageIndex: index })}
+        onNewPage={() => dispatch?.({ action: "newPage" })}
+        onDeletePage={() => dispatch?.({ action: "deletePage" })}
+        onNavigate={(index) => dispatch?.({ action: "navigate", pageIndex: index })}
         onSettingsClick={() => setSettingsOpen(true)}
       />
       <Description
         editingEnabled={permissions.canEditDescription}
-        onChange={(value) => dispatch({ action: "setDescription", description: value })}
+        onChange={(value) => dispatch?.({ action: "setDescription", description: value })}
         description={description}
       />
       <VotePanel
@@ -83,18 +83,18 @@ export function Session({ remoteState, dispatch, sessionName }) {
         votingEnabled={permissions.canVote}
         selectedScore={me.score}
         onSetVisibility={(visibility) =>
-          dispatch({
+          dispatch?.({
             action: "setVotesVisible",
             votesVisible: visibility,
           })
         }
         onVote={(score) =>
-          dispatch({
+          dispatch?.({
             action: "vote",
             score: score,
           })
         }
-        onReset={() => dispatch({ action: "resetBoard" })}
+        onReset={() => dispatch?.({ action: "resetBoard" })}
       />
       <MainBoard
         clients={clients}
@@ -107,25 +107,25 @@ export function Session({ remoteState, dispatch, sessionName }) {
         canSeeDisconnectedClients={permissions.canSeeDisconnectedClients}
         canPromoteToHost={permissions.canPromoteToHost}
         onNudge={(clientId) =>
-          dispatch({
+          dispatch?.({
             action: "nudge",
             clientId,
           })
         }
         onPromoteToHost={(clientId) =>
-          dispatch({
+          dispatch?.({
             action: "setHost",
             clientId,
           })
         }
         onKick={(clientId) =>
-          dispatch({
+          dispatch?.({
             action: "kick",
             clientId,
           })
         }
         onKickDisconnected={(name) =>
-          dispatch({
+          dispatch?.({
             action: "kickDisconnected",
             name,
           })
@@ -135,12 +135,12 @@ export function Session({ remoteState, dispatch, sessionName }) {
         name={me.name}
         participantNames={clients.map(({ name }) => name)}
         onJoin={(name) =>
-          dispatch({
+          dispatch?.({
             action: "join",
             name: name,
           })
         }
-        onLeave={() => dispatch({ action: "leave" })}
+        onLeave={() => dispatch?.({ action: "leave" })}
       />
     </>
   );
@@ -148,6 +148,6 @@ export function Session({ remoteState, dispatch, sessionName }) {
 
 Session.propTypes = {
   remoteState: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
+  dispatch: PropTypes.func,
   sessionName: PropTypes.string.isRequired,
 };

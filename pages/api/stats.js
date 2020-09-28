@@ -22,21 +22,8 @@
  * SOFTWARE.
  */
 const state = require("../../server/state").state;
+const { serializeStats } = require("../../server/serialization");
 
 export default (req, res) => {
-  const sessions = Object.values(state);
-  const numVoters = sessions.reduce(
-    (a, b) => a + Object.values(b.clients).filter(({ name }) => name).length,
-    0
-  );
-  const numObservers = sessions.reduce(
-    (a, b) => a + Object.values(b.clients).filter(({ name }) => !name).length,
-    0
-  );
-  res.status(200).json({
-    numSessions: sessions.length,
-    numVoters,
-    numObservers,
-    numPlayers: numVoters + numObservers,
-  });
+  res.status(200).json(serializeStats(state));
 };

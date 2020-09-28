@@ -24,8 +24,9 @@
 import { Buffer } from "buffer";
 
 export class LongPollSocket {
-  constructor(urlPrefix, parameters, heartbeatTimeout) {
+  constructor(urlPrefix, parameters, heartbeatTimeout, reconnectDelay) {
     this._heartbeatTimeout = heartbeatTimeout || 10000;
+    this._reconnectDelay = reconnectDelay || 1000;
     this._heartbeat = null;
     this.onmessage = null;
     this.onclose = null;
@@ -68,7 +69,7 @@ export class LongPollSocket {
         this._setHeartbeat();
         this.onopen?.();
       } catch (e) {
-        console.log("Could not connect!", e);
+        console.error("Could not connect!", e);
       }
 
       if (this._socketId) {
@@ -89,15 +90,17 @@ export class LongPollSocket {
                 const message = JSON.parse(Buffer.from(element, "base64").toString());
                 this.onmessage?.(message);
               });
-            } else {
+            } else if (res.status === 410) {
               // Connection closed gracefully.
               break;
+            } else {
+              throw new Error(res.statusText);
             }
           } catch (e) {
             // We may end up here because e.g. page is unloading - that's why call
             // the disconnect API with sendBeacon, to maximize the chance of the session
             // not lingering on the server.
-            console.log(e);
+            console.error(e);
             this._tryDisconnect();
             break;
           }
@@ -111,8 +114,8 @@ export class LongPollSocket {
       this._abortController = null;
       this.onclose?.();
       if (this._active) {
-        console.log("Reconnecting in X seconds");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        console.warn(`Connection lost, reconnecting in ${this._reconnectDelay} seconds`);
+        await new Promise((resolve) => setTimeout(resolve, this._reconnectDelay));
       }
     }
   }
@@ -154,10 +157,19 @@ export class LongPollSocket {
     }
   }
 
-  _doSend(message) {
-    return fetch(this._generateUrl("send", { socket_id: this._socketId }), {
-      method: "POST",
-      body: JSON.stringify(message),
-    });
+  async _doSend(message) {
+    try {
+      const res = await fetch(this._generateUrl("send", { socket_id: this._socketId }), {
+        method: "POST",
+        body: JSON.stringify(message),
+        signal: this._abortController.signal,
+      });
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+    } catch (e) {
+      console.error(e);
+      this._tryDisconnect();
+    }
   }
 }

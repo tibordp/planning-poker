@@ -98,7 +98,6 @@ export function useRemoteState(sessionName, onAction) {
       // If we are in SSR context or offline, do not try to continuously reconnect
       return () => {};
     }
-    console.log("Recreating!!!!");
     const socket = getSocket(sessionName);
 
     socket.onopen = () => {
@@ -131,7 +130,6 @@ export function useRemoteState(sessionName, onAction) {
 export const connectionState = {
   OFFLINE: "offline",
   CONNECTING: "connecting",
-  RECONNECTING: "reconnecting",
   CONNECTED: "connected",
 };
 
@@ -173,8 +171,6 @@ export function useReconnector(sessionName, onAction) {
     state = connectionState.CONNECTED;
   } else if (!haveConnectivity) {
     state = connectionState.OFFLINE;
-  } else if (!IS_SSR && window.sessionStorage.getItem(`session_data:${sessionName}`)) {
-    state = connectionState.RECONNECTING;
   } else {
     state = connectionState.CONNECTING;
   }
