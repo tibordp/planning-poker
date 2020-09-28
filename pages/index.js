@@ -28,6 +28,7 @@ import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import Logo from "../src/Logo";
 import Footer from "../src/Footer";
+import PropTypes from "prop-types";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -40,6 +41,8 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import randomWords from "random-words";
 import useSWR from "swr";
+import { state } from "../server/state";
+import { serializeStats } from "../server/serialization";
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
@@ -47,10 +50,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Statistics() {
+function Statistics({ initialData }) {
   const classes = useStyles();
   const fetcher = (url) => fetch(url).then((r) => r.json());
-  const { data, error } = useSWR("/api/stats", fetcher);
+  const { data, error } = useSWR("/api/stats", fetcher, { initialData });
 
   return (
     <>
@@ -107,7 +110,11 @@ function Statistics() {
   );
 }
 
-export default function Index() {
+Statistics.propTypes = {
+  initialData: PropTypes.object,
+};
+
+export default function Index({ initialData }) {
   const handleNewSession = () => {
     const sessionId = randomWords({
       exactly: 1,
@@ -130,9 +137,17 @@ export default function Index() {
         >
           New session
         </Button>
-        <Statistics />
+        <Statistics initialData={initialData} />
       </Box>
       <Footer />
     </Container>
   );
+}
+
+Index.propTypes = {
+  initialData: PropTypes.object,
+};
+
+export async function getServerSideProps() {
+  return { props: { initialData: serializeStats(state) } };
 }

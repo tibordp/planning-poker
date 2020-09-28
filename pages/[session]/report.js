@@ -42,6 +42,8 @@ import Alert from "@material-ui/lab/Alert";
 import TextField from "@material-ui/core/TextField";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import { formatDuration } from "../../src/Timer";
+import { state } from "../../server/state";
+import { exportSession } from "../../server/serialization";
 
 const useStyles = makeStyles((theme) => ({
   chip: {
@@ -131,9 +133,13 @@ ReportRow.propTypes = {
   duration: PropTypes.number.isRequired,
 };
 
-function Report({ sessionId }) {
+function Report({ sessionName, initialData }) {
   const fetcher = (url) => fetch(url).then((r) => r.json());
-  const { data, error } = useSWR(`/api/sessions/${encodeURIComponent(sessionId)}/export`, fetcher);
+  const { data, error } = useSWR(
+    `/api/sessions/${encodeURIComponent(sessionName)}/export`,
+    fetcher,
+    { initialData }
+  );
 
   return (
     <>
@@ -179,26 +185,35 @@ function Report({ sessionId }) {
 }
 
 Report.propTypes = {
-  sessionId: PropTypes.string.isRequired,
+  sessionName: PropTypes.string.isRequired,
+  initialData: PropTypes.object,
 };
 
-function ReportPage({ session }) {
+function ReportPage({ sessionName, initialData }) {
   return (
     <Container maxWidth="sm">
       <Logo />
-      <Report sessionId={session} />
+      <Report sessionName={sessionName} initialData={initialData} />
       <Footer />
     </Container>
   );
 }
 
 ReportPage.propTypes = {
-  session: PropTypes.string.isRequired,
+  sessionName: PropTypes.string.isRequired,
+  initialData: PropTypes.object,
 };
 
-ReportPage.getInitialProps = ({ query }) => {
-  const { session } = query;
-  return { session };
-};
+export async function getServerSideProps({ params }) {
+  const { session: sessionName } = params;
+
+  const session = state[sessionName];
+  let initialData = null;
+  if (session) {
+    initialData = exportSession(session);
+  }
+
+  return { props: { sessionName, initialData } };
+}
 
 export default ReportPage;

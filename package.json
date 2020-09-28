@@ -23,6 +23,7 @@
     "material-ui-chip-input": "^1.1.0",
     "material-ui-dropzone": "^3.5.0",
     "next": "9.5.3",
+    "next-absolute-url": "^1.2.2",
     "node-fetch": "^2.6.1",
     "notistack": "^1.0.0",
     "random-words": "^1.1.1",
