@@ -21,32 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export function usePermissions(remoteState) {
-  if (!remoteState) {
-    return {};
+
+const state = require("../../../../server/state").state;
+
+export default (req, res) => {
+  const session = state[`${req.query.session}`];
+  if (session) {
+    session.finished = false;
+    res.status(200).json({ status: "ok" });
+  } else {
+    res.status(404).json({ errorCode: "session-not-found" });
   }
-
-  const { me, clients, settings, host, votesVisible } = remoteState;
-
-  // If the host has disconnected, we allow anyone to control the session until they
-  // rejoin.
-  const isHost = me.clientId === host;
-  const isActingHost = isHost || !clients.find((client) => client.clientId === host);
-  const canControlSession = settings.allowParticipantControl || isActingHost;
-
-  return {
-    isHost,
-    isActingHost,
-
-    canEditDescription: canControlSession,
-    canEditSettings: isActingHost,
-    canVote: me.name !== null && (settings.allowOpenVoting || !votesVisible),
-    canPaginate: isActingHost || settings.allowParticipantPagination,
-    canControlVotes: canControlSession,
-    canSeeDisconnectedClients: true,
-    canNudge: isActingHost,
-    canPromoteToHost: isActingHost,
-    canControlTimer: canControlSession,
-    canFinishSession: isActingHost,
-  };
-}
+};

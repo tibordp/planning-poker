@@ -48,33 +48,46 @@ function handleConnection(sessionName, socket, req, useHeartbeat) {
   const parsedUrl = parse(req.url, true);
   const clientId = new URLSearchParams(parsedUrl.search).get("client_id") || uuidv4();
   const sessionState = initializeSession(now, sessionName, clientId);
-  const clientState = initializeClient(now, sessionState, socket, clientId, useHeartbeat);
 
-  socket.on("message", (data) => {
-    const now = new Date();
-    try {
-      const action = JSON.parse(data);
-      processMessage(now, clientState, action);
-    } catch (error) {
-      console.error(error);
-      sendMessage(now, clientState, {
-        action: "error",
-        error: error.toString(),
-      });
-    }
-  });
+  if (sessionState.finished) {
+    // We do not allow a full reconnection if the session is in finished state, but we
+    // still keep the heartbeat on the session alive.
+    socket.send(
+      JSON.stringify({
+        action: "finished",
+        serverTime: now,
+      })
+    );
+    socket.close();
+  } else {
+    const clientState = initializeClient(now, sessionState, socket, clientId, useHeartbeat);
 
-  socket.on("close", () => {
-    // If another connection took over with the same client ID, we don't
-    // cleanup anything here as it will be cleaned up when the new socket
-    // disconnects.
-    if (clientState.socket === socket) {
+    socket.on("message", (data) => {
       const now = new Date();
-      cleanupClient(now, clientState);
-    }
-  });
+      try {
+        const action = JSON.parse(data);
+        processMessage(now, clientState, action);
+      } catch (error) {
+        console.error(error);
+        sendMessage(now, clientState, {
+          action: "error",
+          error: error.toString(),
+        });
+      }
+    });
 
-  broadcastState(now, sessionState);
+    socket.on("close", () => {
+      // If another connection took over with the same client ID, we don't
+      // cleanup anything here as it will be cleaned up when the new socket
+      // disconnects.
+      if (clientState.socket === socket) {
+        const now = new Date();
+        cleanupClient(now, clientState);
+      }
+    });
+
+    broadcastState(now, sessionState);
+  }
 }
 
 app.prepare().then(() => {

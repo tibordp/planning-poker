@@ -47,7 +47,7 @@ export function SessionUrl({ origin, sessionName }) {
   };
 
   // Cannot determine hostname easily in SSR context.
-  let sessionUrl = `${origin.protocol}//${origin.host}/${sessionName}`;
+  let sessionUrl = `${origin.protocol}//${origin.host}/${encodeURIComponent(sessionName)}`;
 
   return (
     <TextField

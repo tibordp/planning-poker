@@ -74,7 +74,7 @@ function getSocket(sessionName) {
   } else {
     const url = new URL(location.href);
     url.protocol = url.protocol.replace("http", "ws");
-    url.pathname = `/${sessionName}`;
+    url.pathname = `/${encodeURIComponent(sessionName)}`;
     url.search = new URLSearchParams({
       client_id: clientId,
     }).toString();
@@ -105,6 +105,7 @@ export function useRemoteState(sessionName, onAction) {
     };
 
     socket.onmessage = (message) => {
+      console.log(message);
       switch (message.action) {
         case "updateState":
           setRemoteState(message.value);
@@ -115,6 +116,7 @@ export function useRemoteState(sessionName, onAction) {
       }
     };
     socket.onclose = () => {
+      console.log("Closed");
       setRemoteState(null);
       setDispatch(null);
     };

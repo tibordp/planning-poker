@@ -108,6 +108,7 @@ function createNewSession(now, sessionName, clientId) {
     sessionName,
     description: "",
     ttlTimer: null,
+    finished: false,
     settings: { ...defaultSettings },
     pagination: {
       pages: [{}],
@@ -202,6 +203,17 @@ function resetTimer(now, timerState) {
   timerState.pausedTotal = 0;
 }
 
+function finishSession(now, sessionState) {
+  sessionState.finished = true;
+  Object.entries(sessionState.clients).forEach((client) => {
+    const [, clientState] = client;
+    sendMessage(now, clientState, {
+      action: "finished",
+    });
+    clientState.socket.close();
+  });
+}
+
 function cleanupSession(sessionState) {
   console.log(`[${sessionState.sessionName}] Deleting session.`);
   delete state[sessionState.sessionName];
@@ -215,8 +227,14 @@ function processMessage(now, clientState, receivedAction) {
   const { error, value: action } = actionSchema.validate(receivedAction);
   if (error) throw error;
 
+  if (sessionState.finished) {
+    // Finished sessions are inert
+    return;
+  }
+
   switch (action.action) {
-    // Imperative actions that do not mutate server state
+    // Imperative actions that do not mutate the server state
+    // (or mutate it in a special way)
     case "ping":
       sendMessage(now, clientState, { action: "pong" });
       return;
@@ -227,6 +245,11 @@ function processMessage(now, clientState, receivedAction) {
       }
       return;
     }
+    case "finishSession":
+      savePaginationData(now, sessionState);
+      sessionState.epoch += 1;
+      finishSession(now, sessionState);
+      return;
     // Everything else
     case "setDescription":
       sessionState.description = action.description;

@@ -111,6 +111,7 @@ exports.actionSchema = Joi.alternatives()
           "startTimer",
           "pauseTimer",
           "resetTimer",
+          "finishSession",
           "deletePage"
         )
         .required(),
