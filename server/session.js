@@ -406,9 +406,9 @@ function cleanupClient(now, clientState) {
   if (!Object.keys(sessionState.clients).length) {
     console.log(`[${sessionState.sessionName}] Scheduling session for deletion.`);
     if (sessionState.finished) {
-      sessionState.ttlTimer = setTimeout(cleanupSession, sessionTtl, sessionState);
-    } else {
       sessionState.ttlTimer = setTimeout(cleanupSession, finishedSessionTtl, sessionState);
+    } else {
+      sessionState.ttlTimer = setTimeout(cleanupSession, sessionTtl, sessionState);
     }
   } else {
     broadcastState(now, sessionState);

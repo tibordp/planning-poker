@@ -29,7 +29,6 @@ import { LongPollSocket } from "./connection/longpoll";
 import { v4 as uuidv4 } from "uuid";
 
 export const IS_SSR = typeof navigator === "undefined" || typeof window === "undefined";
-const { publicRuntimeConfig } = getConfig();
 
 export function useInternetConnectivity() {
   const [haveConnectivity, setHaveConnectivity] = React.useState(IS_SSR || navigator.onLine);
@@ -54,6 +53,7 @@ export function useInternetConnectivity() {
 }
 
 function getSocket(sessionName) {
+  const { publicRuntimeConfig } = getConfig();
   let clientId = window.sessionStorage.getItem("client_id");
   if (!clientId) {
     clientId = uuidv4();

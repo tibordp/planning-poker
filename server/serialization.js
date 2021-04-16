@@ -78,7 +78,7 @@ function serializeSession(sessionState, me) {
 }
 
 function serializeStats(state) {
-  const sessions = Object.values(state);
+  const sessions = Object.values(state).filter(({ finished }) => !finished);
   const numVoters = sessions.reduce(
     (a, b) => a + Object.values(b.clients).filter(({ name }) => name).length,
     0
