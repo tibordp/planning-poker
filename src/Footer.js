@@ -30,7 +30,6 @@ import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import { Timer } from "./Timer";
 import { useSnackbar } from "notistack";
-import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { usePermissions } from "./permissions";
 import { useRouter } from "next/router";
 
@@ -65,18 +64,6 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.error.main,
   },
 }));
-
-function DangerButton(props) {
-  return (
-    <ThemeProvider
-      theme={(theme) =>
-        createMuiTheme({ ...theme, palette: { ...theme.palette, primary: theme.palette.error } })
-      }
-    >
-      <Button color="primary" {...props} />
-    </ThemeProvider>
-  );
-}
 
 export default function Footer({ sessionName, canReactivate, remoteState, dispatch }) {
   const classes = useStyles();
@@ -126,12 +113,12 @@ export default function Footer({ sessionName, canReactivate, remoteState, dispat
           </>
         )}
         {dispatch && permissions.canFinishSession && (
-          <DangerButton variant="text" onClick={() => setOpen(true)}>
+          <Button className={classes.button} variant="text" onClick={() => setOpen(true)}>
             Finish session
-          </DangerButton>
+          </Button>
         )}
         {canReactivate && sessionName && (
-          <Button variant="text" onClick={reactivateSession}>
+          <Button className={classes.button} variant="text" onClick={reactivateSession}>
             Reactivate session
           </Button>
         )}

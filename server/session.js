@@ -210,7 +210,11 @@ function resetTimer(now, timerState) {
 }
 
 function finishSession(now, sessionState) {
+  pauseTimer(now, sessionState.timerState);
+  savePaginationData(now, sessionState);
+  sessionState.epoch += 1;
   sessionState.finished = true;
+  console.log(`[${sessionState.sessionName}] Session finished.`);
   Object.entries(sessionState.clients).forEach((client) => {
     const [, clientState] = client;
     sendMessage(now, clientState, {
@@ -225,8 +229,15 @@ function reactivateSession(sessionState) {
 }
 
 function cleanupSession(sessionState) {
-  console.log(`[${sessionState.sessionName}] Deleting session.`);
-  delete state[sessionState.sessionName];
+  const now = new Date();
+
+  if (sessionState.finished) {
+    console.log(`[${sessionState.sessionName}] Deleting session.`);
+    delete state[sessionState.sessionName];
+  } else {
+    finishSession(now, sessionState);
+    sessionState.ttlTimer = setTimeout(cleanupSession, finishedSessionTtl, sessionState);
+  }
 }
 
 function processMessage(now, clientState, receivedAction) {
@@ -256,9 +267,6 @@ function processMessage(now, clientState, receivedAction) {
       return;
     }
     case "finishSession":
-      pauseTimer(now, sessionState.timerState);
-      savePaginationData(now, sessionState);
-      sessionState.epoch += 1;
       finishSession(now, sessionState);
       return;
     // Everything else
@@ -404,10 +412,11 @@ function cleanupClient(now, clientState) {
   // Delete the session after last client disconnects, but allow for a grace period
   // in case e.g. the host had some connectivity issues.
   if (!Object.keys(sessionState.clients).length) {
-    console.log(`[${sessionState.sessionName}] Scheduling session for deletion.`);
     if (sessionState.finished) {
+      console.log(`[${sessionState.sessionName}] Scheduling session for deletion.`);
       sessionState.ttlTimer = setTimeout(cleanupSession, finishedSessionTtl, sessionState);
     } else {
+      console.log(`[${sessionState.sessionName}] Scheduling session for expiry.`);
       sessionState.ttlTimer = setTimeout(cleanupSession, sessionTtl, sessionState);
     }
   } else {
