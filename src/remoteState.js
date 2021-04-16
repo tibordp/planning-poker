@@ -105,7 +105,6 @@ export function useRemoteState(sessionName, onAction) {
     };
 
     socket.onmessage = (message) => {
-      console.log(message);
       switch (message.action) {
         case "updateState":
           setRemoteState(message.value);
@@ -114,9 +113,10 @@ export function useRemoteState(sessionName, onAction) {
           onAction?.(message);
           break;
       }
+      // Store the last known time offset between server and client globally
+      window.__PP_TIME_OFFSET = new Date() - new Date(message.serverTime);
     };
     socket.onclose = () => {
-      console.log("Closed");
       setRemoteState(null);
       setDispatch(null);
     };

@@ -21,21 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import React from "react";
+import Container from "@material-ui/core/Container";
+import Box from "@material-ui/core/Box";
+import Logo from "../src/Logo";
+import Footer from "../src/Footer";
 
-const state = require("../../../../server/state").state;
-const { exportSession } = require("../../../../server/serialization");
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 
-export default (req, res) => {
-  if (req.method !== "GET") {
-    res.status(405).json({ errorCode: "method-not-supported" });
-    return;
-  }
-
-  const session = state[`${req.query.session}`];
-  if (session) {
-    res.setHeader("Content-Disposition", `attachment; filename=${session.sessionName}.json`);
-    res.status(200).json(exportSession(session));
-  } else {
-    res.status(404).json({ errorCode: "session-not-found" });
-  }
-};
+export default function NotFound() {
+  return (
+    <Container maxWidth="sm">
+      <Logo />
+      <Box my={2}>
+        <Alert variant="filled" severity="error">
+          <AlertTitle>Not found!</AlertTitle>
+          This page is not found. The sadness :(
+        </Alert>
+      </Box>
+      <Footer />
+    </Container>
+  );
+}

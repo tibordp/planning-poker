@@ -22,7 +22,13 @@
  * SOFTWARE.
  */
 const state = require("./state").state;
-const { defaultSettings, heartbeatTimeout, sessionTtl, actionSchema } = require("./constants");
+const {
+  defaultSettings,
+  heartbeatTimeout,
+  sessionTtl,
+  finishedSessionTtl,
+  actionSchema,
+} = require("./constants");
 const { serializeSession } = require("./serialization");
 
 function sendMessage(now, clientState, action) {
@@ -214,6 +220,10 @@ function finishSession(now, sessionState) {
   });
 }
 
+function reactivateSession(sessionState) {
+  sessionState.finished = false;
+}
+
 function cleanupSession(sessionState) {
   console.log(`[${sessionState.sessionName}] Deleting session.`);
   delete state[sessionState.sessionName];
@@ -246,6 +256,7 @@ function processMessage(now, clientState, receivedAction) {
       return;
     }
     case "finishSession":
+      pauseTimer(now, sessionState.timerState);
       savePaginationData(now, sessionState);
       sessionState.epoch += 1;
       finishSession(now, sessionState);
@@ -394,7 +405,11 @@ function cleanupClient(now, clientState) {
   // in case e.g. the host had some connectivity issues.
   if (!Object.keys(sessionState.clients).length) {
     console.log(`[${sessionState.sessionName}] Scheduling session for deletion.`);
-    sessionState.ttlTimer = setTimeout(cleanupSession, sessionTtl, sessionState);
+    if (sessionState.finished) {
+      sessionState.ttlTimer = setTimeout(cleanupSession, sessionTtl, sessionState);
+    } else {
+      sessionState.ttlTimer = setTimeout(cleanupSession, finishedSessionTtl, sessionState);
+    }
   } else {
     broadcastState(now, sessionState);
   }
@@ -407,3 +422,4 @@ exports.initializeClient = initializeClient;
 exports.cleanupClient = cleanupClient;
 exports.broadcastState = broadcastState;
 exports.createNewSession = createNewSession;
+exports.reactivateSession = reactivateSession;

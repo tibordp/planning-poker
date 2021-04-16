@@ -26,6 +26,11 @@ const state = require("../../../../server/state").state;
 const { serializeSession } = require("../../../../server/serialization");
 
 export default (req, res) => {
+  if (req.method !== "GET") {
+    res.status(405).json({ errorCode: "method-not-supported" });
+    return;
+  }
+
   const session = state[`${req.query.session}`];
   if (session) {
     res.status(200).json(serializeSession(session));

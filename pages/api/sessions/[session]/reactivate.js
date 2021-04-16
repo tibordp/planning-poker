@@ -23,11 +23,17 @@
  */
 
 const state = require("../../../../server/state").state;
+const { reactivateSession } = require("../../../../server/session");
 
 export default (req, res) => {
+  if (req.method !== "POST") {
+    res.status(405).json({ errorCode: "method-not-supported" });
+    return;
+  }
+
   const session = state[`${req.query.session}`];
   if (session) {
-    session.finished = false;
+    reactivateSession(session);
     res.status(200).json({ status: "ok" });
   } else {
     res.status(404).json({ errorCode: "session-not-found" });

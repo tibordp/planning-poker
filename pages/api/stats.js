@@ -25,5 +25,10 @@ const state = require("../../server/state").state;
 const { serializeStats } = require("../../server/serialization");
 
 export default (req, res) => {
+  if (req.method !== "GET") {
+    res.status(405).json({ errorCode: "method-not-supported" });
+    return;
+  }
+
   res.status(200).json(serializeStats(state));
 };

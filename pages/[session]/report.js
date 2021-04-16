@@ -181,7 +181,7 @@ function Report({ sessionName, initialData }) {
         data.finished &&
         data.pages &&
         data.pages.map((page, index) => (
-          <>
+          <React.Fragment key={index}>
             <Divider />
             <ReportRow
               scoreSet={data.settings.scoreSet}
@@ -190,7 +190,7 @@ function Report({ sessionName, initialData }) {
               duration={page.duration}
               index={index}
             />
-          </>
+          </React.Fragment>
         ))}
       <Footer canReactivate={data && data.finished && data.pages} sessionName={sessionName} />
     </>
