@@ -14,9 +14,10 @@ Array [
       <p
         className="MuiTypography-root MuiTypography-body1"
       >
-        00:00:00
+        01:00:00
       </p>
       <button
+        aria-describedby={null}
         className="MuiButtonBase-root MuiIconButton-root"
         disabled={false}
         onBlur={[Function]}
@@ -27,11 +28,13 @@ Array [
         onKeyUp={[Function]}
         onMouseDown={[Function]}
         onMouseLeave={[Function]}
+        onMouseOver={[Function]}
         onMouseUp={[Function]}
         onTouchEnd={[Function]}
         onTouchMove={[Function]}
         onTouchStart={[Function]}
         tabIndex={0}
+        title="Pause the timer"
         type="button"
       >
         <span
@@ -48,8 +51,12 @@ Array [
             />
           </svg>
         </span>
+        <span
+          className="MuiTouchRipple-root"
+        />
       </button>
       <button
+        aria-describedby={null}
         className="MuiButtonBase-root MuiIconButton-root"
         disabled={false}
         onBlur={[Function]}
@@ -60,11 +67,13 @@ Array [
         onKeyUp={[Function]}
         onMouseDown={[Function]}
         onMouseLeave={[Function]}
+        onMouseOver={[Function]}
         onMouseUp={[Function]}
         onTouchEnd={[Function]}
         onTouchMove={[Function]}
         onTouchStart={[Function]}
         tabIndex={0}
+        title="Reset the timer"
         type="button"
       >
         <span
@@ -81,10 +90,13 @@ Array [
             />
           </svg>
         </span>
+        <span
+          className="MuiTouchRipple-root"
+        />
       </button>
     </div>
     <button
-      className="MuiButtonBase-root-34 MuiButton-root-7 MuiButton-text-9 MuiButton-textPrimary-10"
+      className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-button-1"
       disabled={false}
       onBlur={[Function]}
       onClick={[Function]}
@@ -102,70 +114,14 @@ Array [
       type="button"
     >
       <span
-        className="MuiButton-label-8"
+        className="MuiButton-label"
       >
         Finish session
       </span>
-    </button>
-    <a
-      aria-disabled={false}
-      className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-button-1"
-      href="http://www.github.com/tibordp/planning-poker"
-      onBlur={[Function]}
-      onDragLeave={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      onKeyUp={[Function]}
-      onMouseDown={[Function]}
-      onMouseLeave={[Function]}
-      onMouseUp={[Function]}
-      onTouchEnd={[Function]}
-      onTouchMove={[Function]}
-      onTouchStart={[Function]}
-      tabIndex={0}
-      target="_blank"
-    >
       <span
-        className="MuiButton-label"
-      >
-        <span
-          className="MuiButton-startIcon MuiButton-iconSizeMedium"
-        >
-          <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root"
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6 0-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8 0 3.2.9.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1 .9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0 0 12 .3"
-            />
-          </svg>
-        </span>
-        View on GitHub
-      </span>
-    </a>
-  </div>,
-]
-`;
-
-exports[`renders Footer unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 2`] = `
-Array [
-  <hr
-    className="MuiDivider-root"
-  />,
-  <div
-    className="MuiBox-root MuiBox-root-35 makeStyles-footer-2"
-  >
-    <div
-      className="MuiBox-root MuiBox-root-36 makeStyles-footer-2"
-    >
-      <p
-        className="MuiTypography-root MuiTypography-body1"
-      >
-        01:00:00
-      </p>
-    </div>
+        className="MuiTouchRipple-root"
+      />
+    </button>
     <a
       aria-disabled={false}
       className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-button-1"
@@ -211,16 +167,75 @@ Array [
 ]
 `;
 
+exports[`renders Footer unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 2`] = `
+Array [
+  <hr
+    className="MuiDivider-root"
+  />,
+  <div
+    className="MuiBox-root MuiBox-root-7 makeStyles-footer-2"
+  >
+    <div
+      className="MuiBox-root MuiBox-root-8 makeStyles-footer-2"
+    >
+      <p
+        className="MuiTypography-root MuiTypography-body1"
+      >
+        00:00:00
+      </p>
+    </div>
+    <a
+      aria-disabled={false}
+      className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-button-1"
+      href="http://www.github.com/tibordp/planning-poker"
+      onBlur={[Function]}
+      onDragLeave={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex={0}
+      target="_blank"
+    >
+      <span
+        className="MuiButton-label"
+      >
+        <span
+          className="MuiButton-startIcon MuiButton-iconSizeMedium"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6 0-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8 0 3.2.9.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1 .9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0 0 12 .3"
+            />
+          </svg>
+        </span>
+        View on GitHub
+      </span>
+    </a>
+  </div>,
+]
+`;
+
 exports[`renders Footer unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 3`] = `
 Array [
   <hr
     className="MuiDivider-root"
   />,
   <div
-    className="MuiBox-root MuiBox-root-47 makeStyles-footer-2"
+    className="MuiBox-root MuiBox-root-9 makeStyles-footer-2"
   >
     <button
-      className="MuiButtonBase-root-75 MuiButton-root-48 MuiButton-text-50 MuiButton-textPrimary-51"
+      className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-button-1"
       disabled={false}
       onBlur={[Function]}
       onClick={[Function]}
@@ -238,10 +253,13 @@ Array [
       type="button"
     >
       <span
-        className="MuiButton-label-49"
+        className="MuiButton-label"
       >
         Finish session
       </span>
+      <span
+        className="MuiTouchRipple-root"
+      />
     </button>
     <a
       aria-disabled={false}
@@ -280,6 +298,9 @@ Array [
         </span>
         View on GitHub
       </span>
+      <span
+        className="MuiTouchRipple-root"
+      />
     </a>
   </div>,
 ]

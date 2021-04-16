@@ -84,10 +84,17 @@ test("client disconnected", () => {
   expect(sessionState.ttlTimer).not.toBeNull();
 
   expect(setTimeout).toHaveBeenCalledTimes(1);
-  const [callback, interval, ...args] = setTimeout.mock.calls[0];
+  let [callback, interval, ...args] = setTimeout.mock.calls[0];
   expect(interval).toBe(60000);
 
   callback(...args);
+  expect(sessionState.finished).toBe(true);
+  expect(setTimeout).toHaveBeenCalledTimes(2);
+  [callback, interval, ...args] = setTimeout.mock.calls[1];
+
+  expect(interval).toBe(86400000);
+  callback(...args);
+
   expect(state).not.toHaveProperty(sessionName);
 });
 

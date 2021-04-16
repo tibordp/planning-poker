@@ -27,6 +27,7 @@ import PlayArrow from "@material-ui/icons/PlayArrow";
 import Replay from "@material-ui/icons/Replay";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 import PropTypes from "prop-types";
 import { IS_SSR } from "./remoteState";
 
@@ -76,18 +77,24 @@ export function Timer({ timerState, dispatch, canControlTimer }) {
       {canControlTimer && (
         <>
           {!pausedTime && (
-            <IconButton onClick={() => dispatch({ action: "pauseTimer" })}>
-              <Pause />
-            </IconButton>
+            <Tooltip title="Pause the timer">
+              <IconButton onClick={() => dispatch({ action: "pauseTimer" })}>
+                <Pause />
+              </IconButton>
+            </Tooltip>
           )}
           {!!pausedTime && (
-            <IconButton onClick={() => dispatch({ action: "startTimer" })}>
-              <PlayArrow />
-            </IconButton>
+            <Tooltip title="Start the timer">
+              <IconButton onClick={() => dispatch({ action: "startTimer" })}>
+                <PlayArrow />
+              </IconButton>
+            </Tooltip>
           )}
-          <IconButton onClick={() => dispatch({ action: "resetTimer" })}>
-            <Replay />
-          </IconButton>
+          <Tooltip title="Reset the timer">
+            <IconButton onClick={() => dispatch({ action: "resetTimer" })}>
+              <Replay />
+            </IconButton>
+          </Tooltip>
         </>
       )}
     </>

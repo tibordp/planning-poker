@@ -50,11 +50,11 @@ spec:
               value: "5000"
             - name: PP_HEARTBEAT_TIMEOUT
               value: "10000"
-            # How long to persist the session data on the server after the last client
+            # How long to persist the live session on the server after the last client
             # disconnects.
             - name: PP_SESSION_TTL
               value: "60000"
-            # How long to persist the session data for finsihed sessions
+            # How long to persist the finished session data for finished sessions
             - name: PP_FINISHED_SESSION_TTL
               value: "86400000"
           livenessProbe:
