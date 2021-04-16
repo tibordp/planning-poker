@@ -29,10 +29,12 @@ import { MainBoard } from "./board/MainBoard";
 import { Description } from "./Description";
 import { SettingsDialog } from "./settings/SettingsDialog";
 import { ParticipantPanel } from "./ParticipantPanel";
-import { calculatePermissions } from "./permissions";
+import { usePermissions } from "./permissions";
+import { useSnackbar } from "notistack";
 
 export function Session({ remoteState, dispatch, sessionName }) {
   const [settingsOpen, setSettingsOpen] = React.useState(false);
+  const [previousPermissions, setPreviousPermissions] = React.useState(null);
 
   const {
     votesVisible,
@@ -44,7 +46,21 @@ export function Session({ remoteState, dispatch, sessionName }) {
     disconnectedClients,
     pagination,
   } = remoteState;
-  const permissions = calculatePermissions(remoteState);
+  const permissions = usePermissions(remoteState);
+  const { enqueueSnackbar } = useSnackbar();
+
+  React.useEffect(() => {
+    if (previousPermissions) {
+      if (!previousPermissions.isHost && permissions.isHost) {
+        enqueueSnackbar("You are the new session host!", { variant: "info" });
+      } else if (!previousPermissions.isActingHost && permissions.isActingHost) {
+        enqueueSnackbar("You are the new acting host as the session host has disconnected.", {
+          variant: "info",
+        });
+      }
+    }
+    setPreviousPermissions(permissions);
+  }, [remoteState]);
 
   return (
     <>

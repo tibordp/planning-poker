@@ -90,3 +90,26 @@ test("client disconnected", () => {
   callback(...args);
   expect(state).not.toHaveProperty(sessionName);
 });
+
+test("session finished", () => {
+  const now = new Date("2020-06-23T21:31:09.727Z");
+  const sessionName = getSessionName();
+
+  const socket = fakeSocket();
+  const sessionState = session.initializeSession(now, sessionName, "client-id");
+  const clientState = session.initializeClient(now, sessionState, socket, "client-id", true);
+
+  jest.useFakeTimers(); // Clean any timers from before
+  sessionState.finished = true;
+
+  session.cleanupClient(now, clientState);
+  expect(sessionState.clients).toStrictEqual({});
+  expect(sessionState.ttlTimer).not.toBeNull();
+
+  expect(setTimeout).toHaveBeenCalledTimes(1);
+  const [callback, interval, ...args] = setTimeout.mock.calls[0];
+  expect(interval).toBe(86400000);
+
+  callback(...args);
+  expect(state).not.toHaveProperty(sessionName);
+});

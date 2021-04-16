@@ -23,18 +23,18 @@
  */
 
 const state = require("../../../../server/state").state;
-const { exportSession } = require("../../../../server/serialization");
+const { reactivateSession } = require("../../../../server/session");
 
 export default (req, res) => {
-  if (req.method !== "GET") {
+  if (req.method !== "POST") {
     res.status(405).json({ errorCode: "method-not-supported" });
     return;
   }
 
   const session = state[`${req.query.session}`];
   if (session) {
-    res.setHeader("Content-Disposition", `attachment; filename=${session.sessionName}.json`);
-    res.status(200).json(exportSession(session));
+    reactivateSession(session);
+    res.status(200).json({ status: "ok" });
   } else {
     res.status(404).json({ errorCode: "session-not-found" });
   }

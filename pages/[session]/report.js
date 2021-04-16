@@ -45,6 +45,8 @@ import { formatDuration } from "../../src/Timer";
 import { state } from "../../server/state";
 import { exportSession } from "../../server/serialization";
 
+import gfm from "remark-gfm";
+
 const useStyles = makeStyles((theme) => ({
   chip: {
     margin: theme.spacing(1),
@@ -52,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   markdown: {
     ...mdStyles(theme),
     display: "inline-block",
-    overflowX: "scroll",
+    overflowX: "auto",
   },
 }));
 
@@ -84,14 +86,15 @@ function ReportRow({ scoreSet, description, votes, index, duration }) {
     <>
       <Box justifyContent="center" display="flex">
         <ReactMarkdown
-          source={description || `### Page ${index + 1}`}
           linkTarget="_blank"
-          escapeHtml
           className={classes.markdown}
-          renderers={{
-            link: Link,
+          components={{
+            a: Link,
           }}
-        />
+          remarkPlugins={[gfm]}
+        >
+          {description || `### Page ${index + 1}`}
+        </ReactMarkdown>
       </Box>
 
       <Box justifyContent="space-between" alignItems="center" display="flex" my={2}>
@@ -166,10 +169,19 @@ function Report({ sessionName, initialData }) {
           </Alert>
         </Box>
       )}
+      {data && data.pages && !data.finished && (
+        <Box my={2}>
+          <Alert variant="filled" severity="success">
+            <AlertTitle>Session is still in progress!</AlertTitle>
+            Click <Link href={`/${encodeURIComponent(sessionName)}`}>here</Link> to join.
+          </Alert>
+        </Box>
+      )}
       {data &&
+        data.finished &&
         data.pages &&
         data.pages.map((page, index) => (
-          <>
+          <React.Fragment key={index}>
             <Divider />
             <ReportRow
               scoreSet={data.settings.scoreSet}
@@ -178,8 +190,9 @@ function Report({ sessionName, initialData }) {
               duration={page.duration}
               index={index}
             />
-          </>
+          </React.Fragment>
         ))}
+      <Footer canReactivate={data && data.finished && data.pages} sessionName={sessionName} />
     </>
   );
 }
@@ -194,7 +207,6 @@ function ReportPage({ sessionName, initialData }) {
     <Container maxWidth="sm">
       <Logo />
       <Report sessionName={sessionName} initialData={initialData} />
-      <Footer />
     </Container>
   );
 }

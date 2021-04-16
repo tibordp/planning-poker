@@ -21,15 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export function calculatePermissions(remoteState) {
+export function usePermissions(remoteState) {
+  if (!remoteState) {
+    return {};
+  }
+
   const { me, clients, settings, host, votesVisible } = remoteState;
 
   // If the host has disconnected, we allow anyone to control the session until they
   // rejoin.
-  const isActingHost = me.clientId === host || !clients.find((client) => client.clientId === host);
+  const isHost = me.clientId === host;
+  const isActingHost = isHost || !clients.find((client) => client.clientId === host);
   const canControlSession = settings.allowParticipantControl || isActingHost;
 
   return {
+    isHost,
+    isActingHost,
+
     canEditDescription: canControlSession,
     canEditSettings: isActingHost,
     canVote: me.name !== null && (settings.allowOpenVoting || !votesVisible),
@@ -39,5 +47,6 @@ export function calculatePermissions(remoteState) {
     canNudge: isActingHost,
     canPromoteToHost: isActingHost,
     canControlTimer: canControlSession,
+    canFinishSession: isActingHost,
   };
 }

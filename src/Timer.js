@@ -28,6 +28,7 @@ import Replay from "@material-ui/icons/Replay";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import PropTypes from "prop-types";
+import { IS_SSR } from "./remoteState";
 
 export function formatDuration(milliseconds) {
   return new Date(Math.max(0, milliseconds)).toISOString().substr(11, 8);
@@ -50,7 +51,11 @@ export function Timer({ timerState, dispatch, canControlTimer }) {
 
   React.useEffect(() => {
     const tick = () => {
-      const endTime = pausedTime || new Date();
+      let timeOffset = 0;
+      if (!IS_SSR) {
+        timeOffset = window.__PP_TIME_OFFSET || 0;
+      }
+      const endTime = pausedTime || new Date() - timeOffset;
       const newValue = endTime - startTime - timerState.pausedTotal;
       setTimer(newValue);
     };

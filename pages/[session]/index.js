@@ -42,6 +42,7 @@ import { state } from "../../server/state";
 import { serializeSession } from "../../server/serialization";
 import { createNewSession } from "../../server/session";
 import absoluteUrl from "next-absolute-url";
+import { useRouter } from "next/router";
 
 export const useStyles = makeStyles((theme) => ({
   card: {
@@ -115,6 +116,9 @@ function SessionPage({ sessionName, initialRemoteState, origin }) {
   const nudgeAudioRef = React.useRef();
   const { enqueueSnackbar } = useSnackbar();
 
+  const router = useRouter();
+  const [sessionFinished, setSessionFinished] = React.useState(false);
+
   const [remoteState, dispatch, connectionStatus] = useReconnector(sessionName, (message) => {
     switch (message.action) {
       case "nudge":
@@ -124,6 +128,11 @@ function SessionPage({ sessionName, initialRemoteState, origin }) {
         break;
       case "kicked":
         enqueueSnackbar("You have been kicked from the session!", { variant: "warning" });
+        break;
+      case "finished":
+        enqueueSnackbar("Session finished!", { variant: "info" });
+        setSessionFinished(true);
+        router.replace(`/${encodeURIComponent(sessionName)}/report`);
         break;
       case "error":
         enqueueSnackbar(message.error, { variant: "error" });
@@ -159,12 +168,21 @@ function SessionPage({ sessionName, initialRemoteState, origin }) {
               justifyContent="center"
             >
               <Box className={classes.connecting}>
-                <CircularProgress color="secondary" className={classes.spinner} size="3rem" />
-                <Typography variant="subtitle1" component="span" gutterBottom>
-                  {connectionStatus === connectionState.CONNECTING && "Connecting..."}
-                  {connectionStatus === connectionState.OFFLINE &&
-                    "You are offline. Waiting for you to come back online..."}
-                </Typography>
+                {sessionFinished && (
+                  <Typography variant="subtitle1" component="span" gutterBottom>
+                    Session finished, showing report...
+                  </Typography>
+                )}
+                {!sessionFinished && (
+                  <>
+                    <CircularProgress color="secondary" className={classes.spinner} size="3rem" />
+                    <Typography variant="subtitle1" component="span" gutterBottom>
+                      {connectionStatus === connectionState.CONNECTING && "Connecting..."}
+                      {connectionStatus === connectionState.OFFLINE &&
+                        "You are offline. Waiting for you to come back online..."}
+                    </Typography>
+                  </>
+                )}
               </Box>
             </Box>
           )}
@@ -173,7 +191,7 @@ function SessionPage({ sessionName, initialRemoteState, origin }) {
         <SessionUrl origin={origin} sessionName={sessionName} />
         <Footer remoteState={remoteState} dispatch={dispatch} />
       </Container>
-      <audio src="nudge.mp3" ref={nudgeAudioRef} />
+      <audio src="nudge.mp3" preload="auto" ref={nudgeAudioRef} />
     </>
   );
 }
@@ -193,6 +211,16 @@ export async function getServerSideProps({ params, req }) {
   // without actually initializing the session until the user actually connects the
   // socket.
   const session = state[sessionName] || createNewSession(new Date(), sessionName, null);
+
+  if (session.finished) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/${encodeURIComponent(sessionName)}/report`,
+      },
+    };
+  }
+
   const initialRemoteState = {
     ...serializeSession(session),
     me: { clientId: null, score: null, name: null },

@@ -116,12 +116,12 @@ Statistics.propTypes = {
 
 export default function Index({ initialData }) {
   const handleNewSession = () => {
-    const sessionId = randomWords({
+    const sessionName = randomWords({
       exactly: 1,
       wordsPerString: 3,
       separator: "-",
     })[0];
-    window.open(`/${sessionId}`, "_blank");
+    window.open(`/${encodeURIComponent(sessionName)}`, "_blank");
   };
 
   return (

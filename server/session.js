@@ -22,7 +22,13 @@
  * SOFTWARE.
  */
 const state = require("./state").state;
-const { defaultSettings, heartbeatTimeout, sessionTtl, actionSchema } = require("./constants");
+const {
+  defaultSettings,
+  heartbeatTimeout,
+  sessionTtl,
+  finishedSessionTtl,
+  actionSchema,
+} = require("./constants");
 const { serializeSession } = require("./serialization");
 
 function sendMessage(now, clientState, action) {
@@ -108,6 +114,7 @@ function createNewSession(now, sessionName, clientId) {
     sessionName,
     description: "",
     ttlTimer: null,
+    finished: false,
     settings: { ...defaultSettings },
     pagination: {
       pages: [{}],
@@ -202,6 +209,21 @@ function resetTimer(now, timerState) {
   timerState.pausedTotal = 0;
 }
 
+function finishSession(now, sessionState) {
+  sessionState.finished = true;
+  Object.entries(sessionState.clients).forEach((client) => {
+    const [, clientState] = client;
+    sendMessage(now, clientState, {
+      action: "finished",
+    });
+    clientState.socket.close();
+  });
+}
+
+function reactivateSession(sessionState) {
+  sessionState.finished = false;
+}
+
 function cleanupSession(sessionState) {
   console.log(`[${sessionState.sessionName}] Deleting session.`);
   delete state[sessionState.sessionName];
@@ -215,8 +237,14 @@ function processMessage(now, clientState, receivedAction) {
   const { error, value: action } = actionSchema.validate(receivedAction);
   if (error) throw error;
 
+  if (sessionState.finished) {
+    // Finished sessions are inert
+    return;
+  }
+
   switch (action.action) {
-    // Imperative actions that do not mutate server state
+    // Imperative actions that do not mutate the server state
+    // (or mutate it in a special way)
     case "ping":
       sendMessage(now, clientState, { action: "pong" });
       return;
@@ -227,6 +255,12 @@ function processMessage(now, clientState, receivedAction) {
       }
       return;
     }
+    case "finishSession":
+      pauseTimer(now, sessionState.timerState);
+      savePaginationData(now, sessionState);
+      sessionState.epoch += 1;
+      finishSession(now, sessionState);
+      return;
     // Everything else
     case "setDescription":
       sessionState.description = action.description;
@@ -371,7 +405,11 @@ function cleanupClient(now, clientState) {
   // in case e.g. the host had some connectivity issues.
   if (!Object.keys(sessionState.clients).length) {
     console.log(`[${sessionState.sessionName}] Scheduling session for deletion.`);
-    sessionState.ttlTimer = setTimeout(cleanupSession, sessionTtl, sessionState);
+    if (sessionState.finished) {
+      sessionState.ttlTimer = setTimeout(cleanupSession, finishedSessionTtl, sessionState);
+    } else {
+      sessionState.ttlTimer = setTimeout(cleanupSession, sessionTtl, sessionState);
+    }
   } else {
     broadcastState(now, sessionState);
   }
@@ -384,3 +422,4 @@ exports.initializeClient = initializeClient;
 exports.cleanupClient = cleanupClient;
 exports.broadcastState = broadcastState;
 exports.createNewSession = createNewSession;
+exports.reactivateSession = reactivateSession;

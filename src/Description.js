@@ -26,6 +26,7 @@ import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import ReactMarkdown from "react-markdown";
+import gfm from "remark-gfm";
 import { makeStyles } from "@material-ui/core/styles";
 
 export const mdStyles = (theme) => ({
@@ -49,6 +50,23 @@ export const mdStyles = (theme) => ({
     marginLeft: 0,
     paddingLeft: theme.spacing(1),
     borderColor: theme.palette.secondary.light,
+  },
+  "& table": {
+    width: "max-content",
+    maxWidth: "100%",
+    overflow: "auto",
+    borderSpacing: 0,
+    borderCollapse: "collapse",
+  },
+  "& table tr": {
+    borderTop: "1px solid #c6cbd1",
+  },
+  "& table tr td, & table tr th": {
+    padding: "6px 13px",
+    border: "1px solid #dfe2e5",
+  },
+  "& table th": {
+    fontWeight: 600,
   },
   fontSize: theme.typography.fontSize,
   color: theme.palette.text.primary,
@@ -143,12 +161,12 @@ export function Description({ editingEnabled, description, onChange }) {
           InputProps={{
             inputComponent: ReactMarkdown,
             inputProps: {
-              source: localDescription || "&nbsp;",
+              remarkPlugins: [gfm],
+              children: localDescription || "&nbsp;",
               linkTarget: "_blank",
               className: classes.markdown,
-              escapeHtml: true,
-              renderers: {
-                link: Link,
+              components: {
+                a: Link,
               },
             },
           }}

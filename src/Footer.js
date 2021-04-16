@@ -29,7 +29,16 @@ import Box from "@material-ui/core/Box";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import { Timer } from "./Timer";
-import { calculatePermissions } from "./permissions";
+import { useSnackbar } from "notistack";
+import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { usePermissions } from "./permissions";
+import { useRouter } from "next/router";
+
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -40,16 +49,66 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     minHeight: theme.spacing(6),
+    "& *:only-child": {
+      marginLeft: "auto",
+    },
+  },
+  timer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  dangerButton: {
+    color: theme.palette.error.main,
+    borderColor: theme.palette.error.main,
   },
 }));
 
-export default function Footer({ remoteState, dispatch }) {
+function DangerButton(props) {
+  return (
+    <ThemeProvider
+      theme={(theme) =>
+        createMuiTheme({ ...theme, palette: { ...theme.palette, primary: theme.palette.error } })
+      }
+    >
+      <Button color="primary" {...props} />
+    </ThemeProvider>
+  );
+}
+
+export default function Footer({ sessionName, canReactivate, remoteState, dispatch }) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const showTimer = !!remoteState && remoteState.settings.showTimer;
-  const permissions = !!remoteState && calculatePermissions(remoteState);
+  const permissions = usePermissions(remoteState);
+
+  const [open, setOpen] = React.useState(false);
+
+  const reactivateSession = async () => {
+    try {
+      const res = await fetch(`/api/sessions/${encodeURIComponent(sessionName)}/reactivate`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+      router.replace(`/${encodeURIComponent(sessionName)}`);
+    } catch (e) {
+      console.error(e);
+      enqueueSnackbar("Failed to reactivate the session!", { variant: "error" });
+    }
+  };
+
+  const handleClose = (proceed) => {
+    setOpen(false);
+    if (proceed) {
+      dispatch?.({ action: "finishSession" });
+    }
+  };
 
   return (
     <>
@@ -57,13 +116,24 @@ export default function Footer({ remoteState, dispatch }) {
       <Box className={classes.footer}>
         {showTimer && (
           <>
-            <Timer
-              canControlTimer={permissions.canControlTimer}
-              timerState={remoteState.timerState}
-              dispatch={dispatch}
-            />
-            <div style={{ flexGrow: 1 }} />
+            <Box className={classes.footer}>
+              <Timer
+                canControlTimer={permissions.canControlTimer}
+                timerState={remoteState.timerState}
+                dispatch={dispatch}
+              />
+            </Box>
           </>
+        )}
+        {dispatch && permissions.canFinishSession && (
+          <DangerButton variant="text" onClick={() => setOpen(true)}>
+            Finish session
+          </DangerButton>
+        )}
+        {canReactivate && sessionName && (
+          <Button variant="text" onClick={reactivateSession}>
+            Reactivate session
+          </Button>
         )}
         <Button
           variant="text"
@@ -76,6 +146,28 @@ export default function Footer({ remoteState, dispatch }) {
           View on GitHub
         </Button>
       </Box>
+      <Dialog
+        open={open}
+        onClose={() => handleClose(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Finish this session?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Finishing the session will disconnect everyone and afterwards you will be able to review
+            the report.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleClose(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => handleClose(true)} color="primary" autoFocus>
+            Finish session
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
@@ -83,4 +175,6 @@ export default function Footer({ remoteState, dispatch }) {
 Footer.propTypes = {
   remoteState: PropTypes.object,
   dispatch: PropTypes.func,
+  canReactivate: PropTypes.bool,
+  sessionName: PropTypes.string,
 };

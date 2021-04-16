@@ -113,6 +113,9 @@ dispatch({ action: "pauseTimer" });
 
 // Reset the session timer
 dispatch({ action: "resetTimer" });
+
+// Finish the session
+dispatch({ action: "finishSession" });
 ```
 
 ## Getting Started

@@ -5,6 +5,7 @@ import { ThemeProvider } from "@material-ui/core";
 import theme from "../../src/theme";
 import { config } from "react-transition-group";
 import * as remoteState from "./remoteState";
+import { SnackbarProvider } from "notistack";
 
 test.each([
   remoteState.remoteStateAsHost,
@@ -18,7 +19,9 @@ test.each([
   const tree = renderer
     .create(
       <ThemeProvider theme={theme}>
-        <Session remoteState={state} dispatch={jest.fn()} sessionName="session" />
+        <SnackbarProvider>
+          <Session remoteState={state} dispatch={jest.fn()} sessionName="session" />
+        </SnackbarProvider>
       </ThemeProvider>
     )
     .toJSON();

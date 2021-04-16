@@ -54,6 +54,9 @@ spec:
             # disconnects.
             - name: PP_SESSION_TTL
               value: "60000"
+            # How long to persist the session data for finsihed sessions
+            - name: PP_FINISHED_SESSION_TTL
+              value: "86400000"
           livenessProbe:
             failureThreshold: 3
             httpGet:

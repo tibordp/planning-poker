@@ -29,7 +29,6 @@ import { LongPollSocket } from "./connection/longpoll";
 import { v4 as uuidv4 } from "uuid";
 
 export const IS_SSR = typeof navigator === "undefined" || typeof window === "undefined";
-const { publicRuntimeConfig } = getConfig();
 
 export function useInternetConnectivity() {
   const [haveConnectivity, setHaveConnectivity] = React.useState(IS_SSR || navigator.onLine);
@@ -54,6 +53,7 @@ export function useInternetConnectivity() {
 }
 
 function getSocket(sessionName) {
+  const { publicRuntimeConfig } = getConfig();
   let clientId = window.sessionStorage.getItem("client_id");
   if (!clientId) {
     clientId = uuidv4();
@@ -74,7 +74,7 @@ function getSocket(sessionName) {
   } else {
     const url = new URL(location.href);
     url.protocol = url.protocol.replace("http", "ws");
-    url.pathname = `/${sessionName}`;
+    url.pathname = `/${encodeURIComponent(sessionName)}`;
     url.search = new URLSearchParams({
       client_id: clientId,
     }).toString();
@@ -113,6 +113,8 @@ export function useRemoteState(sessionName, onAction) {
           onAction?.(message);
           break;
       }
+      // Store the last known time offset between server and client globally
+      window.__PP_TIME_OFFSET = new Date() - new Date(message.serverTime);
     };
     socket.onclose = () => {
       setRemoteState(null);

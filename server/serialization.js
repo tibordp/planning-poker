@@ -53,6 +53,7 @@ function serializeSession(sessionState, me) {
     settings,
     host,
     timerState,
+    finished,
   } = sessionState;
 
   const clientsData = serializeClients(clients);
@@ -62,6 +63,7 @@ function serializeSession(sessionState, me) {
     epoch,
     host,
     settings,
+    finished,
     pagination: {
       pageIndex: pagination.pageIndex,
       pageCount: pagination.pages.length,
@@ -76,7 +78,7 @@ function serializeSession(sessionState, me) {
 }
 
 function serializeStats(state) {
-  const sessions = Object.values(state);
+  const sessions = Object.values(state).filter(({ finished }) => !finished);
   const numVoters = sessions.reduce(
     (a, b) => a + Object.values(b.clients).filter(({ name }) => name).length,
     0
@@ -94,10 +96,11 @@ function serializeStats(state) {
 }
 
 function exportSession(sessionState) {
-  const { pagination, settings } = sessionState;
+  const { pagination, settings, finished } = sessionState;
 
   return {
     settings,
+    finished,
     pages: pagination.pages.map(({ description, votes, timerState }) => ({
       description,
       votes,
