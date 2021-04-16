@@ -38,6 +38,7 @@ class Socket extends EventEmitter {
     this._pollTimeout = BigInt(pollTimeout) * NS_PER_MSEC;
     this._idleTimeout = BigInt(idleTimeout) * NS_PER_MSEC;
     this._lastPoll = now;
+    this._closing = false;
     this._timer = setTimeout(() => this.check(now + this._idleTimeout), idleTimeout);
   }
 
@@ -52,6 +53,12 @@ class Socket extends EventEmitter {
   }
 
   close() {
+    const now = process.hrtime.bigint();
+    this._closing = true;
+    this.check(now);
+  }
+
+  _doClose() {
     if (this._timer) {
       while (this._responses.length !== 0) {
         const [, res] = this._responses.shift();
@@ -85,8 +92,8 @@ class Socket extends EventEmitter {
     }
 
     const idleOutTime = this._lastPoll + this._idleTimeout;
-    if (now >= idleOutTime) {
-      this.close();
+    if ((this._messages.length === 0 && this._closing) || now >= idleOutTime) {
+      this._doClose();
     } else {
       let nextCheck;
       if (this._responses.length === 0 || this._responses[0][0] + this._pollTimeout > idleOutTime) {
@@ -105,7 +112,7 @@ class Socket extends EventEmitter {
 
   send(message) {
     const now = process.hrtime.bigint();
-    if (!this._timer) {
+    if (this._closing || !this._timer) {
       throw Error("Socket closed!");
     }
 
