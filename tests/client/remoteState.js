@@ -8,6 +8,8 @@ const clients = [host, voter1, voter2, observer];
 const defaultSettings = {
   scoreSet: ["0.5", "1", "2", "3", "5", "8", "13", "21", "100", "Pass"],
   allowParticipantControl: true,
+  allowParticipantPagination: false,
+  allowParticipantAddDelete: true,
   allowOpenVoting: true,
   showTimer: true,
 };
@@ -31,6 +33,7 @@ const defaultState = {
   votesVisible: false,
   clients,
   me: host,
+  privatePreview: null,
 };
 
 export const remoteStateAsHost = {
@@ -64,4 +67,13 @@ export const remoteStateNoTimer = {
     ...defaultSettings,
     showTimer: false,
   },
+};
+
+export const remoteStateWithPrivatePagination = {
+  ...defaultState,
+  pagination: {
+    pageIndex: 1,
+    pageCount: 2,
+  },
+  privatePreview: 0,
 };

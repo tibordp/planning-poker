@@ -30,7 +30,8 @@ import PropTypes from "prop-types";
 import Logo from "../../src/Logo";
 import Footer from "../../src/Footer";
 import Skeleton from "@material-ui/lab/Skeleton";
-import Link from "@material-ui/core/Link";
+import Link from "next/link";
+import MuiLink from "@material-ui/core/Link";
 
 import useSWR from "swr";
 import { Box } from "@material-ui/core";
@@ -141,7 +142,7 @@ function Report({ sessionName, initialData }) {
   const { data, error } = useSWR(
     `/api/sessions/${encodeURIComponent(sessionName)}/export`,
     fetcher,
-    { initialData }
+    { initialData, revalidateOnMount: true }
   );
 
   return (
@@ -173,7 +174,17 @@ function Report({ sessionName, initialData }) {
         <Box my={2}>
           <Alert variant="filled" severity="success">
             <AlertTitle>Session is still in progress!</AlertTitle>
-            Click <Link href={`/${encodeURIComponent(sessionName)}`}>here</Link> to join.
+            Click{" "}
+            <Link
+              href={{
+                pathname: "/[session]",
+                query: { session: sessionName },
+              }}
+              passHref
+            >
+              <MuiLink>here</MuiLink>
+            </Link>{" "}
+            to join.
           </Alert>
         </Box>
       )}
@@ -192,7 +203,7 @@ function Report({ sessionName, initialData }) {
             />
           </React.Fragment>
         ))}
-      <Footer canReactivate={data && data.finished && data.pages} sessionName={sessionName} />
+      <Footer canReactivate={!!(data && data.finished && data.pages)} sessionName={sessionName} />
     </>
   );
 }
@@ -216,8 +227,8 @@ ReportPage.propTypes = {
   initialData: PropTypes.object,
 };
 
-export async function getServerSideProps({ params }) {
-  const { session: sessionName } = params;
+ReportPage.getInitialProps = async ({ query }) => {
+  const { session: sessionName } = query;
 
   const session = state[sessionName];
   let initialData = null;
@@ -225,7 +236,7 @@ export async function getServerSideProps({ params }) {
     initialData = exportSession(session);
   }
 
-  return { props: { sessionName, initialData } };
-}
+  return { sessionName, initialData };
+};
 
 export default ReportPage;

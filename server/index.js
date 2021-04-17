@@ -47,7 +47,7 @@ function handleConnection(sessionName, socket, req, useHeartbeat) {
   const now = new Date();
   const parsedUrl = parse(req.url, true);
   const clientId = new URLSearchParams(parsedUrl.search).get("client_id") || uuidv4();
-  const sessionState = initializeSession(now, sessionName, clientId);
+  const sessionState = initializeSession(now, sessionName);
 
   if (sessionState.finished) {
     // We do not allow a full reconnection if the session is in finished state, but we

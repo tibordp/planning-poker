@@ -26,13 +26,14 @@ export function usePermissions(remoteState) {
     return {};
   }
 
-  const { me, clients, settings, host, votesVisible } = remoteState;
+  const { me, clients, settings, host, votesVisible, privatePreview } = remoteState;
 
   // If the host has disconnected, we allow anyone to control the session until they
   // rejoin.
   const isHost = me.clientId === host;
   const isActingHost = isHost || !clients.find((client) => client.clientId === host);
   const canControlSession = settings.allowParticipantControl || isActingHost;
+  const isPrivatelyPreviewing = privatePreview !== null;
 
   return {
     isHost,
@@ -40,13 +41,15 @@ export function usePermissions(remoteState) {
 
     canEditDescription: canControlSession,
     canEditSettings: isActingHost,
-    canVote: me.name !== null && (settings.allowOpenVoting || !votesVisible),
+    canVote:
+      !isPrivatelyPreviewing && me.name !== null && (settings.allowOpenVoting || !votesVisible),
     canPaginate: isActingHost || settings.allowParticipantPagination,
-    canControlVotes: canControlSession,
+    canAddDeletePages: isActingHost || settings.allowParticipantAddDelete,
+    canControlVotes: !isPrivatelyPreviewing && canControlSession,
     canSeeDisconnectedClients: true,
     canNudge: isActingHost,
     canPromoteToHost: isActingHost,
-    canControlTimer: canControlSession,
+    canControlTimer: !isPrivatelyPreviewing && canControlSession,
     canFinishSession: isActingHost,
   };
 }

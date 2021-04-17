@@ -39,6 +39,7 @@ export function Session({ remoteState, dispatch, sessionName }) {
   const {
     votesVisible,
     me,
+    privatePreview,
     settings,
     host,
     clients,
@@ -53,10 +54,6 @@ export function Session({ remoteState, dispatch, sessionName }) {
     if (previousPermissions) {
       if (!previousPermissions.isHost && permissions.isHost) {
         enqueueSnackbar("You are the new session host!", { variant: "info" });
-      } else if (!previousPermissions.isActingHost && permissions.isActingHost) {
-        enqueueSnackbar("You are the new acting host as the session host has disconnected.", {
-          variant: "info",
-        });
       }
     }
     setPreviousPermissions(permissions);
@@ -80,16 +77,27 @@ export function Session({ remoteState, dispatch, sessionName }) {
       />
       <PaginationPanel
         pagination={pagination}
-        settingsEnabled={permissions.canEditSettings}
-        paginationEnabled={permissions.canPaginate}
-        onNewPage={() => dispatch?.({ action: "newPage" })}
-        onDeletePage={() => dispatch?.({ action: "deletePage" })}
-        onNavigate={(index) => dispatch?.({ action: "navigate", pageIndex: index })}
+        privatePreview={privatePreview}
+        permissions={permissions}
+        onNewPage={(incognito) => dispatch?.({ action: "newPage", navigate: !incognito })}
+        onDeletePage={(index) => dispatch?.({ action: "deletePage", pageIndex: index })}
+        onNavigate={(incognito, index) =>
+          dispatch?.({
+            action: incognito ? "privateNavigate" : "navigate",
+            pageIndex: index,
+          })
+        }
         onSettingsClick={() => setSettingsOpen(true)}
       />
       <Description
         editingEnabled={permissions.canEditDescription}
-        onChange={(value) => dispatch?.({ action: "setDescription", description: value })}
+        onChange={(value) =>
+          dispatch?.({
+            action: "setDescription",
+            pageIndex: privatePreview !== null ? privatePreview : pagination.pageIndex,
+            description: value,
+          })
+        }
         description={description}
       />
       <VotePanel

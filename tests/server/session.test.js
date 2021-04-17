@@ -14,7 +14,7 @@ test("client connected", () => {
   const sessionName = getSessionName();
 
   const socket = fakeSocket();
-  const sessionState = session.initializeSession(now, sessionName, "client-id");
+  const sessionState = session.initializeSession(now, sessionName);
   const clientState = session.initializeClient(now, sessionState, socket, "client-id", true);
 
   expect(state[sessionName]).toBe(sessionState);
@@ -56,11 +56,11 @@ test("client reconnected", () => {
   const sessionName = getSessionName();
 
   const socket1 = fakeSocket();
-  const sessionState1 = session.initializeSession(now, sessionName, "client-id");
+  const sessionState1 = session.initializeSession(now, sessionName);
   const clientState1 = session.initializeClient(now, sessionState1, socket1, "client-id", true);
 
   const socket2 = fakeSocket();
-  const sessionState2 = session.initializeSession(now, sessionName, "client-id");
+  const sessionState2 = session.initializeSession(now, sessionName);
   const clientState2 = session.initializeClient(now, sessionState2, socket2, "client-id", true);
 
   expect(sessionState1).toBe(sessionState2);
@@ -74,7 +74,7 @@ test("client disconnected", () => {
   const sessionName = getSessionName();
 
   const socket = fakeSocket();
-  const sessionState = session.initializeSession(now, sessionName, "client-id");
+  const sessionState = session.initializeSession(now, sessionName);
   const clientState = session.initializeClient(now, sessionState, socket, "client-id", true);
 
   jest.useFakeTimers(); // Clean any timers from before
@@ -103,7 +103,7 @@ test("session finished", () => {
   const sessionName = getSessionName();
 
   const socket = fakeSocket();
-  const sessionState = session.initializeSession(now, sessionName, "client-id");
+  const sessionState = session.initializeSession(now, sessionName);
   const clientState = session.initializeClient(now, sessionState, socket, "client-id", true);
 
   jest.useFakeTimers(); // Clean any timers from before

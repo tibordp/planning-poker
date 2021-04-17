@@ -13,6 +13,7 @@ test.each([
   remoteState.remoteStateAsVoter,
   remoteState.remoteStateAsVoterNoControl,
   remoteState.remoteStateVotesVisible,
+  remoteState.remoteStateWithPrivatePagination,
 ])("renders Session unchanged %p", (state) => {
   config.disabled = true;
 

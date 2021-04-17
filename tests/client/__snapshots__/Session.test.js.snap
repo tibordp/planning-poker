@@ -1,10 +1,879 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 1`] = `
+exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": 0, "settings": [Object], "timerState": [Object], "votesVisible": false} 1`] = `
 Array [
   <div
     className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
   >
+    <div
+      className="MuiGrid-root MuiGrid-item"
+    >
+      <button
+        aria-describedby={null}
+        aria-pressed={false}
+        className="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall"
+        color="primary"
+        disabled={false}
+        onBlur={[Function]}
+        onChange={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        title="Private navigation"
+        type="button"
+        value="check"
+      >
+        <span
+          className="MuiToggleButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M17.06 13C15.2 13 13.64 14.33 13.24 16.1C12.29 15.69 11.42 15.8 10.76 16.09C10.35 14.31 8.79 13 6.94 13C4.77 13 3 14.79 3 17C3 19.21 4.77 21 6.94 21C9 21 10.68 19.38 10.84 17.32C11.18 17.08 12.07 16.63 13.16 17.34C13.34 19.39 15 21 17.06 21C19.23 21 21 19.21 21 17C21 14.79 19.23 13 17.06 13M6.94 19.86C5.38 19.86 4.13 18.58 4.13 17S5.39 14.14 6.94 14.14C8.5 14.14 9.75 15.42 9.75 17S8.5 19.86 6.94 19.86M17.06 19.86C15.5 19.86 14.25 18.58 14.25 17S15.5 14.14 17.06 14.14C18.62 14.14 19.88 15.42 19.88 17S18.61 19.86 17.06 19.86M22 10.5H2V12H22V10.5M15.53 2.63C15.31 2.14 14.75 1.88 14.22 2.05L12 2.79L9.77 2.05L9.72 2.04C9.19 1.89 8.63 2.17 8.43 2.68L6 9H18L15.56 2.68L15.53 2.63Z"
+              fill="currentColor"
+            />
+          </svg>
+        </span>
+        <span
+          className="MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+    <div
+      className="MuiGrid-root MuiGrid-item"
+    >
+      <nav
+        aria-label="pagination navigation"
+        className="MuiPagination-root"
+      >
+        <ul
+          className="MuiPagination-ul"
+        >
+          <li>
+            <button
+              aria-label="Go to previous page"
+              className="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-rounded Mui-disabled Mui-disabled"
+              disabled={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onDragLeave={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={-1}
+              type="button"
+            >
+              <svg
+                aria-hidden={true}
+                className="MuiSvgIcon-root MuiPaginationItem-icon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"
+                />
+              </svg>
+            </button>
+          </li>
+          <li>
+            <button
+              aria-current="true"
+              aria-label="page 1"
+              className="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-rounded Mui-selected"
+              disabled={false}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onDragLeave={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={0}
+              type="button"
+            >
+              1
+              <span
+                className="MuiTouchRipple-root"
+              />
+            </button>
+          </li>
+          <li>
+            <button
+              aria-label="Go to page 2"
+              className="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-outlined MuiPaginationItem-rounded"
+              disabled={false}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onDragLeave={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={0}
+              type="button"
+            >
+              2
+              <span
+                className="MuiTouchRipple-root"
+              />
+            </button>
+          </li>
+          <li>
+            <button
+              aria-label="Go to next page"
+              className="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-rounded"
+              disabled={false}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onDragLeave={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={0}
+              type="button"
+            >
+              <svg
+                aria-hidden={true}
+                className="MuiSvgIcon-root MuiPaginationItem-icon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"
+                />
+              </svg>
+              <span
+                className="MuiTouchRipple-root"
+              />
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div
+      className="MuiGrid-root MuiGrid-item"
+    >
+      <button
+        aria-describedby={null}
+        className="MuiButtonBase-root MuiIconButton-root"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        title="New page"
+        type="button"
+      >
+        <span
+          className="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"
+            />
+          </svg>
+        </span>
+        <span
+          className="MuiTouchRipple-root"
+        />
+      </button>
+      <button
+        aria-describedby={null}
+        className="MuiButtonBase-root MuiIconButton-root"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        title="Delete this page"
+        type="button"
+      >
+        <span
+          className="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+            />
+          </svg>
+        </span>
+        <span
+          className="MuiTouchRipple-root"
+        />
+      </button>
+      <button
+        aria-describedby={null}
+        className="MuiButtonBase-root MuiIconButton-root"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        title="Session settings"
+        type="button"
+      >
+        <span
+          className="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+            />
+          </svg>
+        </span>
+        <span
+          className="MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>,
+  <div
+    className="MuiPaper-root MuiAlert-root MuiAlert-standardInfo makeStyles-privatePreviewNotice-4 MuiPaper-elevation0"
+    role="alert"
+    style={
+      Object {
+        "transform": "none",
+        "visibility": undefined,
+      }
+    }
+  >
+    <div
+      className="MuiAlert-icon"
+    >
+      <svg
+        aria-hidden={true}
+        className="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20, 12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10, 10 0 0,0 12,2M11,17H13V11H11V17Z"
+        />
+      </svg>
+    </div>
+    <div
+      className="MuiAlert-message"
+    >
+      You are privately viewing this page. Click
+       
+      <a
+        className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+        href="javascript:void(0)"
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+      >
+        here
+      </a>
+       
+      to return to the active page.
+    </div>
+  </div>,
+  <div
+    className="MuiFormControl-root MuiTextField-root makeStyles-container-7 MuiFormControl-fullWidth"
+    onClick={[Function]}
+  >
+    <label
+      className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined"
+      data-shrink={true}
+    >
+      Description
+    </label>
+    <div
+      className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-multiline MuiOutlinedInput-multiline"
+      onClick={[Function]}
+    >
+      <div
+        className="MuiInputBase-input MuiOutlinedInput-input makeStyles-markdown-8 MuiInputBase-inputMultiline MuiOutlinedInput-inputMultiline"
+      >
+        <h3>
+          Markdown
+        </h3>
+      </div>
+      <fieldset
+        aria-hidden={true}
+        className="PrivateNotchedOutline-root-9 MuiOutlinedInput-notchedOutline"
+      >
+        <legend
+          className="PrivateNotchedOutline-legendLabelled-11 PrivateNotchedOutline-legendNotched-12"
+        >
+          <span>
+            Description
+          </span>
+        </legend>
+      </fieldset>
+    </div>
+  </div>,
+  <div
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+  >
+    <div
+      className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-12"
+    >
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          0.5
+        </span>
+      </button>
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          1
+        </span>
+      </button>
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          2
+        </span>
+      </button>
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          3
+        </span>
+      </button>
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-voteButton-14 MuiButton-outlinedSecondary Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          5
+        </span>
+      </button>
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          8
+        </span>
+      </button>
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          13
+        </span>
+      </button>
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          21
+        </span>
+      </button>
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          100
+        </span>
+      </button>
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          Pass
+        </span>
+      </button>
+    </div>
+  </div>,
+  <div />,
+  <div
+    className="MuiTableContainer-root"
+  >
+    <table
+      className="MuiTable-root"
+      role={null}
+    >
+      <tbody
+        className="MuiTableBody-root"
+        role={null}
+      >
+        <tr
+          className="MuiTableRow-root MuiTableRow-hover"
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          role={null}
+          style={
+            Object {
+              "visibility": undefined,
+            }
+          }
+        >
+          <th
+            aria-sort={null}
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
+            role="cell"
+            scope="row"
+          >
+            <span>
+              Host
+            </span>
+          </th>
+          <td
+            aria-sort={null}
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
+          >
+            <div
+              className="MuiChip-root makeStyles-scoreChip-22 MuiChip-outlined"
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              style={
+                Object {
+                  "borderColor": "#9e9e9e",
+                  "color": "#9e9e9e",
+                  "transform": "none",
+                  "visibility": undefined,
+                }
+              }
+            >
+              <span
+                className="MuiChip-label"
+              >
+                5
+              </span>
+            </div>
+          </td>
+        </tr>
+        <tr
+          className="MuiTableRow-root MuiTableRow-hover"
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          role={null}
+          style={
+            Object {
+              "visibility": undefined,
+            }
+          }
+        >
+          <th
+            aria-sort={null}
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
+            role="cell"
+            scope="row"
+          >
+            <span>
+              Voter 1
+            </span>
+          </th>
+          <td
+            aria-sort={null}
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
+          >
+            <div
+              className="MuiChip-root makeStyles-scoreChip-22 MuiChip-outlined"
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              style={
+                Object {
+                  "borderColor": "#9e9e9e",
+                  "color": "#9e9e9e",
+                  "transform": "none",
+                  "visibility": undefined,
+                }
+              }
+            >
+              <span
+                className="MuiChip-label"
+              >
+                Hidden
+              </span>
+            </div>
+          </td>
+        </tr>
+        <tr
+          className="MuiTableRow-root MuiTableRow-hover"
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          role={null}
+          style={
+            Object {
+              "visibility": undefined,
+            }
+          }
+        >
+          <th
+            aria-sort={null}
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
+            role="cell"
+            scope="row"
+          >
+            <span>
+              Voter 2
+            </span>
+          </th>
+          <td
+            aria-sort={null}
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
+          />
+        </tr>
+      </tbody>
+    </table>
+  </div>,
+  <div
+    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-26 MuiPaper-outlined MuiPaper-rounded"
+  >
+    <div
+      className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center"
+    >
+      <div
+        className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-7"
+      >
+        <p
+          className="MuiTypography-root makeStyles-participantText-27 MuiTypography-body1"
+        >
+          You are voting as 
+          <b>
+            Host
+          </b>
+          .
+        </p>
+      </div>
+      <div
+        className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-5"
+      >
+        <button
+          className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-fullWidth"
+          disabled={false}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onDragLeave={[Function]}
+          onFocus={[Function]}
+          onKeyDown={[Function]}
+          onKeyUp={[Function]}
+          onMouseDown={[Function]}
+          onMouseLeave={[Function]}
+          onMouseUp={[Function]}
+          onTouchEnd={[Function]}
+          onTouchMove={[Function]}
+          onTouchStart={[Function]}
+          tabIndex={0}
+          type="button"
+        >
+          <span
+            className="MuiButton-label"
+          >
+            Rejoin as observer
+          </span>
+          <span
+            className="MuiTouchRipple-root"
+          />
+        </button>
+      </div>
+    </div>
+  </div>,
+]
+`;
+
+exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": null, "settings": [Object], "timerState": [Object], "votesVisible": false} 1`] = `
+Array [
+  <div
+    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
+  >
+    <div
+      className="MuiGrid-root MuiGrid-item"
+    >
+      <button
+        aria-describedby={null}
+        aria-pressed={false}
+        className="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall"
+        color="primary"
+        disabled={false}
+        onBlur={[Function]}
+        onChange={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        title="Private navigation"
+        type="button"
+        value="check"
+      >
+        <span
+          className="MuiToggleButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M17.06 13C15.2 13 13.64 14.33 13.24 16.1C12.29 15.69 11.42 15.8 10.76 16.09C10.35 14.31 8.79 13 6.94 13C4.77 13 3 14.79 3 17C3 19.21 4.77 21 6.94 21C9 21 10.68 19.38 10.84 17.32C11.18 17.08 12.07 16.63 13.16 17.34C13.34 19.39 15 21 17.06 21C19.23 21 21 19.21 21 17C21 14.79 19.23 13 17.06 13M6.94 19.86C5.38 19.86 4.13 18.58 4.13 17S5.39 14.14 6.94 14.14C8.5 14.14 9.75 15.42 9.75 17S8.5 19.86 6.94 19.86M17.06 19.86C15.5 19.86 14.25 18.58 14.25 17S15.5 14.14 17.06 14.14C18.62 14.14 19.88 15.42 19.88 17S18.61 19.86 17.06 19.86M22 10.5H2V12H22V10.5M15.53 2.63C15.31 2.14 14.75 1.88 14.22 2.05L12 2.79L9.77 2.05L9.72 2.04C9.19 1.89 8.63 2.17 8.43 2.68L6 9H18L15.56 2.68L15.53 2.63Z"
+              fill="currentColor"
+            />
+          </svg>
+        </span>
+        <span
+          className="MuiTouchRipple-root"
+        />
+      </button>
+    </div>
     <div
       className="MuiGrid-root MuiGrid-item"
     >
@@ -229,7 +1098,7 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiFormControl-root MuiTextField-root makeStyles-container-6 MuiFormControl-fullWidth"
+    className="MuiFormControl-root MuiTextField-root makeStyles-container-7 MuiFormControl-fullWidth"
     onClick={[Function]}
   >
     <label
@@ -243,7 +1112,7 @@ Array [
       onClick={[Function]}
     >
       <div
-        className="MuiInputBase-input MuiOutlinedInput-input makeStyles-markdown-7 MuiInputBase-inputMultiline MuiOutlinedInput-inputMultiline"
+        className="MuiInputBase-input MuiOutlinedInput-input makeStyles-markdown-8 MuiInputBase-inputMultiline MuiOutlinedInput-inputMultiline"
       >
         <h3>
           Markdown
@@ -251,10 +1120,10 @@ Array [
       </div>
       <fieldset
         aria-hidden={true}
-        className="PrivateNotchedOutline-root-8 MuiOutlinedInput-notchedOutline"
+        className="PrivateNotchedOutline-root-9 MuiOutlinedInput-notchedOutline"
       >
         <legend
-          className="PrivateNotchedOutline-legendLabelled-10 PrivateNotchedOutline-legendNotched-11"
+          className="PrivateNotchedOutline-legendLabelled-11 PrivateNotchedOutline-legendNotched-12"
         >
           <span>
             Description
@@ -264,13 +1133,13 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiGrid-root makeStyles-container-15 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
   >
     <div
-      className="MuiGrid-root makeStyles-scoresContainer-14 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"
+      className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"
     >
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -297,7 +1166,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -324,7 +1193,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -351,7 +1220,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -378,7 +1247,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-voteButton-13 MuiButton-outlinedSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-voteButton-14 MuiButton-outlinedSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -405,7 +1274,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -432,7 +1301,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -459,7 +1328,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -486,7 +1355,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -513,7 +1382,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -544,7 +1413,7 @@ Array [
       className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-3"
     >
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-12 MuiButton-outlinedSecondary MuiButton-fullWidth"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-13 MuiButton-outlinedSecondary MuiButton-fullWidth"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -571,7 +1440,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-12 MuiButton-outlinedPrimary MuiButton-fullWidth"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-13 MuiButton-outlinedPrimary MuiButton-fullWidth"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -624,7 +1493,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -634,10 +1503,10 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           >
             <div
-              className="MuiChip-root makeStyles-scoreChip-21 MuiChip-outlined"
+              className="MuiChip-root makeStyles-scoreChip-22 MuiChip-outlined"
               onKeyDown={[Function]}
               onKeyUp={[Function]}
               style={
@@ -670,7 +1539,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -680,10 +1549,10 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           >
             <div
-              className="MuiChip-root makeStyles-scoreChip-21 MuiChip-outlined"
+              className="MuiChip-root makeStyles-scoreChip-22 MuiChip-outlined"
               onKeyDown={[Function]}
               onKeyUp={[Function]}
               style={
@@ -716,7 +1585,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -726,14 +1595,14 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           />
         </tr>
       </tbody>
     </table>
   </div>,
   <div
-    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-25 MuiPaper-outlined MuiPaper-rounded"
+    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-26 MuiPaper-outlined MuiPaper-rounded"
   >
     <div
       className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center"
@@ -742,7 +1611,7 @@ Array [
         className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-7"
       >
         <p
-          className="MuiTypography-root makeStyles-participantText-26 MuiTypography-body1"
+          className="MuiTypography-root makeStyles-participantText-27 MuiTypography-body1"
         >
           You are voting as 
           <b>
@@ -787,7 +1656,7 @@ Array [
 ]
 `;
 
-exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 2`] = `
+exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": null, "settings": [Object], "timerState": [Object], "votesVisible": false} 2`] = `
 Array [
   <div
     className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
@@ -838,8 +1707,8 @@ Array [
             <button
               aria-current="true"
               aria-label="page 1"
-              className="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-rounded Mui-disabled Mui-selected Mui-disabled"
-              disabled={true}
+              className="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-rounded Mui-selected"
+              disabled={false}
               onBlur={[Function]}
               onClick={[Function]}
               onDragLeave={[Function]}
@@ -852,10 +1721,13 @@ Array [
               onTouchEnd={[Function]}
               onTouchMove={[Function]}
               onTouchStart={[Function]}
-              tabIndex={-1}
+              tabIndex={0}
               type="button"
             >
               1
+              <span
+                className="MuiTouchRipple-root"
+              />
             </button>
           </li>
           <li>
@@ -893,9 +1765,88 @@ Array [
         </ul>
       </nav>
     </div>
+    <div
+      className="MuiGrid-root MuiGrid-item"
+    >
+      <button
+        aria-describedby={null}
+        className="MuiButtonBase-root MuiIconButton-root"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        title="New page"
+        type="button"
+      >
+        <span
+          className="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"
+            />
+          </svg>
+        </span>
+        <span
+          className="MuiTouchRipple-root"
+        />
+      </button>
+      <button
+        aria-describedby={null}
+        className="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        title="Delete this page"
+        type="button"
+      >
+        <span
+          className="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
   </div>,
   <div
-    className="MuiFormControl-root MuiTextField-root makeStyles-container-6 MuiFormControl-fullWidth"
+    className="MuiFormControl-root MuiTextField-root makeStyles-container-7 MuiFormControl-fullWidth"
     onClick={[Function]}
   >
     <label
@@ -909,7 +1860,7 @@ Array [
       onClick={[Function]}
     >
       <div
-        className="MuiInputBase-input MuiOutlinedInput-input makeStyles-markdown-7 MuiInputBase-inputMultiline MuiOutlinedInput-inputMultiline"
+        className="MuiInputBase-input MuiOutlinedInput-input makeStyles-markdown-8 MuiInputBase-inputMultiline MuiOutlinedInput-inputMultiline"
       >
         <h3>
           Markdown
@@ -917,10 +1868,10 @@ Array [
       </div>
       <fieldset
         aria-hidden={true}
-        className="PrivateNotchedOutline-root-8 MuiOutlinedInput-notchedOutline"
+        className="PrivateNotchedOutline-root-9 MuiOutlinedInput-notchedOutline"
       >
         <legend
-          className="PrivateNotchedOutline-legendLabelled-10 PrivateNotchedOutline-legendNotched-11"
+          className="PrivateNotchedOutline-legendLabelled-11 PrivateNotchedOutline-legendNotched-12"
         >
           <span>
             Description
@@ -930,13 +1881,13 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiGrid-root makeStyles-container-15 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
   >
     <div
-      className="MuiGrid-root makeStyles-scoresContainer-14 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"
+      className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"
     >
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
         disabled={true}
         onBlur={[Function]}
         onClick={[Function]}
@@ -960,7 +1911,7 @@ Array [
         </span>
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
         disabled={true}
         onBlur={[Function]}
         onClick={[Function]}
@@ -984,7 +1935,7 @@ Array [
         </span>
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
         disabled={true}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1008,7 +1959,7 @@ Array [
         </span>
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
         disabled={true}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1032,7 +1983,7 @@ Array [
         </span>
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
         disabled={true}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1056,7 +2007,7 @@ Array [
         </span>
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
         disabled={true}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1080,7 +2031,7 @@ Array [
         </span>
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
         disabled={true}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1104,7 +2055,7 @@ Array [
         </span>
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
         disabled={true}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1128,7 +2079,7 @@ Array [
         </span>
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
         disabled={true}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1152,7 +2103,7 @@ Array [
         </span>
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary Mui-disabled Mui-disabled"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary Mui-disabled Mui-disabled"
         disabled={true}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1180,7 +2131,7 @@ Array [
       className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-3"
     >
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-12 MuiButton-outlinedSecondary MuiButton-fullWidth"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-13 MuiButton-outlinedSecondary MuiButton-fullWidth"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1207,7 +2158,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-12 MuiButton-outlinedPrimary MuiButton-fullWidth"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-13 MuiButton-outlinedPrimary MuiButton-fullWidth"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1260,7 +2211,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -1270,10 +2221,10 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           >
             <div
-              className="MuiChip-root makeStyles-scoreChip-21 MuiChip-outlined"
+              className="MuiChip-root makeStyles-scoreChip-22 MuiChip-outlined"
               onKeyDown={[Function]}
               onKeyUp={[Function]}
               style={
@@ -1306,7 +2257,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -1316,10 +2267,10 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           >
             <div
-              className="MuiChip-root makeStyles-scoreChip-21 MuiChip-outlined"
+              className="MuiChip-root makeStyles-scoreChip-22 MuiChip-outlined"
               onKeyDown={[Function]}
               onKeyUp={[Function]}
               style={
@@ -1352,7 +2303,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -1362,14 +2313,14 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           />
         </tr>
       </tbody>
     </table>
   </div>,
   <div
-    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-25 MuiPaper-outlined MuiPaper-rounded"
+    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-26 MuiPaper-outlined MuiPaper-rounded"
   >
     <form
       onSubmit={[Function]}
@@ -1459,7 +2410,7 @@ Array [
 ]
 `;
 
-exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 3`] = `
+exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": null, "settings": [Object], "timerState": [Object], "votesVisible": false} 3`] = `
 Array [
   <div
     className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
@@ -1510,8 +2461,8 @@ Array [
             <button
               aria-current="true"
               aria-label="page 1"
-              className="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-rounded Mui-disabled Mui-selected Mui-disabled"
-              disabled={true}
+              className="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-rounded Mui-selected"
+              disabled={false}
               onBlur={[Function]}
               onClick={[Function]}
               onDragLeave={[Function]}
@@ -1524,10 +2475,13 @@ Array [
               onTouchEnd={[Function]}
               onTouchMove={[Function]}
               onTouchStart={[Function]}
-              tabIndex={-1}
+              tabIndex={0}
               type="button"
             >
               1
+              <span
+                className="MuiTouchRipple-root"
+              />
             </button>
           </li>
           <li>
@@ -1565,9 +2519,88 @@ Array [
         </ul>
       </nav>
     </div>
+    <div
+      className="MuiGrid-root MuiGrid-item"
+    >
+      <button
+        aria-describedby={null}
+        className="MuiButtonBase-root MuiIconButton-root"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        title="New page"
+        type="button"
+      >
+        <span
+          className="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"
+            />
+          </svg>
+        </span>
+        <span
+          className="MuiTouchRipple-root"
+        />
+      </button>
+      <button
+        aria-describedby={null}
+        className="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        title="Delete this page"
+        type="button"
+      >
+        <span
+          className="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
   </div>,
   <div
-    className="MuiFormControl-root MuiTextField-root makeStyles-container-6 MuiFormControl-fullWidth"
+    className="MuiFormControl-root MuiTextField-root makeStyles-container-7 MuiFormControl-fullWidth"
     onClick={[Function]}
   >
     <label
@@ -1581,7 +2614,7 @@ Array [
       onClick={[Function]}
     >
       <div
-        className="MuiInputBase-input MuiOutlinedInput-input makeStyles-markdown-7 MuiInputBase-inputMultiline MuiOutlinedInput-inputMultiline"
+        className="MuiInputBase-input MuiOutlinedInput-input makeStyles-markdown-8 MuiInputBase-inputMultiline MuiOutlinedInput-inputMultiline"
       >
         <h3>
           Markdown
@@ -1589,10 +2622,10 @@ Array [
       </div>
       <fieldset
         aria-hidden={true}
-        className="PrivateNotchedOutline-root-8 MuiOutlinedInput-notchedOutline"
+        className="PrivateNotchedOutline-root-9 MuiOutlinedInput-notchedOutline"
       >
         <legend
-          className="PrivateNotchedOutline-legendLabelled-10 PrivateNotchedOutline-legendNotched-11"
+          className="PrivateNotchedOutline-legendLabelled-11 PrivateNotchedOutline-legendNotched-12"
         >
           <span>
             Description
@@ -1602,13 +2635,13 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiGrid-root makeStyles-container-15 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
   >
     <div
-      className="MuiGrid-root makeStyles-scoresContainer-14 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"
+      className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"
     >
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1635,7 +2668,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1662,7 +2695,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1689,7 +2722,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1716,7 +2749,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-voteButton-13 MuiButton-outlinedSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-voteButton-14 MuiButton-outlinedSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1743,7 +2776,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1770,7 +2803,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1797,7 +2830,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1824,7 +2857,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1851,7 +2884,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1882,7 +2915,7 @@ Array [
       className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-3"
     >
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-12 MuiButton-outlinedSecondary MuiButton-fullWidth"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-13 MuiButton-outlinedSecondary MuiButton-fullWidth"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1909,7 +2942,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-12 MuiButton-outlinedPrimary MuiButton-fullWidth"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-13 MuiButton-outlinedPrimary MuiButton-fullWidth"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -1962,7 +2995,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -1972,10 +3005,10 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           >
             <div
-              className="MuiChip-root makeStyles-scoreChip-21 MuiChip-outlined"
+              className="MuiChip-root makeStyles-scoreChip-22 MuiChip-outlined"
               onKeyDown={[Function]}
               onKeyUp={[Function]}
               style={
@@ -2008,7 +3041,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -2018,10 +3051,10 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           >
             <div
-              className="MuiChip-root makeStyles-scoreChip-21 MuiChip-outlined"
+              className="MuiChip-root makeStyles-scoreChip-22 MuiChip-outlined"
               onKeyDown={[Function]}
               onKeyUp={[Function]}
               style={
@@ -2054,7 +3087,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -2064,14 +3097,14 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           />
         </tr>
       </tbody>
     </table>
   </div>,
   <div
-    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-25 MuiPaper-outlined MuiPaper-rounded"
+    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-26 MuiPaper-outlined MuiPaper-rounded"
   >
     <div
       className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center"
@@ -2080,7 +3113,7 @@ Array [
         className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-7"
       >
         <p
-          className="MuiTypography-root makeStyles-participantText-26 MuiTypography-body1"
+          className="MuiTypography-root makeStyles-participantText-27 MuiTypography-body1"
         >
           You are voting as 
           <b>
@@ -2125,7 +3158,7 @@ Array [
 ]
 `;
 
-exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": false} 4`] = `
+exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": null, "settings": [Object], "timerState": [Object], "votesVisible": false} 4`] = `
 Array [
   <div
     className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
@@ -2176,8 +3209,8 @@ Array [
             <button
               aria-current="true"
               aria-label="page 1"
-              className="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-rounded Mui-disabled Mui-selected Mui-disabled"
-              disabled={true}
+              className="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-rounded Mui-selected"
+              disabled={false}
               onBlur={[Function]}
               onClick={[Function]}
               onDragLeave={[Function]}
@@ -2190,10 +3223,13 @@ Array [
               onTouchEnd={[Function]}
               onTouchMove={[Function]}
               onTouchStart={[Function]}
-              tabIndex={-1}
+              tabIndex={0}
               type="button"
             >
               1
+              <span
+                className="MuiTouchRipple-root"
+              />
             </button>
           </li>
           <li>
@@ -2231,9 +3267,88 @@ Array [
         </ul>
       </nav>
     </div>
+    <div
+      className="MuiGrid-root MuiGrid-item"
+    >
+      <button
+        aria-describedby={null}
+        className="MuiButtonBase-root MuiIconButton-root"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        title="New page"
+        type="button"
+      >
+        <span
+          className="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"
+            />
+          </svg>
+        </span>
+        <span
+          className="MuiTouchRipple-root"
+        />
+      </button>
+      <button
+        aria-describedby={null}
+        className="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+        disabled={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={-1}
+        title="Delete this page"
+        type="button"
+      >
+        <span
+          className="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
   </div>,
   <div
-    className="MuiFormControl-root MuiTextField-root makeStyles-container-6 MuiFormControl-fullWidth"
+    className="MuiFormControl-root MuiTextField-root makeStyles-container-7 MuiFormControl-fullWidth"
     onClick={[Function]}
   >
     <label
@@ -2247,7 +3362,7 @@ Array [
       onClick={[Function]}
     >
       <div
-        className="MuiInputBase-input MuiOutlinedInput-input makeStyles-markdown-7 MuiInputBase-inputMultiline MuiOutlinedInput-inputMultiline"
+        className="MuiInputBase-input MuiOutlinedInput-input makeStyles-markdown-8 MuiInputBase-inputMultiline MuiOutlinedInput-inputMultiline"
       >
         <h3>
           Markdown
@@ -2255,10 +3370,10 @@ Array [
       </div>
       <fieldset
         aria-hidden={true}
-        className="PrivateNotchedOutline-root-8 MuiOutlinedInput-notchedOutline"
+        className="PrivateNotchedOutline-root-9 MuiOutlinedInput-notchedOutline"
       >
         <legend
-          className="PrivateNotchedOutline-legendLabelled-10 PrivateNotchedOutline-legendNotched-11"
+          className="PrivateNotchedOutline-legendLabelled-11 PrivateNotchedOutline-legendNotched-12"
         >
           <span>
             Description
@@ -2268,13 +3383,13 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiGrid-root makeStyles-container-15 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
   >
     <div
-      className="MuiGrid-root makeStyles-scoresContainer-14 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-12"
+      className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-12"
     >
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -2301,7 +3416,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -2328,7 +3443,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -2355,7 +3470,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -2382,7 +3497,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-voteButton-13 MuiButton-outlinedSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-voteButton-14 MuiButton-outlinedSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -2409,7 +3524,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -2436,7 +3551,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -2463,7 +3578,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -2490,7 +3605,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -2517,7 +3632,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -2570,7 +3685,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -2580,10 +3695,10 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           >
             <div
-              className="MuiChip-root makeStyles-scoreChip-21 MuiChip-outlined"
+              className="MuiChip-root makeStyles-scoreChip-22 MuiChip-outlined"
               onKeyDown={[Function]}
               onKeyUp={[Function]}
               style={
@@ -2616,7 +3731,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -2626,10 +3741,10 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           >
             <div
-              className="MuiChip-root makeStyles-scoreChip-21 MuiChip-outlined"
+              className="MuiChip-root makeStyles-scoreChip-22 MuiChip-outlined"
               onKeyDown={[Function]}
               onKeyUp={[Function]}
               style={
@@ -2662,7 +3777,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -2672,14 +3787,14 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           />
         </tr>
       </tbody>
     </table>
   </div>,
   <div
-    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-25 MuiPaper-outlined MuiPaper-rounded"
+    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-26 MuiPaper-outlined MuiPaper-rounded"
   >
     <div
       className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center"
@@ -2688,7 +3803,7 @@ Array [
         className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-7"
       >
         <p
-          className="MuiTypography-root makeStyles-participantText-26 MuiTypography-body1"
+          className="MuiTypography-root makeStyles-participantText-27 MuiTypography-body1"
         >
           You are voting as 
           <b>
@@ -2733,11 +3848,59 @@ Array [
 ]
 `;
 
-exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "settings": [Object], "timerState": [Object], "votesVisible": true} 1`] = `
+exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": null, "settings": [Object], "timerState": [Object], "votesVisible": true} 1`] = `
 Array [
   <div
     className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
   >
+    <div
+      className="MuiGrid-root MuiGrid-item"
+    >
+      <button
+        aria-describedby={null}
+        aria-pressed={false}
+        className="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall"
+        color="primary"
+        disabled={false}
+        onBlur={[Function]}
+        onChange={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        title="Private navigation"
+        type="button"
+        value="check"
+      >
+        <span
+          className="MuiToggleButton-label"
+        >
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M17.06 13C15.2 13 13.64 14.33 13.24 16.1C12.29 15.69 11.42 15.8 10.76 16.09C10.35 14.31 8.79 13 6.94 13C4.77 13 3 14.79 3 17C3 19.21 4.77 21 6.94 21C9 21 10.68 19.38 10.84 17.32C11.18 17.08 12.07 16.63 13.16 17.34C13.34 19.39 15 21 17.06 21C19.23 21 21 19.21 21 17C21 14.79 19.23 13 17.06 13M6.94 19.86C5.38 19.86 4.13 18.58 4.13 17S5.39 14.14 6.94 14.14C8.5 14.14 9.75 15.42 9.75 17S8.5 19.86 6.94 19.86M17.06 19.86C15.5 19.86 14.25 18.58 14.25 17S15.5 14.14 17.06 14.14C18.62 14.14 19.88 15.42 19.88 17S18.61 19.86 17.06 19.86M22 10.5H2V12H22V10.5M15.53 2.63C15.31 2.14 14.75 1.88 14.22 2.05L12 2.79L9.77 2.05L9.72 2.04C9.19 1.89 8.63 2.17 8.43 2.68L6 9H18L15.56 2.68L15.53 2.63Z"
+              fill="currentColor"
+            />
+          </svg>
+        </span>
+        <span
+          className="MuiTouchRipple-root"
+        />
+      </button>
+    </div>
     <div
       className="MuiGrid-root MuiGrid-item"
     >
@@ -2962,7 +4125,7 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiFormControl-root MuiTextField-root makeStyles-container-6 MuiFormControl-fullWidth"
+    className="MuiFormControl-root MuiTextField-root makeStyles-container-7 MuiFormControl-fullWidth"
     onClick={[Function]}
   >
     <label
@@ -2976,7 +4139,7 @@ Array [
       onClick={[Function]}
     >
       <div
-        className="MuiInputBase-input MuiOutlinedInput-input makeStyles-markdown-7 MuiInputBase-inputMultiline MuiOutlinedInput-inputMultiline"
+        className="MuiInputBase-input MuiOutlinedInput-input makeStyles-markdown-8 MuiInputBase-inputMultiline MuiOutlinedInput-inputMultiline"
       >
         <h3>
           Markdown
@@ -2984,10 +4147,10 @@ Array [
       </div>
       <fieldset
         aria-hidden={true}
-        className="PrivateNotchedOutline-root-8 MuiOutlinedInput-notchedOutline"
+        className="PrivateNotchedOutline-root-9 MuiOutlinedInput-notchedOutline"
       >
         <legend
-          className="PrivateNotchedOutline-legendLabelled-10 PrivateNotchedOutline-legendNotched-11"
+          className="PrivateNotchedOutline-legendLabelled-11 PrivateNotchedOutline-legendNotched-12"
         >
           <span>
             Description
@@ -2997,13 +4160,13 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiGrid-root makeStyles-container-15 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
   >
     <div
-      className="MuiGrid-root makeStyles-scoresContainer-14 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"
+      className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"
     >
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3030,7 +4193,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3057,7 +4220,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3084,7 +4247,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3111,7 +4274,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-voteButton-13 MuiButton-outlinedSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-voteButton-14 MuiButton-outlinedSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3138,7 +4301,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3165,7 +4328,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3192,7 +4355,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3219,7 +4382,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3246,7 +4409,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-13 MuiButton-textSecondary"
+        className="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-voteButton-14 MuiButton-textSecondary"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3277,7 +4440,7 @@ Array [
       className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-3"
     >
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-12 MuiButton-outlinedSecondary MuiButton-fullWidth"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-13 MuiButton-outlinedSecondary MuiButton-fullWidth"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3304,7 +4467,7 @@ Array [
         />
       </button>
       <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-12 MuiButton-outlinedPrimary MuiButton-fullWidth"
+        className="MuiButtonBase-root MuiButton-root MuiButton-outlined makeStyles-actionButton-13 MuiButton-outlinedPrimary MuiButton-fullWidth"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -3334,7 +4497,7 @@ Array [
   </div>,
   <div>
     <div
-      className="MuiPaper-root MuiAlert-root MuiAlert-filledSuccess makeStyles-consensusAlert-18 MuiPaper-elevation0"
+      className="MuiPaper-root MuiAlert-root MuiAlert-filledSuccess makeStyles-consensusAlert-19 MuiPaper-elevation0"
       role="alert"
       style={
         Object {
@@ -3394,7 +4557,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -3404,10 +4567,10 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           >
             <div
-              className="MuiChip-root makeStyles-scoreChip-21"
+              className="MuiChip-root makeStyles-scoreChip-22"
               onKeyDown={[Function]}
               onKeyUp={[Function]}
               style={
@@ -3443,7 +4606,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -3453,10 +4616,10 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           >
             <div
-              className="MuiChip-root makeStyles-scoreChip-21"
+              className="MuiChip-root makeStyles-scoreChip-22"
               onKeyDown={[Function]}
               onKeyUp={[Function]}
               style={
@@ -3492,7 +4655,7 @@ Array [
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-19"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-participantNameCell-20"
             role="cell"
             scope="row"
           >
@@ -3502,14 +4665,14 @@ Array [
           </th>
           <td
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-20 MuiTableCell-alignRight"
+            className="MuiTableCell-root MuiTableCell-body makeStyles-scoreCell-21 MuiTableCell-alignRight"
           />
         </tr>
       </tbody>
     </table>
   </div>,
   <div
-    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-25 MuiPaper-outlined MuiPaper-rounded"
+    className="MuiPaper-root MuiCard-root makeStyles-sessionPaper-26 MuiPaper-outlined MuiPaper-rounded"
   >
     <div
       className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center"
@@ -3518,7 +4681,7 @@ Array [
         className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-7"
       >
         <p
-          className="MuiTypography-root makeStyles-participantText-26 MuiTypography-body1"
+          className="MuiTypography-root makeStyles-participantText-27 MuiTypography-body1"
         >
           You are voting as 
           <b>

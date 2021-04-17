@@ -43,7 +43,51 @@ function serializeDisconnectedVotes(sessionState) {
   );
 }
 
+function generatePrivatePreview(sessionState, me) {
+  const { epoch, clients, pagination, settings, host, finished } = sessionState;
+  const { description, timerState, votes } = pagination.pages[me[1].privatePreview];
+  const clientsData = serializeClients(clients);
+
+  Object.values(clientsData).forEach((c) => {
+    const score = votes[c.name];
+    if (typeof score !== "undefined") {
+      c.score = score;
+    } else {
+      c.score = null;
+    }
+  });
+  const connectedNames = new Set(Object.values(clientsData).map(({ name }) => name));
+  const disconnectedClients = Object.fromEntries(
+    Object.entries(votes).filter(([name, score]) => !connectedNames.has(name) && score)
+  );
+  const serializedMe = Object.values(clientsData).filter(
+    ({ clientId }) => clientId === me[1].clientId
+  )[0];
+
+  return {
+    epoch,
+    host,
+    settings,
+    finished,
+    pagination: {
+      pageIndex: pagination.pageIndex,
+      pageCount: pagination.pages.length,
+    },
+    description,
+    timerState: { ...timerState },
+    votesVisible: true,
+    clients: clientsData,
+    disconnectedClients,
+    me: serializedMe,
+    privatePreview: me[1].privatePreview,
+  };
+}
+
 function serializeSession(sessionState, me) {
+  if (me && me[1].privatePreview !== null) {
+    return generatePrivatePreview(sessionState, me);
+  }
+
   const {
     epoch,
     description,
@@ -73,7 +117,12 @@ function serializeSession(sessionState, me) {
     votesVisible,
     clients: clientsData,
     disconnectedClients,
-    ...(me ? { me: serializeClient(me) } : {}),
+    ...(me
+      ? {
+          me: serializeClient(me),
+          privatePreview: null,
+        }
+      : {}),
   };
 }
 

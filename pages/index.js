@@ -27,6 +27,7 @@ import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import Logo from "../src/Logo";
+import Link from "next/link";
 import Footer from "../src/Footer";
 import PropTypes from "prop-types";
 
@@ -39,7 +40,6 @@ import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import randomWords from "random-words";
 import useSWR from "swr";
 import { state } from "../server/state";
 import { serializeStats } from "../server/serialization";
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 function Statistics({ initialData }) {
   const classes = useStyles();
   const fetcher = (url) => fetch(url).then((r) => r.json());
-  const { data, error } = useSWR("/api/stats", fetcher, { initialData });
+  const { data, error } = useSWR("/api/stats", fetcher, { initialData, revalidateOnMount: true });
 
   return (
     <>
@@ -115,28 +115,15 @@ Statistics.propTypes = {
 };
 
 export default function Index({ initialData }) {
-  const handleNewSession = () => {
-    const sessionName = randomWords({
-      exactly: 1,
-      wordsPerString: 3,
-      separator: "-",
-    })[0];
-    window.open(`/${encodeURIComponent(sessionName)}`, "_blank");
-  };
-
   return (
     <Container maxWidth="sm">
       <Logo />
       <Box my={2}>
-        <Button
-          color="secondary"
-          onClick={handleNewSession}
-          fullWidth
-          size="large"
-          variant="contained"
-        >
-          New session
-        </Button>
+        <Link href="/new" passHref>
+          <Button color="secondary" fullWidth size="large" variant="contained">
+            New session
+          </Button>
+        </Link>
         <Statistics initialData={initialData} />
       </Box>
       <Footer />
@@ -148,6 +135,6 @@ Index.propTypes = {
   initialData: PropTypes.object,
 };
 
-export async function getServerSideProps() {
-  return { props: { initialData: serializeStats(state) } };
-}
+Index.getInitialProps = async () => {
+  return { initialData: serializeStats(state) };
+};

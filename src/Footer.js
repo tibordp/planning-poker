@@ -32,12 +32,7 @@ import { Timer } from "./Timer";
 import { useSnackbar } from "notistack";
 import { usePermissions } from "./permissions";
 import { useRouter } from "next/router";
-
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import { useConfirmationDialog } from "./utils/useConfirmationDialog";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -50,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "space-between",
     minHeight: theme.spacing(6),
-    "& *:only-child": {
+    "& > *:only-child": {
       marginLeft: "auto",
     },
   },
@@ -73,7 +68,13 @@ export default function Footer({ sessionName, canReactivate, remoteState, dispat
   const showTimer = !!remoteState && remoteState.settings.showTimer;
   const permissions = usePermissions(remoteState);
 
-  const [open, setOpen] = React.useState(false);
+  const [confirmFinish, dialog] = useConfirmationDialog({
+    title: "Finish this session?",
+    description:
+      "Finishing the session will disconnect everyone and afterwards you will be able to review the report.",
+    confirmText: "Finish session",
+    onConfirm: () => dispatch?.({ action: "finishSession" }),
+  });
 
   const reactivateSession = async () => {
     try {
@@ -83,17 +84,13 @@ export default function Footer({ sessionName, canReactivate, remoteState, dispat
       if (!res.ok) {
         throw new Error(res.statusText);
       }
-      router.replace(`/${encodeURIComponent(sessionName)}`);
+      router.replace({
+        pathname: "/[session]",
+        query: { session: sessionName },
+      });
     } catch (e) {
       console.error(e);
       enqueueSnackbar("Failed to reactivate the session!", { variant: "error" });
-    }
-  };
-
-  const handleClose = (proceed) => {
-    setOpen(false);
-    if (proceed) {
-      dispatch?.({ action: "finishSession" });
     }
   };
 
@@ -113,7 +110,7 @@ export default function Footer({ sessionName, canReactivate, remoteState, dispat
           </>
         )}
         {dispatch && permissions.canFinishSession && (
-          <Button className={classes.button} variant="text" onClick={() => setOpen(true)}>
+          <Button className={classes.button} variant="text" onClick={confirmFinish}>
             Finish session
           </Button>
         )}
@@ -130,31 +127,10 @@ export default function Footer({ sessionName, canReactivate, remoteState, dispat
           className={classes.button}
           startIcon={<GitHubIcon />}
         >
-          View on GitHub
+          GitHub
         </Button>
       </Box>
-      <Dialog
-        open={open}
-        onClose={() => handleClose(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Finish this session?</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Finishing the session will disconnect everyone and afterwards you will be able to review
-            the report.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleClose(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={() => handleClose(true)} color="primary" autoFocus>
-            Finish session
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {dialog}
     </>
   );
 }

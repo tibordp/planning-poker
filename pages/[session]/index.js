@@ -40,7 +40,8 @@ import Footer from "../../src/Footer";
 import { useSnackbar } from "notistack";
 import { state } from "../../server/state";
 import { serializeSession } from "../../server/serialization";
-import { createNewSession } from "../../server/session";
+import { initializeSession } from "../../server/session";
+import { settingsSchema } from "../../server/constants";
 import absoluteUrl from "next-absolute-url";
 import { useRouter } from "next/router";
 
@@ -130,9 +131,14 @@ function SessionPage({ sessionName, initialRemoteState, origin }) {
         enqueueSnackbar("You have been kicked from the session!", { variant: "warning" });
         break;
       case "finished":
-        enqueueSnackbar("Session finished!", { variant: "info" });
-        setSessionFinished(true);
-        router.replace(`/${encodeURIComponent(sessionName)}/report`);
+        if (!sessionFinished) {
+          setSessionFinished(true);
+          enqueueSnackbar("Session finished!", { variant: "info" });
+          router.replace({
+            pathname: "/[session]/report",
+            query: { session: sessionName },
+          });
+        }
         break;
       case "error":
         enqueueSnackbar(message.error, { variant: "error" });
@@ -170,7 +176,7 @@ function SessionPage({ sessionName, initialRemoteState, origin }) {
               <Box className={classes.connecting}>
                 {sessionFinished && (
                   <Typography variant="subtitle1" component="span" gutterBottom>
-                    Session finished, showing report...
+                    Session finished.
                   </Typography>
                 )}
                 {!sessionFinished && (
@@ -202,15 +208,50 @@ SessionPage.propTypes = {
   origin: PropTypes.shape({ protocol: PropTypes.string, host: PropTypes.string }).isRequired,
 };
 
-export async function getServerSideProps({ params, req }) {
-  const { session: sessionName } = params;
+import randomWords from "random-words";
+
+export async function getServerSideProps({ params, req, query }) {
+  let { session: sessionName } = params;
+
+  let newSession = false;
+  if (sessionName == "new") {
+    newSession = true;
+    do {
+      sessionName = randomWords({
+        exactly: 1,
+        wordsPerString: 3,
+        separator: "-",
+      })[0];
+    } while (state[sessionName]);
+  }
 
   // Here we generate a fake remote state that as closely resembles the state the
   // user will see when finally connected in order to be able to server-side
   // render the closest approximation of what the user will eventually see
   // without actually initializing the session until the user actually connects the
   // socket.
-  const session = state[sessionName] || createNewSession(new Date(), sessionName, null);
+  const now = new Date();
+  const session = initializeSession(now, sessionName);
+
+  if (newSession) {
+    if (query.settings) {
+      try {
+        const { error, value: settings } = settingsSchema.validate(JSON.parse(query.settings));
+        if (!error) {
+          session.settings = settings;
+        }
+      } catch {
+        // eslint: ignore
+      }
+    }
+
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/${encodeURIComponent(sessionName)}`,
+      },
+    };
+  }
 
   if (session.finished) {
     return {
@@ -224,6 +265,7 @@ export async function getServerSideProps({ params, req }) {
   const initialRemoteState = {
     ...serializeSession(session),
     me: { clientId: null, score: null, name: null },
+    privatePreview: null,
   };
 
   return {

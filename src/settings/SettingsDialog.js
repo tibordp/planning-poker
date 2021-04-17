@@ -28,7 +28,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
-import { scorePresets } from "../../server/constants";
+import Link from "@material-ui/core/Link";
+import { scorePresets, defaultSettings } from "../../server/constants";
 import { ScoreSetSelector } from "./ScoreSetSelector";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -42,6 +43,16 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function minimizePreferences(settings) {
+  const result = {};
+  Object.keys(defaultSettings).forEach((key) => {
+    if (JSON.stringify(defaultSettings[key]) !== JSON.stringify(settings[key])) {
+      result[key] = settings[key];
+    }
+  });
+  return result;
+}
+
 export function SettingsDialog({ open, onSave, onCancel, onImport, settings, sessionName }) {
   const classes = useStyles();
 
@@ -53,6 +64,9 @@ export function SettingsDialog({ open, onSave, onCancel, onImport, settings, ses
   const [allowParticipantPagination, setAllowParticipantPagination] = React.useState(
     settings.allowParticipantPagination
   );
+  const [allowParticipantAddDelete, setAllowParticipantAddDelete] = React.useState(
+    settings.allowParticipantAddDelete
+  );
   const [showTimer, setShowTimer] = React.useState(settings.showTimer);
 
   React.useEffect(() => {
@@ -60,6 +74,7 @@ export function SettingsDialog({ open, onSave, onCancel, onImport, settings, ses
       setScoreSet(settings.scoreSet);
       setAllowParticipantControl(settings.allowParticipantControl);
       setAllowParticipantPagination(settings.allowParticipantPagination);
+      setAllowParticipantAddDelete(settings.allowParticipantAddDelete);
       setAllowOpenVoting(settings.allowOpenVoting);
       setShowTimer(settings.showTimer);
     }
@@ -70,9 +85,12 @@ export function SettingsDialog({ open, onSave, onCancel, onImport, settings, ses
     scoreSet: scoreSet,
     allowParticipantControl: allowParticipantControl,
     allowParticipantPagination: allowParticipantPagination,
+    allowParticipantAddDelete: allowParticipantAddDelete,
     allowOpenVoting: allowOpenVoting,
     showTimer: showTimer,
   };
+  const minimizedSettings = minimizePreferences(updatedSettings);
+  const bookmarklet = `/new?settings=${encodeURIComponent(JSON.stringify(minimizedSettings))}`;
 
   const exportPages = () => {
     window.open(`/api/sessions/${encodeURIComponent(sessionName)}/export`);
@@ -85,6 +103,8 @@ export function SettingsDialog({ open, onSave, onCancel, onImport, settings, ses
     };
     reader.readAsText(files[0].file);
   };
+
+  const formValid = scoreSet.length >= 2;
 
   return (
     <Dialog maxWidth="xs" open={open} onClose={onCancel}>
@@ -108,7 +128,16 @@ export function SettingsDialog({ open, onSave, onCancel, onImport, settings, ses
               onChange={() => setAllowParticipantPagination(!allowParticipantPagination)}
             />
           }
-          label="Allow everyone to change pages"
+          label="Allow everyone to switch pages for all participants"
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={allowParticipantAddDelete}
+              onChange={() => setAllowParticipantAddDelete(!allowParticipantAddDelete)}
+            />
+          }
+          label="Allow everyone to create and delete pages"
         />
         <FormControlLabel
           control={
@@ -123,7 +152,16 @@ export function SettingsDialog({ open, onSave, onCancel, onImport, settings, ses
           control={<Switch checked={showTimer} onChange={() => setShowTimer(!showTimer)} />}
           label="Show timer"
         />
+        {formValid && (
+          <p>
+            Bookmarklet for creating new sessions with these settings:{" "}
+            <Link href={bookmarklet} title="New Planning Poker session" target="_blank">
+              New Planning Poker session
+            </Link>
+          </p>
+        )}
       </DialogContent>
+
       <div className={classes.dropArea}>
         <DropzoneAreaBase
           dropzoneText="Import exported session"
@@ -141,7 +179,7 @@ export function SettingsDialog({ open, onSave, onCancel, onImport, settings, ses
           Cancel
         </Button>
         <Button
-          disabled={scoreSet.length < 2}
+          disabled={!formValid}
           onClick={() => onSave(updatedSettings)}
           color="primary"
           autoFocus
