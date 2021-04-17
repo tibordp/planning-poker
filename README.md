@@ -61,22 +61,27 @@ dispatch({ action: "setSettings", settings: {
     showTimer:true,
     // Allows participants other than session host to change pages
     allowParticipantPagination:true
+    // Allows participants other than session host to add and delete pages
+    allowParticipantAddDelete:true
 }});
 
 // Import the session, based on the exported JSON
 dispatch({ action: "importSession", sessionData });
 
-// Create a new page with an optional desription provided
-dispatch({ action: "newPage", description });
+// Create a new page with an optional desription provided (and optionally navigate to the new page)
+dispatch({ action: "newPage", description, navigate: true });
 
 // Delete current page
-dispatch({ action: "deletePage" });
+dispatch({ action: "deletePage", pageIndex });
 
 // Navigate to the page with the given index
 dispatch({ action: "navigate", pageIndex });
 
-// Set the description on the current page
-dispatch({ action: "setDescription", description });
+// Privately to the page with the given index (do not change the active page for other users)
+dispatch({ action: "privateNavigate", pageIndex });
+
+// Set the description for the page
+dispatch({ action: "setDescription", description, pageIndex });
 
 // Set the visibility of votes
 dispatch({ action: "setVotesVisible", votesVisible });
