@@ -29,9 +29,16 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import AddBox from "@material-ui/icons/AddBox";
 import Delete from "@material-ui/icons/Delete";
+import Alert from "@material-ui/lab/Alert";
 import Settings from "@material-ui/icons/Settings";
 import Pagination from "@material-ui/lab/Pagination";
+import PaginationItem from "@material-ui/lab/PaginationItem";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Link from "@material-ui/core/Link";
+import Zoom from "@material-ui/core/Zoom";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import { IncognitoIcon } from "./assets/IncognitoIcon";
+import { useConfirmationDialog } from "./utils/useConfirmationDialog";
 
 export const useStyles = makeStyles((theme) => ({
   sessionPaper: {
@@ -40,72 +47,145 @@ export const useStyles = makeStyles((theme) => ({
   participantText: {
     wordBreak: "break-all",
   },
+  privatePreviewNotice: {
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 export function PaginationPanel({
   pagination,
+  privatePreview,
   onNavigate,
   onSettingsClick,
   onNewPage,
   onDeletePage,
-  settingsEnabled,
-  paginationEnabled,
+  permissions,
 }) {
   const classes = useStyles();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("sm"));
 
-  const handleChange = (event, value) => {
-    onNavigate(value - 1);
+  const [incognito, setIncognito] = React.useState(false);
+  const [couldPaginate, setCouldPaginate] = React.useState(permissions.canPaginate);
+
+  React.useEffect(() => {
+    if (!permissions.isActingHost) {
+      if (!couldPaginate && permissions.canPaginate) {
+        setIncognito(true);
+      }
+      setCouldPaginate(permissions.canPaginate);
+    }
+  }, [permissions]);
+
+  const handleChange = (_, value) => {
+    onNavigate(!permissions.canPaginate || incognito, value - 1);
   };
 
+  const handleNewPage = () => {
+    onNewPage(!permissions.canPaginate || incognito);
+  };
+
+  const pageNumber = privatePreview === null ? pagination.pageIndex : privatePreview;
+
+  const [confirmDelete, dialog] = useConfirmationDialog({
+    title: "Delete page?",
+    description: "Are you sure you want to delete this page",
+    confirmText: "Delete page",
+    onConfirm: () => onDeletePage(pageNumber),
+  });
+
   return (
-    <Grid
-      className={classes.sessionPaper}
-      container
-      direction="row"
-      alignItems="center"
-      justify={matches && (paginationEnabled || settingsEnabled) ? "space-between" : "space-around"}
-      spacing={1}
-    >
-      <Grid item>
-        <Pagination
-          size="medium"
-          shape="rounded"
-          page={pagination.pageIndex + 1}
-          onChange={handleChange}
-          count={pagination.pageCount}
-          disabled={!paginationEnabled}
-        />
-      </Grid>
-      {(paginationEnabled || settingsEnabled) && (
+    <>
+      <Grid
+        className={classes.sessionPaper}
+        container
+        direction="row"
+        alignItems="center"
+        justify={
+          matches &&
+          (permissions.canPaginate || permissions.canAddDeletePages || permissions.canEditSettings)
+            ? "space-between"
+            : "space-around"
+        }
+        spacing={1}
+      >
+        {permissions.canPaginate && (
+          <Grid item>
+            <Tooltip title="Private navigation">
+              <ToggleButton
+                value="check"
+                size="small"
+                color="primary"
+                selected={incognito}
+                onChange={() => setIncognito(!incognito)}
+              >
+                <IncognitoIcon />
+              </ToggleButton>
+            </Tooltip>
+          </Grid>
+        )}
         <Grid item>
-          {paginationEnabled && (
-            <>
-              <Tooltip title="New page">
-                <IconButton onClick={onNewPage}>
-                  <AddBox />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete this page">
-                <IconButton onClick={onDeletePage} disabled={pagination.pageCount <= 1}>
-                  <Delete />
-                </IconButton>
-              </Tooltip>
-            </>
-          )}
-          {settingsEnabled && (
-            <>
-              <Tooltip title="Session settings">
-                <IconButton onClick={onSettingsClick}>
-                  <Settings />
-                </IconButton>
-              </Tooltip>
-            </>
-          )}
+          <Pagination
+            size="medium"
+            shape="rounded"
+            page={pageNumber + 1}
+            onChange={handleChange}
+            count={pagination.pageCount}
+            renderItem={(item) => (
+              <PaginationItem
+                {...item}
+                variant={
+                  item.type == "page" &&
+                  privatePreview !== null &&
+                  item.page === pagination.pageIndex + 1
+                    ? "outlined"
+                    : "text"
+                }
+              />
+            )}
+          />
         </Grid>
+        {(permissions.canAddDeletePages || permissions.canEditSettings) && (
+          <Grid item>
+            {permissions.canAddDeletePages && (
+              <>
+                <Tooltip title="New page">
+                  <IconButton onClick={handleNewPage}>
+                    <AddBox />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete this page">
+                  <IconButton onClick={confirmDelete} disabled={pagination.pageCount <= 1}>
+                    <Delete />
+                  </IconButton>
+                </Tooltip>
+              </>
+            )}
+            {permissions.canEditSettings && (
+              <>
+                <Tooltip title="Session settings">
+                  <IconButton onClick={onSettingsClick}>
+                    <Settings />
+                  </IconButton>
+                </Tooltip>
+              </>
+            )}
+          </Grid>
+        )}
+      </Grid>
+      {privatePreview !== null && (
+        <Zoom timeout={{ appear: 0, enter: 200, exit: 0 }} in>
+          <Alert className={classes.privatePreviewNotice} severity="info">
+            You are privately viewing this page. Click{" "}
+            <Link href="javascript:void(0)" onClick={() => onNavigate(true, pagination.pageIndex)}>
+              here
+            </Link>{" "}
+            to return to the active page.
+          </Alert>
+        </Zoom>
       )}
-    </Grid>
+      {dialog}
+    </>
   );
 }
 
@@ -117,6 +197,6 @@ PaginationPanel.propTypes = {
   onSettingsClick: PropTypes.func.isRequired,
   onNewPage: PropTypes.func.isRequired,
   onDeletePage: PropTypes.func.isRequired,
-  settingsEnabled: PropTypes.bool,
-  paginationEnabled: PropTypes.bool,
+  privatePreview: PropTypes.number,
+  permissions: PropTypes.object.isRequired,
 };

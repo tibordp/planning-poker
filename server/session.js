@@ -109,7 +109,7 @@ function restorePaginationData(now, sessionState) {
   sessionState.votesVisible = participants.length > 1 && participants.every(({ score }) => score);
 }
 
-function createNewSession(now, sessionName, clientId) {
+function createNewSession(now, sessionName) {
   const sessionState = {
     sessionName,
     description: "",
@@ -126,7 +126,7 @@ function createNewSession(now, sessionName, clientId) {
       pausedTotal: 0,
     },
     votesVisible: false,
-    host: clientId,
+    host: null,
     epoch: 0,
     clients: {},
   };
@@ -134,14 +134,12 @@ function createNewSession(now, sessionName, clientId) {
   return sessionState;
 }
 
-function initializeSession(now, sessionName, clientId) {
+function initializeSession(now, sessionName) {
   let sessionState = state[sessionName];
   if (!sessionState) {
     console.log(`[${sessionName}] Creating new session.`);
-    sessionState = state[sessionName] = createNewSession(now, sessionName, clientId);
-  } else {
-    clearTimeout(sessionState.ttlTimer);
-    sessionState.ttlTimer = null;
+    sessionState = state[sessionName] = createNewSession(now, sessionName);
+    ensureSessionTimeout(sessionState);
   }
   return sessionState;
 }
@@ -164,6 +162,7 @@ function initializeClient(now, sessionState, socket, clientId, useHeartbeat) {
       session: sessionState,
       clientId,
       socket,
+      privatePreview: null,
       score: null,
       name: null,
       lastHeartbeat: null,
@@ -171,8 +170,27 @@ function initializeClient(now, sessionState, socket, clientId, useHeartbeat) {
     sessionState.clients[clientId] = clientState;
   }
 
+  if (sessionState.host === null) {
+    sessionState.host = clientId;
+  }
+
+  ensureSessionTimeout(sessionState);
+
   setHeartbeat(clientState);
   return clientState;
+}
+
+function ensureSessionTimeout(sessionState) {
+  clearTimeout(sessionState.ttlTimer);
+  if (!Object.keys(sessionState.clients).length) {
+    if (sessionState.finished) {
+      sessionState.ttlTimer = setTimeout(cleanupSession, finishedSessionTtl, sessionState);
+    } else {
+      sessionState.ttlTimer = setTimeout(cleanupSession, sessionTtl, sessionState);
+    }
+  } else {
+    sessionState.ttlTimer = null;
+  }
 }
 
 function clearHeartbeat(clientState) {
@@ -222,21 +240,24 @@ function finishSession(now, sessionState) {
     });
     clientState.socket.close();
   });
+  ensureSessionTimeout(sessionState);
 }
 
 function reactivateSession(sessionState) {
   sessionState.finished = false;
+  ensureSessionTimeout(sessionState);
 }
 
 function cleanupSession(sessionState) {
   const now = new Date();
-
-  if (sessionState.finished) {
+  if (sessionState.host === null) {
+    console.log(`[${sessionState.sessionName}] Deleting orphaned session.`);
+    delete state[sessionState.sessionName];
+  } else if (sessionState.finished) {
     console.log(`[${sessionState.sessionName}] Deleting session.`);
     delete state[sessionState.sessionName];
   } else {
     finishSession(now, sessionState);
-    sessionState.ttlTimer = setTimeout(cleanupSession, finishedSessionTtl, sessionState);
   }
 }
 
@@ -271,7 +292,13 @@ function processMessage(now, clientState, receivedAction) {
       return;
     // Everything else
     case "setDescription":
-      sessionState.description = action.description;
+      if (action.pageIndex !== sessionState.pagination.pageIndex) {
+        if (action.pageIndex < sessionState.pagination.pages.length) {
+          sessionState.pagination.pages[action.pageIndex].description = action.description;
+        }
+      } else {
+        sessionState.description = action.description;
+      }
       break;
     case "join":
       if (
@@ -369,24 +396,57 @@ function processMessage(now, clientState, receivedAction) {
       }));
       restorePaginationData(now, sessionState);
       resetBoard(now, sessionState);
+
+      Object.values(sessionState.clients).forEach((c) => {
+        c.privatePreview = null;
+      });
       break;
     case "newPage":
-      savePaginationData(now, sessionState);
-      sessionState.description = action.description || "";
-      sessionState.pagination.pages.push({});
-      sessionState.pagination.pageIndex = sessionState.pagination.pages.length - 1;
-      sessionState.epoch += 1;
+      if (!action.navigate) {
+        sessionState.pagination.pages.push({
+          description: action.description || "",
+          timerState: {
+            startTime: now,
+            pausedTime: now,
+            pausedTotal: 0,
+          },
+          votes: {},
+        });
+        clientState.privatePreview = sessionState.pagination.pages.length - 1;
+      } else {
+        savePaginationData(now, sessionState);
+        sessionState.description = action.description || "";
+        sessionState.pagination.pages.push({});
+        sessionState.pagination.pageIndex = sessionState.pagination.pages.length - 1;
+        sessionState.epoch += 1;
 
-      resetBoard(now, sessionState, true);
+        resetBoard(now, sessionState, true);
+      }
       break;
     case "deletePage":
-      if (sessionState.pagination.pages.length > 1) {
-        sessionState.pagination.pages.splice(sessionState.pagination.pageIndex, 1);
-        if (sessionState.pagination.pageIndex == sessionState.pagination.pages.length) {
+      if (
+        sessionState.pagination.pages.length >= 1 &&
+        action.pageIndex < sessionState.pagination.pages.length
+      ) {
+        sessionState.pagination.pages.splice(action.pageIndex, 1);
+        if (sessionState.pagination.pageIndex >= action.pageIndex) {
           sessionState.pagination.pageIndex -= 1;
         }
         sessionState.epoch += 1;
         restorePaginationData(now, sessionState);
+
+        Object.values(sessionState.clients).forEach((c) => {
+          if (c.privatePreview !== null) {
+            if (
+              c.privatePreview === action.pageIndex ||
+              c.privatePreview === sessionState.pagination.pageIndex
+            ) {
+              c.privatePreview = null;
+            } else if (c.privatePreview > action.pageIndex) {
+              c.privatePreview -= 1;
+            }
+          }
+        });
       }
       break;
     case "navigate":
@@ -395,6 +455,21 @@ function processMessage(now, clientState, receivedAction) {
         sessionState.pagination.pageIndex = action.pageIndex;
         sessionState.epoch += 1;
         restorePaginationData(now, sessionState);
+
+        Object.values(sessionState.clients).forEach((c) => {
+          if (c.privatePreview === action.pageIndex) {
+            c.privatePreview = null;
+          }
+        });
+      }
+      break;
+    case "privateNavigate":
+      if (action.pageIndex < sessionState.pagination.pages.length) {
+        if (action.pageIndex === sessionState.pagination.pageIndex) {
+          clientState.privatePreview = null;
+        } else {
+          clientState.privatePreview = action.pageIndex;
+        }
       }
       break;
   }
@@ -409,19 +484,8 @@ function cleanupClient(now, clientState) {
   clearHeartbeat(clientState);
   delete sessionState.clients[clientState.clientId];
 
-  // Delete the session after last client disconnects, but allow for a grace period
-  // in case e.g. the host had some connectivity issues.
-  if (!Object.keys(sessionState.clients).length) {
-    if (sessionState.finished) {
-      console.log(`[${sessionState.sessionName}] Scheduling session for deletion.`);
-      sessionState.ttlTimer = setTimeout(cleanupSession, finishedSessionTtl, sessionState);
-    } else {
-      console.log(`[${sessionState.sessionName}] Scheduling session for expiry.`);
-      sessionState.ttlTimer = setTimeout(cleanupSession, sessionTtl, sessionState);
-    }
-  } else {
-    broadcastState(now, sessionState);
-  }
+  ensureSessionTimeout(sessionState);
+  broadcastState(now, sessionState);
 }
 
 exports.sendMessage = sendMessage;
