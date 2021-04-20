@@ -97,7 +97,7 @@ exports.actionSchema = Joi.alternatives()
           .min(1)
           .unique()
           .required(),
-      }),
+      }).unknown(true),
     }),
     Joi.object({
       action: Joi.string().valid("reconnect").required(),
