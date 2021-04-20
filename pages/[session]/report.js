@@ -90,7 +90,7 @@ function ReportRow({ scoreSet, description, votes, index, duration }) {
           linkTarget="_blank"
           className={classes.markdown}
           components={{
-            a: Link,
+            a: MuiLink,
           }}
           remarkPlugins={[gfm]}
         >
