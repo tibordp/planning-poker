@@ -25,7 +25,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
+import DoneIcon from "@material-ui/icons/Done";
+import ReplayIcon from "@material-ui/icons/Replay";
+import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import { Timer } from "./Timer";
@@ -39,17 +41,11 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.grey[700],
   },
   footer: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center",
-    justifyContent: "space-between",
-    minHeight: theme.spacing(6),
-    "& > *:only-child": {
-      marginLeft: "auto",
-    },
+    marginTop: theme.spacing(0),
   },
   timer: {
+    marginTop: theme.spacing(-1),
+    marginBottom: theme.spacing(-1),
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -97,39 +93,60 @@ export default function Footer({ sessionName, canReactivate, remoteState, dispat
   return (
     <>
       <Divider />
-      <Box className={classes.footer}>
+      <Grid
+        className={classes.footer}
+        container
+        direction="row"
+        alignItems="center"
+        justify="space-around"
+        spacing={2}
+      >
         {showTimer && (
-          <>
-            <Box className={classes.footer}>
-              <Timer
-                canControlTimer={permissions.canControlTimer}
-                timerState={remoteState.timerState}
-                dispatch={dispatch}
-              />
-            </Box>
-          </>
+          <Grid item className={classes.timer}>
+            <Timer
+              canControlTimer={permissions.canControlTimer}
+              timerState={remoteState.timerState}
+              dispatch={dispatch}
+            />
+          </Grid>
         )}
         {dispatch && permissions.canFinishSession && (
-          <Button className={classes.button} variant="text" onClick={confirmFinish}>
-            Finish session
-          </Button>
+          <Grid item>
+            <Button
+              className={classes.button}
+              variant="text"
+              onClick={confirmFinish}
+              startIcon={<DoneIcon />}
+            >
+              Finish session
+            </Button>
+          </Grid>
         )}
         {canReactivate && sessionName && (
-          <Button className={classes.button} variant="text" onClick={reactivateSession}>
-            Reactivate session
-          </Button>
+          <Grid item>
+            <Button
+              className={classes.button}
+              variant="text"
+              onClick={reactivateSession}
+              startIcon={<ReplayIcon />}
+            >
+              Reactivate session
+            </Button>
+          </Grid>
         )}
-        <Button
-          variant="text"
-          target="_blank"
-          href="http://www.github.com/tibordp/planning-poker"
-          color="default"
-          className={classes.button}
-          startIcon={<GitHubIcon />}
-        >
-          GitHub
-        </Button>
-      </Box>
+        <Grid item>
+          <Button
+            variant="text"
+            target="_blank"
+            href="http://www.github.com/tibordp/planning-poker"
+            color="default"
+            className={classes.button}
+            startIcon={<GitHubIcon />}
+          >
+            View on GitHub
+          </Button>
+        </Grid>
+      </Grid>
       {dialog}
     </>
   );
