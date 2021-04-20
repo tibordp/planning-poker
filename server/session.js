@@ -429,7 +429,7 @@ function processMessage(now, clientState, receivedAction) {
         action.pageIndex < sessionState.pagination.pages.length
       ) {
         sessionState.pagination.pages.splice(action.pageIndex, 1);
-        if (sessionState.pagination.pageIndex >= action.pageIndex) {
+        if (action.pageIndex !== 0 && sessionState.pagination.pageIndex >= action.pageIndex) {
           sessionState.pagination.pageIndex -= 1;
         }
         sessionState.epoch += 1;
