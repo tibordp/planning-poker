@@ -65,6 +65,7 @@ class Socket extends EventEmitter {
         res.writeHead(410).end();
       }
       clearTimeout(this._timer);
+      this._timer = null;
       this.emit("close");
     }
   }
@@ -76,6 +77,7 @@ class Socket extends EventEmitter {
         res.socket.destroy();
       }
       clearTimeout(this._timer);
+      this._timer = null;
       this.emit("close");
     }
   }
@@ -112,7 +114,7 @@ class Socket extends EventEmitter {
 
   send(message) {
     const now = process.hrtime.bigint();
-    if (this._closing || !this._timer) {
+    if (!this._timer) {
       throw Error("Socket closed!");
     }
 

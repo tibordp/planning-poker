@@ -130,6 +130,10 @@ app.prepare().then(() => {
     console.log("Listening on :3000");
   });
 
+  process.on("unhandledRejection", (reason) => {
+    console.log("Unhandled Rejection at:", reason.stack || reason);
+  });
+
   process.on("SIGTERM", () => {
     console.log("Starting graceful shutdown");
     shuttingDown = true;
