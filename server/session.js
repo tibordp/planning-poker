@@ -456,6 +456,7 @@ function processMessage(now, clientState, receivedAction) {
         sessionState.epoch += 1;
         restorePaginationData(now, sessionState);
 
+        clientState.privatePreview = null;
         Object.values(sessionState.clients).forEach((c) => {
           if (c.privatePreview === action.pageIndex) {
             c.privatePreview = null;
