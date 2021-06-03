@@ -37,7 +37,7 @@
     "swr": "^0.5.5",
     "text-ellipsis": "^1.0.3",
     "uuid": "^8.3.0",
-    "ws": "^7.4.4"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
