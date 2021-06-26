@@ -7,6 +7,10 @@ import { config } from "react-transition-group";
 import * as remoteState from "./remoteState";
 import { SnackbarProvider } from "notistack";
 
+beforeEach(() => {
+  jest.useFakeTimers("legacy");
+});
+
 test.each([
   remoteState.remoteStateAsHost,
   remoteState.remoteStateAsVoterNoControl,
