@@ -16,7 +16,6 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@svgr/webpack": "^5.5.0",
-    "aws-sdk": "^2.934.0",
     "buffer": "^6.0.3",
     "global": "^4.4.0",
     "joi": "^17.4.0",
