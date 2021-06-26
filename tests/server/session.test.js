@@ -3,7 +3,7 @@ import * as session from "../../server/session";
 import { v4 } from "uuid";
 
 beforeEach(() => {
-  jest.useFakeTimers();
+  jest.useFakeTimers("legacy");
 });
 
 const getSessionName = () => v4();
@@ -77,7 +77,7 @@ test("client disconnected", () => {
   const sessionState = session.initializeSession(now, sessionName);
   const clientState = session.initializeClient(now, sessionState, socket, "client-id", true);
 
-  jest.useFakeTimers(); // Clean any timers from before
+  jest.useFakeTimers("legacy"); // Clean any timers from before
 
   session.cleanupClient(now, clientState);
   expect(sessionState.clients).toStrictEqual({});
@@ -106,7 +106,7 @@ test("session finished", () => {
   const sessionState = session.initializeSession(now, sessionName);
   const clientState = session.initializeClient(now, sessionState, socket, "client-id", true);
 
-  jest.useFakeTimers(); // Clean any timers from before
+  jest.useFakeTimers("legacy"); // Clean any timers from before
   sessionState.finished = true;
 
   session.cleanupClient(now, clientState);

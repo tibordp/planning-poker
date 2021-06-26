@@ -12,7 +12,5 @@ module.exports = {
     heartbeatInterval: Number(process.env.PP_HEARTBEAT_INTERVAL) || 5000,
     heartbeatTimeout: Number(process.env.PP_HEARTBEAT_TIMEOUT) || 10000,
   },
-  future: {
-    webpack5: true,
-  },
+  webpack5: true,
 };

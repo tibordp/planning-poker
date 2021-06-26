@@ -6,7 +6,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
 COPY yarn.lock /app/yarn.lock
 
-RUN yarn --production --silent
+RUN yarn --silent
 COPY . /app
 RUN yarn build
 
