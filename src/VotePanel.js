@@ -61,7 +61,7 @@ export function VotePanel({
       className={classes.container}
       container
       direction="row"
-      justify="space-between"
+      justifyContent="space-between"
       alignItems="center"
     >
       <Grid item sm={controlEnabled ? 9 : 12} xs={12} className={classes.scoresContainer}>

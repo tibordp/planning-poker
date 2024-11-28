@@ -25,106 +25,38 @@ import React from "react";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/core/styles";
 import Logo from "../src/Logo";
 import Link from "next/link";
 import Footer from "../src/Footer";
 import PropTypes from "prop-types";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import Skeleton from "@material-ui/lab/Skeleton";
-import Alert from "@material-ui/lab/Alert";
-import AlertTitle from "@material-ui/lab/AlertTitle";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import useSWR from "swr";
-import { state } from "../server/state";
-import { serializeStats } from "../server/serialization";
-
-const useStyles = makeStyles((theme) => ({
-  tableContainer: {
-    marginTop: theme.spacing(2),
+export const useStyles = makeStyles((theme) => ({
+  description: {
+    paddingBottom: theme.spacing(1),
   },
 }));
 
-function Statistics({ initialData }) {
+export default function Index() {
   const classes = useStyles();
-  const fetcher = (url) => fetch(url).then((r) => r.json());
-  const { data, error } = useSWR("/api/stats", fetcher, { initialData, revalidateOnMount: true });
 
-  return (
-    <>
-      {error && (
-        <Box my={2}>
-          <Alert variant="filled" severity="error">
-            <AlertTitle>Could not load statistics!</AlertTitle>
-            It&apos;s your fault probably.
-          </Alert>
-        </Box>
-      )}
-      {!error && (
-        <TableContainer component={Paper} variant="outlined" className={classes.tableContainer}>
-          {!data && (
-            <Box my={2} mx={2}>
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-            </Box>
-          )}
-          {data && (
-            <Table aria-label="simple table">
-              <TableBody>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    Number of active sessions
-                  </TableCell>
-                  <TableCell align="right">{data.numSessions}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    Total number of players
-                  </TableCell>
-                  <TableCell align="right">{data.numPlayers}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    Number of voters
-                  </TableCell>
-                  <TableCell align="right">{data.numVoters}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    Number of observers
-                  </TableCell>
-                  <TableCell align="right">{data.numObservers}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          )}
-        </TableContainer>
-      )}
-    </>
-  );
-}
-
-Statistics.propTypes = {
-  initialData: PropTypes.object,
-};
-
-export default function Index({ initialData }) {
   return (
     <Container maxWidth="sm">
       <Logo />
       <Box my={2}>
+        <Typography className={classes.description} variant="body1">
+          This is a a Planning Poker app, useful for Scrum grooming sessions to avoid anchoring in
+          point estimates.
+        </Typography>
+        <Typography className={classes.description} variant="body1">
+          To start a new session, click the button below.
+        </Typography>
         <Link href="/new" passHref>
           <Button color="secondary" fullWidth size="large" variant="contained">
             New session
           </Button>
         </Link>
-        <Statistics initialData={initialData} />
       </Box>
       <Footer />
     </Container>
@@ -133,8 +65,4 @@ export default function Index({ initialData }) {
 
 Index.propTypes = {
   initialData: PropTypes.object,
-};
-
-Index.getInitialProps = async () => {
-  return { initialData: serializeStats(state) };
 };

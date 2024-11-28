@@ -6,7 +6,7 @@ Array [
     className="MuiDivider-root"
   />,
   <div
-    className="MuiGrid-root makeStyles-footer-2 MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
+    className="MuiGrid-root makeStyles-footer-2 MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-around"
   >
     <div
       className="MuiGrid-root makeStyles-timer-3 MuiGrid-item"
@@ -195,7 +195,7 @@ Array [
     className="MuiDivider-root"
   />,
   <div
-    className="MuiGrid-root makeStyles-footer-2 MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
+    className="MuiGrid-root makeStyles-footer-2 MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-around"
   >
     <div
       className="MuiGrid-root makeStyles-timer-3 MuiGrid-item"
@@ -258,7 +258,7 @@ Array [
     className="MuiDivider-root"
   />,
   <div
-    className="MuiGrid-root makeStyles-footer-2 MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
+    className="MuiGrid-root makeStyles-footer-2 MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-around"
   >
     <div
       className="MuiGrid-root MuiGrid-item"

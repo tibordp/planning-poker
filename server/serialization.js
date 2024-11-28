@@ -126,24 +126,6 @@ function serializeSession(sessionState, me) {
   };
 }
 
-function serializeStats(state) {
-  const sessions = Object.values(state).filter(({ finished }) => !finished);
-  const numVoters = sessions.reduce(
-    (a, b) => a + Object.values(b.clients).filter(({ name }) => name).length,
-    0
-  );
-  const numObservers = sessions.reduce(
-    (a, b) => a + Object.values(b.clients).filter(({ name }) => !name).length,
-    0
-  );
-  return {
-    numSessions: sessions.length,
-    numVoters,
-    numObservers,
-    numPlayers: numVoters + numObservers,
-  };
-}
-
 function exportSession(sessionState) {
   const { pagination, settings, finished } = sessionState;
 
@@ -161,5 +143,4 @@ function exportSession(sessionState) {
 exports.serializeClient = serializeClient;
 exports.serializeClients = serializeClients;
 exports.serializeSession = serializeSession;
-exports.serializeStats = serializeStats;
 exports.exportSession = exportSession;
