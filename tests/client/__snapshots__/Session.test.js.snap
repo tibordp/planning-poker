@@ -3,7 +3,7 @@
 exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": 0, "settings": [Object], "timerState": [Object], "votesVisible": false} 1`] = `
 Array [
   <div
-    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
+    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-around"
   >
     <div
       className="MuiGrid-root MuiGrid-item"
@@ -386,7 +386,7 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-between"
   >
     <div
       className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-12"
@@ -824,7 +824,7 @@ Array [
 exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": null, "settings": [Object], "timerState": [Object], "votesVisible": false} 1`] = `
 Array [
   <div
-    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
+    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-around"
   >
     <div
       className="MuiGrid-root MuiGrid-item"
@@ -1133,7 +1133,7 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-between"
   >
     <div
       className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"
@@ -1659,7 +1659,7 @@ Array [
 exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": null, "settings": [Object], "timerState": [Object], "votesVisible": false} 2`] = `
 Array [
   <div
-    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
+    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-around"
   >
     <div
       className="MuiGrid-root MuiGrid-item"
@@ -1881,7 +1881,7 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-between"
   >
     <div
       className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"
@@ -2413,7 +2413,7 @@ Array [
 exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": null, "settings": [Object], "timerState": [Object], "votesVisible": false} 3`] = `
 Array [
   <div
-    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
+    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-around"
   >
     <div
       className="MuiGrid-root MuiGrid-item"
@@ -2635,7 +2635,7 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-between"
   >
     <div
       className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"
@@ -3161,7 +3161,7 @@ Array [
 exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": null, "settings": [Object], "timerState": [Object], "votesVisible": false} 4`] = `
 Array [
   <div
-    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
+    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-around"
   >
     <div
       className="MuiGrid-root MuiGrid-item"
@@ -3383,7 +3383,7 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-between"
   >
     <div
       className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-12"
@@ -3851,7 +3851,7 @@ Array [
 exports[`renders Session unchanged {"clients": [Array], "description": "### Markdown", "disconnectedClients": [Object], "epoch": 0, "host": "5cdf4eb9-4c88-47ee-85da-5a2e970ed79f", "me": [Object], "pagination": [Object], "privatePreview": null, "settings": [Object], "timerState": [Object], "votesVisible": true} 1`] = `
 Array [
   <div
-    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-around"
+    className="MuiGrid-root makeStyles-sessionPaper-2 MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-around"
   >
     <div
       className="MuiGrid-root MuiGrid-item"
@@ -4160,7 +4160,7 @@ Array [
     </div>
   </div>,
   <div
-    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+    className="MuiGrid-root makeStyles-container-16 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-space-between"
   >
     <div
       className="MuiGrid-root makeStyles-scoresContainer-15 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-9"

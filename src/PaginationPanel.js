@@ -101,7 +101,7 @@ export function PaginationPanel({
         container
         direction="row"
         alignItems="center"
-        justify={
+        justifyContent={
           matches &&
           (permissions.canPaginate || permissions.canAddDeletePages || permissions.canEditSettings)
             ? "space-between"
