@@ -22,7 +22,7 @@
     "killable": "^1.0.1",
     "material-ui-chip-input": "^1.1.0",
     "material-ui-dropzone": "^3.5.0",
-    "next": "11.0.1",
+    "next": "14.2.15",
     "next-absolute-url": "^1.2.2",
     "node-fetch": "^2.6.1",
     "notistack": "^1.0.9",
