@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
         - name: planning-poker
-          image: tibordp/planning-poker:latest
+          image: ghcr.io/tibordp/planning-poker:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
