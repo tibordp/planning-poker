@@ -1,0 +1,59 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2020 Tibor Djurica Potpara
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Link from "next/link";
+
+export default function Logo() {
+  return (
+    <Box
+      sx={{
+        my: 2,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyItems: "center",
+      }}
+    >
+      <Link href="/" aria-label="Planning Poker">
+        <Box
+          component="svg"
+          viewBox="0 0 100 100"
+          role="img"
+          aria-label="Planning Poker"
+          sx={{ height: (theme) => theme.spacing(8), width: (theme) => theme.spacing(8) }}
+        >
+          <path
+            d="M45.556 59.596L57.55 91.817l12.467-4.64L40.483 7.83l-14.126 5.258q-10.38 3.863-15.161 7.223-4.835 3.379-7.467 8.747-4.63 9.33-.842 19.505 4.056 10.894 14.026 14.438 9.97 3.545 22.865-1.255zm-4.131-11.1l-4.655 1.732q-17.176 6.393-21.901-6.3-4.572-12.282 13.139-18.874l4.12-1.534z"
+            fill="#556cd6"
+          />
+          <path
+            d="M54.907 59.69L43.654 92.178l-12.57-4.354L58.795 7.822l14.243 4.934Q83.504 16.38 88.36 19.63q4.91 3.268 7.664 8.574 4.842 9.221 1.289 19.48Q93.508 58.67 83.622 62.44q-9.886 3.772-22.888-.732zm3.877-11.192l4.694 1.626q17.317 5.998 21.75-6.8 4.29-12.383-13.567-18.569l-4.155-1.439z"
+            fill="#19857b"
+          />
+        </Box>
+      </Link>
+    </Box>
+  );
+}
