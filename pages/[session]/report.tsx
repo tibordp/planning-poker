@@ -1,26 +1,3 @@
-/**
- * MIT License
- *
- * Copyright (c) 2020 Tibor Djurica Potpara
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 import * as React from "react";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
@@ -84,9 +61,7 @@ function ReportRow({ scoreSet, description, votes, index, duration }: ReportRowP
   return (
     <>
       <Box sx={{ justifyContent: "center", display: "flex" }}>
-        <Box
-          sx={(t) => ({ ...mdStyles(t), display: "inline-block", overflowX: "auto" })}
-        >
+        <Box sx={(t) => ({ ...mdStyles(t), display: "inline-block", overflowX: "auto" })}>
           <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkGfm]}>
             {description || `### Page ${index + 1}`}
           </ReactMarkdown>
@@ -105,13 +80,7 @@ function ReportRow({ scoreSet, description, votes, index, duration }: ReportRowP
         {allVotesCast.length > 0 && (
           <Box sx={{ display: "inline-block" }}>
             {[...allVotesCast].sort().map((score, idx) => (
-              <Chip
-                key={idx}
-                sx={{ m: 1 }}
-                size="medium"
-                label={score}
-                {...chipStyleMap(score)}
-              />
+              <Chip key={idx} sx={{ m: 1 }} size="medium" label={score} {...chipStyleMap(score)} />
             ))}
           </Box>
         )}
@@ -133,7 +102,7 @@ function Report({ sessionName, initialData }: ReportProps) {
   const { data, error } = useSWR<ExportedSession>(
     `/api/sessions/${encodeURIComponent(sessionName)}/export`,
     fetcher,
-    { fallbackData: initialData ?? undefined, revalidateOnMount: true }
+    { fallbackData: initialData ?? undefined, revalidateOnMount: true },
   );
 
   return (

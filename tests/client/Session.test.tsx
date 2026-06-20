@@ -22,7 +22,7 @@ test.each([
       <SnackbarProvider>
         <Session remoteState={state} dispatch={jest.fn()} sessionName="session" />
       </SnackbarProvider>
-    </ThemeProvider>
+    </ThemeProvider>,
   );
   expect(asFragment()).toMatchSnapshot();
 });

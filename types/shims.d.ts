@@ -5,17 +5,13 @@ declare module "text-ellipsis" {
     ellipsis?: string;
     truncate?: boolean;
   }
-  export default function ellipsis(
-    str: string,
-    max: number,
-    options?: TextEllipsisOptions
-  ): string;
+  export default function ellipsis(str: string, max: number, options?: TextEllipsisOptions): string;
 }
 
 declare module "next-absolute-url" {
   import type { IncomingMessage } from "http";
   export default function absoluteUrl(
     req?: IncomingMessage,
-    localhostAddress?: string
+    localhostAddress?: string,
   ): { protocol: string; host: string; origin: string };
 }

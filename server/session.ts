@@ -1,26 +1,3 @@
-/**
- * MIT License
- *
- * Copyright (c) 2020 Tibor Djurica Potpara
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 import { state } from "./state";
 import {
   defaultSettings,
@@ -42,14 +19,14 @@ import type {
 export function sendMessage(
   now: Date,
   clientState: ClientState,
-  action: Record<string, unknown>
+  action: Record<string, unknown>,
 ): void {
   const { socket } = clientState;
   socket.send(
     JSON.stringify({
       ...action,
       serverTime: now,
-    })
+    }),
   );
 }
 
@@ -161,12 +138,12 @@ export function initializeClient(
   sessionState: SessionState,
   socket: ServerSocket,
   clientId: string,
-  useHeartbeat: boolean
+  useHeartbeat: boolean,
 ): ClientState {
   let clientState = sessionState.clients[clientId];
   if (clientState) {
     console.log(
-      `[${sessionState.sessionName}] Client ${clientId} reconnected using a different socket.`
+      `[${sessionState.sessionName}] Client ${clientId} reconnected using a different socket.`,
     );
     const previousSocket = clientState.socket;
     // E.g. if the client re-connects from WS connection to a long-poll connection

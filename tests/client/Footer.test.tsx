@@ -32,7 +32,7 @@ test.each([
       <SnackbarProvider>
         <Footer remoteState={state} dispatch={jest.fn()} />
       </SnackbarProvider>
-    </ThemeProvider>
+    </ThemeProvider>,
   );
   expect(asFragment()).toMatchSnapshot();
 });
