@@ -1,26 +1,3 @@
-/**
- * MIT License
- *
- * Copyright (c) 2020 Tibor Djurica Potpara
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 import * as React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -34,7 +11,7 @@ import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import CloudUpload from "@mui/icons-material/CloudUpload";
 import { useDropzone } from "react-dropzone";
-import { scorePresets, defaultSettings } from "../../server/constants";
+import { scorePresets, defaultSettings } from "../sessionDefaults";
 import { ScoreSetSelector } from "./ScoreSetSelector";
 import type { ImportedSessionData, Settings } from "../types";
 
@@ -67,14 +44,14 @@ export function SettingsDialog({
 }: SettingsDialogProps) {
   const [scoreSet, setScoreSet] = React.useState(scorePresets[0].scores);
   const [allowParticipantControl, setAllowParticipantControl] = React.useState(
-    settings.allowParticipantControl
+    settings.allowParticipantControl,
   );
   const [allowOpenVoting, setAllowOpenVoting] = React.useState(settings.allowOpenVoting);
   const [allowParticipantPagination, setAllowParticipantPagination] = React.useState(
-    settings.allowParticipantPagination
+    settings.allowParticipantPagination,
   );
   const [allowParticipantAddDelete, setAllowParticipantAddDelete] = React.useState(
-    settings.allowParticipantAddDelete
+    settings.allowParticipantAddDelete,
   );
   const [showTimer, setShowTimer] = React.useState(settings.showTimer);
 
@@ -155,7 +132,10 @@ export function SettingsDialog({
         />
         <FormControlLabel
           control={
-            <Switch checked={allowOpenVoting} onChange={() => setAllowOpenVoting(!allowOpenVoting)} />
+            <Switch
+              checked={allowOpenVoting}
+              onChange={() => setAllowOpenVoting(!allowOpenVoting)}
+            />
           }
           label="Allow voting while scores are visible"
         />
@@ -199,7 +179,12 @@ export function SettingsDialog({
         <Button autoFocus onClick={onCancel} color="primary">
           Cancel
         </Button>
-        <Button disabled={!formValid} onClick={() => onSave(updatedSettings)} color="primary" autoFocus>
+        <Button
+          disabled={!formValid}
+          onClick={() => onSave(updatedSettings)}
+          color="primary"
+          autoFocus
+        >
           Save
         </Button>
       </DialogActions>

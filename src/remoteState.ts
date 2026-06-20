@@ -1,26 +1,3 @@
-/**
- * MIT License
- *
- * Copyright (c) 2020 Tibor Djurica Potpara
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 import React from "react";
 
 import { HeartbeatingWebsocket } from "./connection/websocket";
@@ -73,7 +50,7 @@ function getSocket(sessionName: string): ClientSocket {
         client_id: clientId,
         session_name: sessionName,
       },
-      publicRuntimeConfig.heartbeatTimeout
+      publicRuntimeConfig.heartbeatTimeout,
     );
   } else {
     const url = new URL(location.href);
@@ -89,14 +66,14 @@ function getSocket(sessionName: string): ClientSocket {
     return new HeartbeatingWebsocket(
       url.toString(),
       publicRuntimeConfig.heartbeatInterval,
-      publicRuntimeConfig.heartbeatTimeout
+      publicRuntimeConfig.heartbeatTimeout,
     );
   }
 }
 
 export function useRemoteState(
   sessionName: string,
-  onAction?: OnAction
+  onAction?: OnAction,
 ): [RemoteState | null, Dispatch | null] {
   const [dispatch, setDispatch] = React.useState<Dispatch | null>(null);
   const [remoteState, setRemoteState] = React.useState<RemoteState | null>(null);
@@ -154,7 +131,7 @@ export type ConnectionState = (typeof connectionState)[keyof typeof connectionSt
  */
 export function useReconnector(
   sessionName: string,
-  onAction?: OnAction
+  onAction?: OnAction,
 ): [RemoteState | null, Dispatch | null, ConnectionState] {
   const [remoteState, dispatch] = useRemoteState(sessionName, onAction);
   const haveConnectivity = useInternetConnectivity();
@@ -168,7 +145,7 @@ export function useReconnector(
             epoch: remoteState.epoch,
             name: remoteState.me.name,
             score: remoteState.me.score,
-          })
+          }),
         );
       }
     }

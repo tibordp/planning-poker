@@ -1,2 +1,17 @@
 node_modules
 .next
+out
+.git
+.github
+.husky
+tests
+docs
+kubernetes
+coverage
+*.md
+.vscode
+.idea
+next-env.d.ts
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
