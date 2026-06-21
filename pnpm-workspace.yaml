@@ -1,0 +1,16 @@
+# Project-level pnpm settings. pnpm v11 reads these here (not from .npmrc).
+
+# Resilient fetching for slow/emulated environments (multi-arch CI under QEMU),
+# where defaults can time out on large tarballs (@mui/icons-material).
+networkConcurrency: 4
+fetchRetries: 5
+fetchTimeout: 600000
+
+# Two pnpm v11 defaults break non-interactive, multi-stage builds:
+#  - strictDepBuilds: fails the install when a dependency build script is
+#    skipped. esbuild (backs tsx), sharp and unrs-resolver ship prebuilt platform
+#    binaries as ordinary deps, so their postinstall scripts aren't needed.
+#  - verifyDepsBeforeRun: runs an implicit install before every "pnpm <script>",
+#    re-triggering the check above (and needing network).
+strictDepBuilds: false
+verifyDepsBeforeRun: false

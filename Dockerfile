@@ -4,18 +4,19 @@
 FROM node:24-alpine AS deps
 WORKDIR /app
 ENV PATH=/app/node_modules/.bin:$PATH
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
 
 # --- Build the Next.js app ---
 FROM deps AS build
 COPY . .
-RUN yarn build
+RUN pnpm build
 
-# --- Prune to production-only deps, reusing the warm yarn cache (offline) ---
+# --- Prune to production-only dependencies ---
 FROM deps AS proddeps
-RUN yarn install --frozen-lockfile --production --prefer-offline \
-  && yarn cache clean \
+RUN pnpm prune --prod \
   # @next/swc-* are native compiler binaries used only at build time; the
   # production server never invokes SWC, so they're dead weight in the runtime.
   && rm -rf node_modules/@next/swc-*
