@@ -57,6 +57,18 @@ spec:
             # How long to persist the finished session data for finished sessions
             - name: PP_FINISHED_SESSION_TTL
               value: "86400000"
+            # Cap the V8 heap well below the container memory limit. V8 sizes its
+            # heap off the host's RAM, not the cgroup limit, so without this the
+            # heap grows lazily until the kernel OOM-kills the pod.
+            - name: NODE_OPTIONS
+              value: "--max-old-space-size=192"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
           livenessProbe:
             failureThreshold: 3
             httpGet:

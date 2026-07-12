@@ -22,12 +22,23 @@ export function sendMessage(
   action: Record<string, unknown>,
 ): void {
   const { socket } = clientState;
-  socket.send(
-    JSON.stringify({
-      ...action,
-      serverTime: now,
-    }),
-  );
+  try {
+    socket.send(
+      JSON.stringify({
+        ...action,
+        serverTime: now,
+      }),
+    );
+  } catch (error) {
+    // Long-poll sockets throw when already closed. This can happen re-entrantly:
+    // a send during a broadcast can trigger an idle-timeout close of another
+    // client whose entry is still in the broadcast's snapshot. Dropping the
+    // message is safe — the socket's close handler cleans the client up.
+    console.warn(
+      `[${clientState.session.sessionName}] Dropped message to client ${clientState.clientId}:`,
+      error,
+    );
+  }
 }
 
 export function broadcastState(now: Date, sessionState: SessionState): void {

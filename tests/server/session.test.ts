@@ -103,6 +103,27 @@ test("client disconnected", () => {
   expect(state).not.toHaveProperty(sessionName);
 });
 
+test("broadcast survives a client whose socket already closed", () => {
+  const now = new Date("2020-06-23T21:31:09.727Z");
+  const sessionName = getSessionName();
+
+  const sessionState = session.initializeSession(now, sessionName);
+  // Long-poll sockets throw on send once closed; if that happens re-entrantly
+  // during a broadcast the remaining clients must still receive the update.
+  const deadSocket: ServerSocket = {
+    ...fakeSocket(),
+    send: jest.fn(() => {
+      throw Error("Socket closed!");
+    }),
+  };
+  const liveSocket = fakeSocket();
+  session.initializeClient(now, sessionState, deadSocket, "dead-client", false);
+  session.initializeClient(now, sessionState, liveSocket, "live-client", false);
+
+  expect(() => session.broadcastState(now, sessionState)).not.toThrow();
+  expect(liveSocket.send).toHaveBeenCalledTimes(1);
+});
+
 test("session finished", () => {
   const now = new Date("2020-06-23T21:31:09.727Z");
   const sessionName = getSessionName();
